@@ -38,16 +38,16 @@ class _InformationDevicePageState extends State<InformationDevicePage> {
                   begin: Alignment.topCenter,
                   end: Alignment.bottomCenter,
                   colors: [
+                    Color.fromARGB(255, 74, 64, 161),
                     Color.fromARGB(255, 57, 74, 226),
                     Color.fromARGB(255, 74, 64, 161),
-                    Color.fromARGB(255, 26, 200, 253)
                   ],
                 ),
               ),
               padding: EdgeInsets.only(top: 30),
               //color: Color.fromARGB(255, 57, 74, 226),
               child: Lottie.asset(
-                'assets/lottie/animation_lod3volp.json', // Ruta a tu archivo JSON de animación
+                'assets/lottie/animation_loddgq69.json', // Ruta a tu archivo JSON de animación
                 width: 250, // Ajusta el ancho según tus preferencias
                 height: 250, // Ajusta la altura según tus preferencias
               ),
@@ -74,7 +74,7 @@ class _InformationDevicePageState extends State<InformationDevicePage> {
                         return Column(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: <Widget>[
-                            TempWidget(temp: systemInfo.cpuTemperature),
+                            TempWidget(temp: systemInfo.storageInfo),
                             SizedBox(
                               height: 8,
                             ),
@@ -101,7 +101,11 @@ class _InformationDevicePageState extends State<InformationDevicePage> {
                       } else if (snapshot.hasError) {
                         return Text('Error al obtener la información');
                       } else {
-                        return CircularProgressIndicator(); // Muestra un indicador de carga mientras se obtiene la información
+                        return Column(
+                          children: [
+                            Center(child: CircularProgressIndicator()),
+                          ],
+                        ); // Muestra un indicador de carga mientras se obtiene la información
                       }
                     },
                   ),
