@@ -28,6 +28,29 @@ class AppBarCustom extends StatelessWidget implements PreferredSizeWidget {
       iconTheme: IconThemeData(color: colorIcon),
       actions: actions,
       elevation: elevation,
+      leading: Builder(
+        builder: (BuildContext context) {
+          return IconButton(
+            icon: Container(
+              height: 100,
+              padding: EdgeInsets.all(5),
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(
+                    10), // Ajusta este valor para cambiar el radio de los bordes
+                color: Color.fromARGB(255, 51, 51,
+                    51), // Cambia el color del contenedor según lo necesites
+              ),
+              child: Icon(
+                Icons.menu,
+                color: Colors.white,
+              ),
+            ), // Icono del menú personalizado
+            onPressed: () {
+              Scaffold.of(context).openDrawer(); // Abre el menú lateral
+            },
+          );
+        },
+      ),
       backgroundColor: background,
     );
   }

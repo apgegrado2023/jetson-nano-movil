@@ -39,7 +39,7 @@ class TempWidget extends StatelessWidget {
     return Container(
       padding: EdgeInsets.all(10),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: Color.fromARGB(255, 96, 109, 204),
         borderRadius:
             BorderRadius.all(Radius.circular(10.0)), // Radio de los bordes
       ),
@@ -51,9 +51,9 @@ class TempWidget extends StatelessWidget {
           Text(
             "Almacenamiento",
             style: TextStyle(
-                fontSize: 17,
-                color: Color.fromARGB(255, 74, 64, 161),
-                fontWeight: FontWeight.bold),
+              fontSize: 17,
+              color: Colors.white,
+            ),
           ),
           SizedBox(
             height: 8,
@@ -64,7 +64,7 @@ class TempWidget extends StatelessWidget {
                 flex: obtenerDigitoMasGrande(_calculationPercentage().toInt()),
                 child: Container(
                   decoration: BoxDecoration(
-                    color: Color.fromARGB(255, 48, 77, 173),
+                    color: Color.fromARGB(255, 255, 255, 255),
                     borderRadius: BorderRadius.only(
                       topLeft: Radius.circular(10.0),
                       bottomLeft: Radius.circular(10.0),
@@ -74,7 +74,7 @@ class TempWidget extends StatelessWidget {
                   child: Center(
                     child: Text(
                       ' ${_calculationPercentage().toStringAsFixed(2)}%',
-                      style: TextStyle(color: Colors.white),
+                      style: TextStyle(color: Colors.black),
                     ),
                   ),
                 ),
@@ -84,7 +84,7 @@ class TempWidget extends StatelessWidget {
                     obtenerDigitoMasGrande(_calculationPercentage().toInt()),
                 child: Container(
                   decoration: BoxDecoration(
-                    color: Color.fromARGB(255, 80, 211, 123),
+                    color: Color.fromARGB(255, 147, 159, 248),
                     borderRadius: BorderRadius.only(
                       topRight: Radius.circular(10.0),
                       bottomRight: Radius.circular(10.0),
@@ -108,9 +108,7 @@ class TempWidget extends StatelessWidget {
             "${bytesToGigabytes(temp.free).toStringAsFixed(0)} GB disponibles de ${bytesToGigabytes(temp.total).toStringAsFixed(0)} GB ",
             textAlign: TextAlign.center,
             style: TextStyle(
-                fontSize: 17,
-                color: Color.fromARGB(255, 0, 0, 0),
-                fontWeight: FontWeight.bold),
+                fontSize: 17, color: Colors.white, fontWeight: FontWeight.bold),
           ),
         ],
       ),

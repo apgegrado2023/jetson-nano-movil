@@ -56,7 +56,7 @@ class ResponseService {
   String convertStatusResponse(StatusResponse statusResponse) {
     switch (statusResponse) {
       case StatusResponse.sucess:
-        return 'sucess';
+        return 'success';
       case StatusResponse.failed:
         return 'failed';
       default:
@@ -66,7 +66,7 @@ class ResponseService {
 
   static StatusResponse convertStatusResponseRevert(String statusResponse) {
     switch (statusResponse) {
-      case 'sucess':
+      case 'success':
         return StatusResponse.sucess;
       case 'failed':
         return StatusResponse.failed;

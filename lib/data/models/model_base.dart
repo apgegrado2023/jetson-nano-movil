@@ -40,8 +40,8 @@ class ModelBase {
   Map<String, dynamic> toJson() {
     return {
       'status': status,
-      'registrationDate': registrationDate,
-      'dateUpdate': dateUpdate,
+      'registrationDate': registrationDate.toString(),
+      'dateUpdate': dateUpdate.toString(),
       'creatorId': creatorId,
     };
   }

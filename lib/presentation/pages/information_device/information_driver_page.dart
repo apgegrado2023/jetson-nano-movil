@@ -12,112 +12,76 @@ import 'package:lottie/lottie.dart';
 
 import '../../../data/models/prototype/information_system.dart';
 
-class InformationDevicePage extends StatefulWidget {
+class InformationDevicePage extends StatelessWidget {
   const InformationDevicePage({super.key});
 
   @override
-  State<InformationDevicePage> createState() => _InformationDevicePageState();
+  Widget build(BuildContext context) {
+    return Scaffold(body: const InformationDeviceView());
+  }
 }
 
-class _InformationDevicePageState extends State<InformationDevicePage> {
+class InformationDeviceView extends StatefulWidget {
+  const InformationDeviceView({super.key});
+
+  @override
+  State<InformationDeviceView> createState() => _InformationDeviceViewState();
+}
+
+class _InformationDeviceViewState extends State<InformationDeviceView> {
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-        body: SingleChildScrollView(
-      child: Container(
-        color: Color.fromARGB(255, 241, 241, 241),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.start,
-          mainAxisSize: MainAxisSize.max,
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            Container(
-              decoration: BoxDecoration(
-                gradient: LinearGradient(
-                  tileMode: TileMode.repeated,
-                  begin: Alignment.topCenter,
-                  end: Alignment.bottomCenter,
-                  colors: [
-                    Color.fromARGB(255, 74, 64, 161),
-                    Color.fromARGB(255, 57, 74, 226),
-                    Color.fromARGB(255, 74, 64, 161),
-                  ],
-                ),
-              ),
-              padding: EdgeInsets.only(top: 30),
-              //color: Color.fromARGB(255, 57, 74, 226),
-              child: Lottie.asset(
-                'assets/lottie/animation_loddgq69.json', // Ruta a tu archivo JSON de animación
-                width: 250, // Ajusta el ancho según tus preferencias
-                height: 250, // Ajusta la altura según tus preferencias
-              ),
-            ),
-            Padding(
-              padding: EdgeInsets.all(10),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  CustomTitle2(
-                    title: 'Información del dispositivo',
-                    subTitle: "Información del prototipo en tiempo real.",
-                    fontSize: 25,
-                    isBoldTitle: true,
-                    colorTitle: Color.fromARGB(255, 74, 64, 161),
-                    colorSubTitle: Colors.black54,
-                  ),
-                  StreamBuilder<SystemInfo>(
-                    stream: sl<PrototypeRepository>()
-                        .informationStream, // systemInfoService.informationStream, // Asigna tu stream aquí
-                    builder: (context, snapshot) {
-                      if (snapshot.hasData) {
-                        final systemInfo = snapshot.data!;
-                        return Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: <Widget>[
-                            TempWidget(temp: systemInfo.storageInfo),
-                            SizedBox(
-                              height: 8,
-                            ),
-                            Row(
-                              children: [
-                                Expanded(
-                                    child: CpuWidget(
-                                        cpuUsage: systemInfo.cpuUsage)),
-                                SizedBox(
-                                  width: 8,
-                                ),
-                                Expanded(
-                                    child: StorageWidget(
-                                        temp: systemInfo.cpuTemperature))
-                              ],
-                            ),
-                            SizedBox(
-                              height: 8,
-                            ),
-                            MemoryWidget(info: systemInfo.memoryInfo),
-                            // Agrega más widgets según sea necesario para mostrar la información
-                          ],
-                        );
-                      } else if (snapshot.hasError) {
-                        return Text('Error al obtener la información');
-                      } else {
-                        return Column(
-                          children: [
-                            Center(child: CircularProgressIndicator()),
-                          ],
-                        ); // Muestra un indicador de carga mientras se obtiene la información
-                      }
-                    },
-                  ),
-                ],
-              ),
-            )
-          ],
+    print("se construye");
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        CustomTitle2(
+          title: 'Widgets',
+          fontSize: 20,
+          isBoldTitle: true,
+          colorTitle: Colors.white,
         ),
-      ),
-    ));
-
-    _widgetsd() {}
+        StreamBuilder<SystemInfo>(
+          stream: sl<PrototypeRepository>()
+              .informationStream, // systemInfoService.informationStream, // Asigna tu stream aquí
+          builder: (context, snapshot) {
+            if (snapshot.hasData) {
+              final systemInfo = snapshot.data!;
+              return Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: <Widget>[
+                  TempWidget(temp: systemInfo.storageInfo),
+                  SizedBox(
+                    height: 8,
+                  ),
+                  Row(
+                    children: [
+                      Expanded(child: CpuWidget(cpuUsage: systemInfo.cpuUsage)),
+                      SizedBox(
+                        width: 8,
+                      ),
+                      Expanded(
+                          child: StorageWidget(temp: systemInfo.cpuTemperature))
+                    ],
+                  ),
+                  SizedBox(
+                    height: 8,
+                  ),
+                  MemoryWidget(info: systemInfo.memoryInfo),
+                  // Agrega más widgets según sea necesario para mostrar la información
+                ],
+              );
+            } else if (snapshot.hasError) {
+              return Text('Error al obtener la información');
+            } else {
+              return Center(
+                  child:
+                      CircularProgressIndicator()); // Muestra un indicador de carga mientras se obtiene la información
+            }
+          },
+        ),
+      ],
+    );
   }
 
   @override

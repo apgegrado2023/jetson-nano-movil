@@ -91,25 +91,25 @@ class RegisterPage extends StatelessWidget {
                           Text("Datos para inicio de Sesión"),
                           CustomInputField(
                             onChanged: (value) => bloc.add(
-                              PasswordChangedRegisterEvent(value),
+                              UserNameChangedRegisterEvent(value),
                             ),
-                            icon: const Icon(Icons.email),
+                            icon: const Icon(Icons.abc),
                             label: "Usuario",
-                            validator: Validators.validationEmail,
+                            validator: Validators.validationText,
                           ),
                           CustomInputField(
                             onChanged: (value) => bloc.add(
                               PasswordChangedRegisterEvent(value),
                             ),
-                            icon: const Icon(Icons.email),
+                            icon: const Icon(Icons.password),
                             label: "Contraseña",
-                            validator: Validators.validationEmail,
+                            validator: Validators.validationPassword,
                           ),
                           CustomButton(
                             height: 48,
                             textButton: 'Registrar',
                             onPressed: () => bloc.add(
-                              LoginSubmittedRegisterEvent(context),
+                              RegisterSubmittedRegisterEvent(context),
                             ),
                           ),
                         ],

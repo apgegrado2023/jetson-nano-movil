@@ -1,33 +1,49 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
+import 'package:flutter_application_prgrado/domain/repository/user_repository.dart';
 import 'package:flutter_application_prgrado/presentation/bloc/register/register_event.dart';
 import 'package:flutter_application_prgrado/presentation/bloc/register/register_state.dart';
+import 'package:flutter_application_prgrado/presentation/widgets/dialogs/dialogs.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../../config/routes/routes.dart';
+import '../../../data/models/error_dialog_data.dart';
+import '../../../data/models/good_dialog_data.dart';
+import '../../../data/models/user.dart';
+import '../../../domain/repository/session_repository.dart';
+import '../../widgets/loading/loading.dart';
 import '../session/bloc/session_bloc.dart';
 
 class RegisterBloc extends Bloc<RegisterEvent, RegisterState> {
   final SessionBloc sessionBloc;
-  //final authenticationRepository = Get.find<AuthenticationRepository>();
-  // AuthenticationRepositoryImpl();
-  //final userRepository = UserRepositoryImpl();
+  final UserRepository userRepository;
   final GlobalKey<FormState> formKey = GlobalKey<FormState>();
+  final SessionRepository session;
 
-  RegisterBloc(this.sessionBloc) : super(const RegisterState()) {
-    on<StartedRegisterEvent>((event, emit) => _started);
+  RegisterBloc(
+    this.sessionBloc,
+    this.userRepository,
+    this.session,
+  ) : super(const RegisterState()) {
+    on<StartedRegisterEvent>((event, emit) => _started());
     on<NameChangedRegisterEvent>(
-      (event, emit) => _onChangedName,
+      (event, emit) => _onChangedName(event, emit),
     );
     on<LastNameChangedRegisterEvent>(
-      (event, emit) => _onChangedLastName,
+      (event, emit) => _onChangedLastName(event, emit),
     );
     on<LastNameSecondChangedRegisterEvent>(
-      (event, emit) => _onChangedLastNameSecond,
+      (event, emit) => _onChangedLastNameSecond(event, emit),
     );
     on<PasswordChangedRegisterEvent>(
-      (event, emit) => _onChangedPassword,
+      (event, emit) => _onChangedPassword(event, emit),
     );
-    on<LoginSubmittedRegisterEvent>(
-      (event, emit) => _onLoginSubmitted,
+    on<RegisterSubmittedRegisterEvent>((event, emit) {
+      _onRegisterSubmitted(event, emit);
+    });
+    on<UserNameChangedRegisterEvent>(
+      (event, emit) => _onChangedUserName(event, emit),
     );
   }
 
@@ -50,7 +66,7 @@ class RegisterBloc extends Bloc<RegisterEvent, RegisterState> {
   ) {
     emit(
       state.copyWith(
-        name: event.password,
+        password: event.password,
       ),
     );
   }
@@ -66,6 +82,17 @@ class RegisterBloc extends Bloc<RegisterEvent, RegisterState> {
     );
   }
 
+  void _onChangedUserName(
+    UserNameChangedRegisterEvent event,
+    Emitter<RegisterState> emit,
+  ) {
+    emit(
+      state.copyWith(
+        userName: event.userName,
+      ),
+    );
+  }
+
   void _onChangedLastNameSecond(
     LastNameSecondChangedRegisterEvent event,
     Emitter<RegisterState> emit,
@@ -75,89 +102,101 @@ class RegisterBloc extends Bloc<RegisterEvent, RegisterState> {
     ));
   }
 
-  Future<void> _onLoginSubmitted(
-    LoginSubmittedRegisterEvent event,
+  Future<void> _onRegisterSubmitted(
+    RegisterSubmittedRegisterEvent event,
     Emitter<RegisterState> emit,
   ) async {
-    /*if (!context.mounted) return;
-
+    // if (!event. context.) return;
+    final BuildContext buildContext = event.context;
     if (!isFormValid()) return;
-    FocusScope.of(context).unfocus();
-    Loading.showText(context, "Registrando");
+    //FocusScope.of(buildContext).unfocus();
+    Loading.showText(buildContext, "Registrando");
     final response = await _submit();
     Loading.close();
-    if (response) {
-      if (!context.mounted) return;
-
-      Dialogs.showGoodMessage(
-        context,
-        GoodDialogData(
-          "El registro de maestro de Escuela sábatica fue exitoso",
-          "Registro Exitoso",
-          "Cerrar",
-          () {
-            Dialogs.close();
-            _closeForm(context);
-          },
-          false,
-        ),
-      );
-      return;
+    if (response != null) {
+      setUserInSession(response);
+      await session.saveToSession(response);
+      // Navega a la ruta después de asegurarte de que el contexto esté montado
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (Navigator.canPop(buildContext)) {
+          Navigator.pushReplacementNamed(buildContext, Routes.home);
+        }
+      });
+    } else {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        showErrorMessage(buildContext, event, emit);
+      });
     }
-*/
-    /*if (!context.mounted) return;
+  }
+
+  void setUserInSession(User response) {
+    sessionBloc.setUser(response);
+  }
+
+  void navigateToHome(BuildContext context) {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (Navigator.canPop(context)) {
+        Future.microtask(() {
+          Navigator.pushReplacementNamed(context, Routes.home);
+        });
+      }
+    });
+  }
+
+  Future<void> showErrorMessage(
+    BuildContext buildContext,
+    RegisterSubmittedRegisterEvent event,
+    Emitter<RegisterState> emit,
+  ) async {
     Dialogs.showErrorMessage(
-      context,
+      buildContext,
       ErrorDialogData(
-        "No se registro un maestro de Escuela sábatica",
+        "No se registro un nuevo usuario",
         "Registro Fallido",
         "Reintentar",
-        () => {Dialogs.close(), _onLoginSubmitted(emit, context)},
+        () async {
+          Dialogs.close();
+          await _onRegisterSubmitted(event, emit); // Llamada al mismo método
+        },
         false,
       ),
     );
   }
 
   _closeForm(BuildContext context) {
-    Navigator.pop(context);*/
+    Navigator.pop(context);
   }
 
-  /*Future<bool> _submit() async {
-    /*final password =
-        Functions.generarContrasena2(state.name!, DateTime.now().toString());
-    final user = await authenticationRepository.createUserWithEmailAndPassword(
-        state.email!, password);
-    if (user == null) return false;
+  String generarIdUnico() {
+    final now = DateTime.now();
+    final formattedDate = "${now.year}${now.month}${now.day}";
+    final random = Random();
+    final letrasAleatorias = String.fromCharCodes(List.generate(4,
+        (index) => random.nextInt(26) + 65)); // Genera letras aleatorias (A-Z).
 
-    Member teacher = Member.createStaffMember(
-      uid: user.uid,
+    final idUnico = "$formattedDate$letrasAleatorias";
+
+    return idUnico;
+  }
+
+  Future<User?> _submit() async {
+    User teacher = User.create(
+      id: generarIdUnico(),
       name: state.name!,
-      nameSecond: state.nameSecond!,
       lastName: state.lastName!,
       lastNameSecond: state.lastNameSecond!,
-      gender: state.gender!,
-      phone: state.phone!,
-      bautizated: state.bautizated!,
-      birthDate: state.birthDate!,
-      typeUser: UserTypes.TEACHER,
-      creatorId: sessionBloc.state.member!.id,
-      email: state.email!,
-      password: password,
+      creatorId: '0',
+      userName: state.userName!,
+      password: state.password!,
     );
 
-    final response = await userRepository.insertBool(teacher);
-    if (response) {
-      final email = EmailService(teacher.email, "Contraseña cuenta System EESS",
-          "Contraseña: ${teacher.password}");
-      final r = await email.sendEmail();
-      print(r);
-    }
-    return response;
+    final response = await userRepository.insert(teacher);
+    if (response) return teacher;
+    return null;
   }
 
   bool isFormValid() {
     final isEnableForm = formKey.currentState;
     return isEnableForm != null && formKey.currentState!.validate();
-  }*/
-}*/
+  }
 }

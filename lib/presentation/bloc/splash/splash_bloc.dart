@@ -32,11 +32,13 @@ class SplashBloc extends Bloc<SplashEvent, SplashState> {
     InitialEvent event,
     Emitter<SplashState> emit,
   ) async {
+    print("se llama");
     final isConnectedServer = await verificationConnectionUseCase();
 
     emit(state.copyWith(
       connectionStateServer: ConnectionStateServer.loading,
     ));
+    print(isConnectedServer);
 
     if (!isConnectedServer) {
       final isConnected = await connectionUseCase();

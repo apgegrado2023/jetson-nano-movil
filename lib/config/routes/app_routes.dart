@@ -19,7 +19,7 @@ class AppRoutes {
       case Routes.register:
         return _materialRoute(const RegisterPage());
       case Routes.home:
-        return _materialRoute(const HomePage());
+        return _materialRoute(HomePage());
       case Routes.cameraManagment:
         return _materialRoute(const CameraManagmentPage());
       case Routes.informationDevicePage:

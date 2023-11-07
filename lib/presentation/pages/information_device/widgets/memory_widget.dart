@@ -19,26 +19,24 @@ class MemoryWidget extends StatelessWidget {
         switch (i) {
           case 0:
             return PieChartSectionData(
-              color: Color.fromARGB(255, 74, 64, 161),
+              color: Color.fromARGB(255, 255, 255, 255),
               value: double.parse(info.available.toString()),
               title: "${100 - info.percentUsed}%",
               radius: radius,
               titleStyle: TextStyle(
                 fontWeight: FontWeight.bold,
-                color: Color.fromARGB(255, 255, 255, 255),
-                shadows: shadows,
+                color: Color.fromARGB(255, 0, 0, 0),
               ),
             );
           case 1:
             return PieChartSectionData(
-              color: Color.fromARGB(255, 236, 153, 58),
+              color: Color.fromARGB(255, 138, 221, 181),
               value: double.parse((info.total - info.available).toString()),
               title: "${info.percentUsed}%",
               radius: radius,
               titleStyle: TextStyle(
                 fontWeight: FontWeight.bold,
-                color: Color.fromARGB(255, 255, 255, 255),
-                shadows: shadows,
+                color: Color.fromARGB(255, 10, 10, 10),
               ),
             );
 
@@ -51,7 +49,7 @@ class MemoryWidget extends StatelessWidget {
     return Container(
       padding: EdgeInsets.all(10),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: Color(0xFF6FC49B),
         borderRadius:
             BorderRadius.all(Radius.circular(10.0)), // Radio de los bordes
       ),
@@ -61,9 +59,7 @@ class MemoryWidget extends StatelessWidget {
           Text(
             "Memoria RAM",
             style: TextStyle(
-                fontSize: 17,
-                color: Color.fromARGB(255, 74, 64, 161),
-                fontWeight: FontWeight.bold),
+                fontSize: 17, color: Colors.white, fontWeight: FontWeight.bold),
           ),
           AspectRatio(
             aspectRatio: 1.8,
@@ -90,7 +86,7 @@ class MemoryWidget extends StatelessWidget {
                   // ignore: prefer_const_literals_to_create_immutables
                   children: <Widget>[
                     Indicator(
-                      color: Color.fromARGB(255, 236, 153, 58),
+                      color: Color.fromARGB(255, 138, 221, 181),
                       text: 'Uso',
                       isSquare: true,
                     ),
@@ -98,7 +94,7 @@ class MemoryWidget extends StatelessWidget {
                       height: 4,
                     ),
                     Indicator(
-                      color: Color.fromARGB(255, 74, 64, 161),
+                      color: Color.fromARGB(255, 255, 255, 255),
                       text: 'Libre',
                       isSquare: true,
                     ),
@@ -156,7 +152,7 @@ class Indicator extends StatelessWidget {
           text,
           style: TextStyle(
             fontWeight: FontWeight.bold,
-            color: textColor,
+            color: Colors.black,
           ),
         )
       ],

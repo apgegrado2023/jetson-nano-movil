@@ -23,12 +23,17 @@ class LastNameSecondChangedRegisterEvent implements RegisterEvent {
   const LastNameSecondChangedRegisterEvent(this.lastNameSecond);
 }
 
+class UserNameChangedRegisterEvent implements RegisterEvent {
+  final String userName;
+  const UserNameChangedRegisterEvent(this.userName);
+}
+
 class PasswordChangedRegisterEvent implements RegisterEvent {
   final String password;
   const PasswordChangedRegisterEvent(this.password);
 }
 
-class LoginSubmittedRegisterEvent implements RegisterEvent {
+class RegisterSubmittedRegisterEvent implements RegisterEvent {
   final BuildContext context;
-  const LoginSubmittedRegisterEvent(this.context);
+  const RegisterSubmittedRegisterEvent(this.context);
 }

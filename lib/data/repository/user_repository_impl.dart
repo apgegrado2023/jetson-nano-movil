@@ -21,27 +21,28 @@ class UserRepositoryImpl extends UserRepository {
 
   @override
   Future<bool> insert(User user) async {
-    try {
-      final uniqueCode = generateUniqueCode();
-      final request = RequestService(
-        type: "service_database_user_insert",
-        command: uniqueCode,
-        body: user.toJson(),
-      );
+    /*try {*/
+    print("se llama al registrar");
+    final uniqueCode = generateUniqueCode();
+    final request = RequestService(
+      type: "service_database_user_insert",
+      command: uniqueCode,
+      body: user.toJson(),
+    );
 
-      final response = await prototypApieService.request(request);
+    final response = await prototypApieService.request(request);
 
-      if (response != null) {
-        final data = response.data;
-        // Procesa los datos de respuesta según tus necesidades
-        return true;
-      } else {
-        return false;
-      }
-    } catch (e) {
+    if (response.responseStatus == StatusResponse.failed) {
+      return false;
+    } else if (response.responseStatus == StatusResponse.problem) {
+      return false;
+    } else {
+      return true;
+    }
+    /*} catch (e) {
       // Maneja la excepción adecuadamente
       return false;
-    }
+    }*/
   }
 
   @override

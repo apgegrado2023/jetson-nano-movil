@@ -14,15 +14,12 @@ abstract class DropdownInfo<T> {
 
 class User extends ModelBase implements ModelConvert<User>, DropdownInfo<User> {
   String id;
-
   String name;
-
   String lastName;
   String lastNameSecond;
-
   String password;
-
   String typeUser;
+  String userName;
 
   User({
     required this.id,
@@ -31,39 +28,22 @@ class User extends ModelBase implements ModelConvert<User>, DropdownInfo<User> {
     required this.lastNameSecond,
     required this.typeUser,
     required this.password,
+    required this.userName,
     required String creatorId,
     required DateTime registrationDate,
     required DateTime updateDate,
     required int status,
   }) : super(status, registrationDate, updateDate, creatorId);
 
-  User.withDefaults()
-      : id = '',
-        name = '',
-        lastName = '',
-        lastNameSecond = '',
-        password = '',
-        typeUser = 'none',
-        super.withDefaults();
-
-  User.createStaffMember({
-    required this.name,
-    required this.lastName,
-    required this.lastNameSecond,
-    required this.typeUser,
-    required this.password,
-    required String creatorId,
-  })  : id = '',
-        super.create(creatorId: creatorId);
-
-  User.createStudentMember({
-    required this.name,
-    required this.lastName,
-    required this.lastNameSecond,
-    required this.typeUser,
-    required String creatorId,
-  })  : id = '',
-        password = '',
+  User.create(
+      {required this.id,
+      required this.name,
+      required this.lastName,
+      required this.lastNameSecond,
+      required this.password,
+      required String creatorId,
+      required this.userName})
+      : typeUser = 'driver',
         super.create(creatorId: creatorId);
 
   String jsonString() {
@@ -83,7 +63,8 @@ class User extends ModelBase implements ModelConvert<User>, DropdownInfo<User> {
       'lastName': lastName,
       'lastNameSecond': lastNameSecond,
       'typeUser': typeUser,
-      'password': password
+      'password': password,
+      'userName': userName
     };
   }
 
@@ -109,6 +90,7 @@ class User extends ModelBase implements ModelConvert<User>, DropdownInfo<User> {
       lastName: data?['lastName'] ?? '',
       lastNameSecond: data?['lastNameSecond'] ?? '',
       typeUser: data?['typeUser'] ?? 'usuario normal',
+      userName: data?['userName'] ?? '',
       registrationDate:
           (data?['registrationDate'] as DateTime? ?? DateTime.now()),
       updateDate: (data?['updateDate'] as DateTime? ?? DateTime.now()),

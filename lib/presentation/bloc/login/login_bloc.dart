@@ -80,22 +80,6 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
     Emitter<LoginState> emit,
   ) async {
     try {
-      /*print("hola");
-      final String networkPrefix =
-          '192.168.4'; // Rango de direcciones IP de tu red local
-
-      for (int i = 1; i <= 254; i++) {
-        // Escanea direcciones IP de 192.168.1.1 a 192.168.1.254
-        final String ipAddress = '$networkPrefix.$i';
-
-        final response = await checkPort(ipAddress, 8765);
-        if (response != null) {
-          print(response.host);
-        }
-      }*/
-
-      //await connectionUseCase.call();
-
       final BuildContext buildContext = event.context;
 
       final email = state.email;

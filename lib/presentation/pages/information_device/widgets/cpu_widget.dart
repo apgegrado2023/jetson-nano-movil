@@ -12,7 +12,7 @@ class CpuWidget extends StatelessWidget {
     return Container(
       padding: EdgeInsets.all(10),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: Color.fromARGB(255, 51, 51, 51), // C
         borderRadius:
             BorderRadius.all(Radius.circular(10.0)), // Radio de los bordes
       ),
@@ -20,9 +20,7 @@ class CpuWidget extends StatelessWidget {
         Text(
           "Uso CPU",
           style: TextStyle(
-              fontSize: 17,
-              color: Color.fromARGB(255, 74, 64, 161),
-              fontWeight: FontWeight.bold),
+              fontSize: 17, color: Colors.white, fontWeight: FontWeight.bold),
         ),
         SizedBox(
           height: 8,
@@ -30,9 +28,7 @@ class CpuWidget extends StatelessWidget {
         Text(
           "$cpuUsage%",
           style: TextStyle(
-              fontSize: 17,
-              color: Color.fromARGB(255, 0, 0, 0),
-              fontWeight: FontWeight.bold),
+              fontSize: 17, color: Colors.white, fontWeight: FontWeight.w200),
         ),
       ]),
     );

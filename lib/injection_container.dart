@@ -1,11 +1,11 @@
 import 'package:flutter_application_prgrado/data/data_sources/remote/prototype/prototype_api_service.dart';
-import 'package:flutter_application_prgrado/data/data_sources/remote/user/user_api_service.dart';
 import 'package:flutter_application_prgrado/data/repository/session_repository_impl.dart';
 import 'package:flutter_application_prgrado/domain/repository/prototype_repository.dart';
 import 'package:flutter_application_prgrado/domain/repository/session_repository.dart';
 import 'package:flutter_application_prgrado/domain/repository/user_repository.dart';
 import 'package:flutter_application_prgrado/domain/usecases/connection.dart';
 import 'package:flutter_application_prgrado/domain/usecases/verification_connection.dart';
+import 'package:flutter_application_prgrado/presentation/bloc/home/home_bloc.dart';
 import 'package:flutter_application_prgrado/presentation/bloc/login/login_bloc.dart';
 import 'package:flutter_application_prgrado/presentation/bloc/register/register_bloc.dart';
 import 'package:flutter_application_prgrado/presentation/bloc/session/bloc/session_bloc.dart';
@@ -50,5 +50,10 @@ Future<void> initializeDependencies() async {
 
   sl.registerFactory<LoginBloc>(() => LoginBloc(
       sl<SessionBloc>(), sl<UserRepository>(), sl<SessionRepository>()));
-  sl.registerFactory<RegisterBloc>(() => RegisterBloc(sl<SessionBloc>()));
+
+  sl.registerFactory<RegisterBloc>(() => RegisterBloc(
+      sl<SessionBloc>(), sl<UserRepository>(), sl<SessionRepository>()));
+
+  sl.registerFactory<HomeBloc>(() => HomeBloc(
+      sl<SessionBloc>(), sl<UserRepository>(), sl<SessionRepository>()));
 }

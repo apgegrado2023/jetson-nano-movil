@@ -87,9 +87,9 @@ class StorageInfo {
 
   Map<String, dynamic> toJson() {
     return {
-      'total': total,
-      'free': free,
-      'used': used,
+      'total_storage': total,
+      'free_storage': free,
+      'used_storage': used,
     };
   }
 }

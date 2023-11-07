@@ -13,12 +13,15 @@ class CameraManagmentPage extends StatefulWidget {
 }
 
 class _CameraManagmentPageState extends State<CameraManagmentPage> {
-  static const String url = "ws://192.168.3.58:8766";
+  static const String url = "ws://192.168.3.58:2007";
+  static const String url2 = "ws://192.168.3.58:8566";
   WebSocketChannel? _channel;
+  WebSocketChannel? _channel2;
   bool _isConnected = false;
 
   void connect() {
     _channel = IOWebSocketChannel.connect(Uri.parse(url));
+    _channel2 = IOWebSocketChannel.connect(Uri.parse(url2));
     setState(() {
       _isConnected = true;
     });
@@ -26,6 +29,7 @@ class _CameraManagmentPageState extends State<CameraManagmentPage> {
 
   void disconnect() {
     _channel!.sink.close();
+    _channel2!.sink.close();
     setState(() {
       _isConnected = false;
     });
@@ -49,7 +53,9 @@ class _CameraManagmentPageState extends State<CameraManagmentPage> {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     ElevatedButton(
-                      onPressed: connect,
+                      onPressed: () {
+                        connect();
+                      },
                       child: const Text("Connect"),
                     ),
                     ElevatedButton(
@@ -64,6 +70,32 @@ class _CameraManagmentPageState extends State<CameraManagmentPage> {
                 _isConnected
                     ? StreamBuilder(
                         stream: _channel!.stream,
+                        builder: (context, snapshot) {
+                          if (!snapshot.hasData) {
+                            return const CircularProgressIndicator();
+                          }
+
+                          if (snapshot.connectionState ==
+                              ConnectionState.done) {
+                            return const Center(
+                              child: Text("Connection Closed !"),
+                            );
+                          }
+                          //? Working for single frames
+                          return Image.memory(
+                            Uint8List.fromList(
+                              base64Decode(
+                                (snapshot.data.toString()),
+                              ),
+                            ),
+                            gaplessPlayback: true,
+                          );
+                        },
+                      )
+                    : const Text("Initiate Connection"),
+                _isConnected
+                    ? StreamBuilder(
+                        stream: _channel2!.stream,
                         builder: (context, snapshot) {
                           if (!snapshot.hasData) {
                             return const CircularProgressIndicator();
