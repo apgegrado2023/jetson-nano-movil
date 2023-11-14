@@ -1,117 +1,111 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/src/widgets/container.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter_application_prgrado/data/models/prototype/information_system.dart';
 
-class TempWidget extends StatelessWidget {
-  final StorageInfo temp;
-  const TempWidget({super.key, required this.temp});
+class TemperatureWidget extends StatelessWidget {
+  final double temp;
+  const TemperatureWidget({super.key, required this.temp});
 
   @override
   Widget build(BuildContext context) {
-    _calculationPercentage() {
-      double valorMaximo = temp.total * 1.0;
+    String estado;
+    Color color;
 
-      double porcentaje = (temp.used / valorMaximo) * 100;
-      return porcentaje;
+    // Definir el rango de temperaturas para los diferentes estados.
+    if (temp > 50) {
+      estado = "Crítico";
+      color = Colors.red;
+    } else if (temp >= 30 && temp <= 49) {
+      estado = "Alto";
+      color = Colors.orange;
+    } else {
+      estado = "Estable";
+      color = Color.fromARGB(255, 138, 221, 181);
     }
 
-    int obtenerDigitoMasGrande(int numero) {
-      int digitoMasGrande = 0;
-
-      while (numero > 0) {
-        int digito = numero % 10;
-        if (digito > digitoMasGrande) {
-          digitoMasGrande = digito;
-        }
-        numero ~/= 10;
-      }
-
-      return digitoMasGrande;
-    }
-
-    double bytesToGigabytes(int bytes) {
-      return bytes / (1024 * 1024 * 1024);
-    }
-
-    print(obtenerDigitoMasGrande(_calculationPercentage().toInt()));
-    print(10 - obtenerDigitoMasGrande(_calculationPercentage().toInt()));
     return Container(
+      height: 200,
       padding: EdgeInsets.all(10),
       decoration: BoxDecoration(
-        color: Color.fromARGB(255, 96, 109, 204),
+        color: Color.fromRGBO(51, 51, 51, 1), //
         borderRadius:
             BorderRadius.all(Radius.circular(10.0)), // Radio de los bordes
       ),
       child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        mainAxisAlignment: MainAxisAlignment.spaceAround,
-        mainAxisSize: MainAxisSize.max,
-        children: [
-          Text(
-            "Almacenamiento",
-            style: TextStyle(
-              fontSize: 17,
-              color: Colors.white,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          //mainAxisAlignment: MainAxisAlignment.spaceAround,
+          mainAxisSize: MainAxisSize.max,
+          children: [
+            Container(
+              padding: EdgeInsets.all(5),
+              decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(
+                      10), // Ajusta este valor para cambiar el radio de los bordes
+                  color: Color.fromARGB(255, 43, 42, 42)),
+              child: Icon(
+                Icons.heat_pump,
+                color: Colors.white,
+              ),
+            ), //
+            SizedBox(
+              height: 15,
             ),
-          ),
-          SizedBox(
-            height: 8,
-          ),
-          Row(
-            children: <Widget>[
-              Expanded(
-                flex: obtenerDigitoMasGrande(_calculationPercentage().toInt()),
-                child: Container(
-                  decoration: BoxDecoration(
-                    color: Color.fromARGB(255, 255, 255, 255),
-                    borderRadius: BorderRadius.only(
-                      topLeft: Radius.circular(10.0),
-                      bottomLeft: Radius.circular(10.0),
-                    ), // Radio de los bordes
-                  ),
-                  height: 50,
-                  child: Center(
-                    child: Text(
-                      ' ${_calculationPercentage().toStringAsFixed(2)}%',
-                      style: TextStyle(color: Colors.black),
-                    ),
+            Column(
+              mainAxisAlignment: MainAxisAlignment.start,
+              mainAxisSize: MainAxisSize.max,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  "Temperatura",
+                  style: TextStyle(
+                      fontSize: 17,
+                      color: Colors.white,
+                      fontWeight: FontWeight.bold),
+                ),
+                SizedBox(
+                  height: 10,
+                ),
+                Center(
+                  child: Text(
+                    "$temp c°",
+                    style: TextStyle(
+                        fontSize: 17,
+                        color: Colors.white,
+                        fontWeight: FontWeight.w200),
                   ),
                 ),
-              ),
-              Expanded(
-                flex: 10 -
-                    obtenerDigitoMasGrande(_calculationPercentage().toInt()),
-                child: Container(
-                  decoration: BoxDecoration(
-                    color: Color.fromARGB(255, 147, 159, 248),
-                    borderRadius: BorderRadius.only(
-                      topRight: Radius.circular(10.0),
-                      bottomRight: Radius.circular(10.0),
-                    ), // Radio de los bordes
-                  ),
-                  height: 50,
-                  child: Center(
+                SizedBox(
+                  height: 10,
+                ),
+                Center(
+                  child: Container(
+                    padding: EdgeInsets.all(10),
+                    decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(
+                            10), // Ajusta este valor para cambiar el radio de los bordes
+                        color: Color.fromARGB(255, 43, 42, 42)),
                     child: Text(
-                      ' ${(100 - _calculationPercentage()).toStringAsFixed(2)}%',
-                      style: TextStyle(color: Colors.white),
+                      estado,
+                      style: TextStyle(color: color),
                     ),
                   ),
+                ), //
+                SizedBox(
+                  height: 10,
                 ),
-              ),
-            ],
-          ),
-          SizedBox(
-            height: 5,
-          ),
-          Text(
-            "${bytesToGigabytes(temp.free).toStringAsFixed(0)} GB disponibles de ${bytesToGigabytes(temp.total).toStringAsFixed(0)} GB ",
-            textAlign: TextAlign.center,
-            style: TextStyle(
-                fontSize: 17, color: Colors.white, fontWeight: FontWeight.bold),
-          ),
-        ],
-      ),
+                Text(
+                  "Temperatura del prototipo",
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    fontSize: 13,
+                    color: Colors.white,
+                  ),
+                ),
+              ],
+            ),
+          ]),
     );
   }
 }

@@ -186,50 +186,9 @@ class NavigatorDrawer extends StatelessWidget {
           runSpacing: 16,
           children: [
             itemButton(
-              'Profile',
+              'Mi perfil',
               () {},
               icon: Icon(Icons.person_outline_rounded),
-            ),
-            itemButtonChilds(
-              'Mi iglesia',
-              [
-                itemChild(
-                  'Iglesia',
-                  () {
-                    //router.pushNamed(Routes.CHURCH);
-                  },
-                ),
-                itemChild(
-                  'Escuela sábatica',
-                  () {
-                    //router.pushNamed(Routes.EESS);
-                  },
-                ),
-                isP
-                    ? itemChild("Gestión EESS", () {
-                        //router.pushNamed(Routes.ADMINEESS);
-                      })
-                    : const SizedBox()
-              ],
-              const Icon(Icons.other_houses_outlined),
-            ),
-            const Text('Actividades'),
-            itemButtonChilds(
-              'Proyectos',
-              [
-                itemChild(
-                  'Proyecto Maná',
-                  () {
-                    //router.pushNamed(Routes.PROJECTS);
-                  },
-                ),
-              ],
-              const Icon(Icons.spoke_outlined),
-            ),
-            itemButton(
-              'Eventos',
-              () {},
-              icon: Icon(Icons.event_outlined),
             ),
             Divider(),
             itemButton(

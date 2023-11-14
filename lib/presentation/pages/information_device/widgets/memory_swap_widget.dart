@@ -2,18 +2,28 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/src/widgets/container.dart';
 import 'package:flutter/src/widgets/framework.dart';
+import 'package:flutter_application_prgrado/data/models/prototype/information_system.dart';
 
-class CpuWidget extends StatelessWidget {
-  final double cpuUsage;
-  const CpuWidget({super.key, required this.cpuUsage});
+class MemorySwapWidget extends StatelessWidget {
+  final MemoryInfoSwap memoryInfoSwap;
+  const MemorySwapWidget({super.key, required this.memoryInfoSwap});
+  double bytesToGigabytes(int bytes) {
+    return bytes / (1024 * 1024 * 1024);
+  }
 
   @override
   Widget build(BuildContext context) {
+    print(memoryInfoSwap.free);
+    print(memoryInfoSwap.percentUsed);
+    print(memoryInfoSwap.total);
+    double percentUsed =
+        ((memoryInfoSwap.total - memoryInfoSwap.free) / memoryInfoSwap.total) *
+            100;
     return Container(
       height: 131,
       padding: EdgeInsets.all(10),
       decoration: BoxDecoration(
-        color: Color(0xFF6FC1C6), // C
+        color: Color(0xFF6FC498), // C
         borderRadius:
             BorderRadius.all(Radius.circular(10.0)), // Radio de los bordes
       ),
@@ -27,10 +37,10 @@ class CpuWidget extends StatelessWidget {
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(
                     10), // Ajusta este valor para cambiar el radio de los bordes
-                color: Color.fromARGB(255, 82, 159, 163),
+                color: Color.fromARGB(255, 96, 182, 137),
               ),
               child: Icon(
-                Icons.system_security_update,
+                Icons.memory_sharp,
                 color: Colors.white,
               ),
             ),
@@ -38,7 +48,7 @@ class CpuWidget extends StatelessWidget {
               height: 15,
             ),
             Text(
-              "Uso CPU",
+              "Mem. SWAP",
               style: TextStyle(
                   fontSize: 17,
                   color: Colors.white,
@@ -49,11 +59,12 @@ class CpuWidget extends StatelessWidget {
             ),
             Center(
               child: Text(
-                "$cpuUsage%",
+                "$percentUsed %",
+                textAlign: TextAlign.center,
                 style: TextStyle(
-                    fontSize: 17,
-                    color: Colors.white,
-                    fontWeight: FontWeight.w200),
+                  fontSize: 17,
+                  color: Colors.white,
+                ),
               ),
             ),
           ]),

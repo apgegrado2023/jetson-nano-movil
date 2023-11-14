@@ -47,22 +47,37 @@ class MemoryWidget extends StatelessWidget {
     }
 
     return Container(
+      height: 270,
       padding: EdgeInsets.all(10),
       decoration: BoxDecoration(
-        color: Color(0xFF6FC49B),
+        color: Color.fromRGBO(51, 51, 51, 1), //
         borderRadius:
             BorderRadius.all(Radius.circular(10.0)), // Radio de los bordes
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
+          Container(
+            padding: EdgeInsets.all(5),
+            decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(
+                    10), // Ajusta este valor para cambiar el radio de los bordes
+                color: Color.fromARGB(255, 43, 42, 42)),
+            child: Icon(
+              Icons.memory,
+              color: Colors.white,
+            ),
+          ), //
+          SizedBox(
+            height: 15,
+          ),
           Text(
             "Memoria RAM",
             style: TextStyle(
                 fontSize: 17, color: Colors.white, fontWeight: FontWeight.bold),
           ),
           AspectRatio(
-            aspectRatio: 1.8,
+            aspectRatio: 1.5,
             child: Row(
               children: [
                 Expanded(
@@ -74,7 +89,7 @@ class MemoryWidget extends StatelessWidget {
                           show: false,
                         ),
                         sectionsSpace: 0,
-                        centerSpaceRadius: 40,
+                        centerSpaceRadius: 10,
                         sections: showingSections(),
                       ),
                     ),
@@ -103,12 +118,27 @@ class MemoryWidget extends StatelessWidget {
                     ),
                   ],
                 ),
+                SizedBox(
+                  width: 8,
+                ),
               ],
+            ),
+          ),
+          Text(
+            "${bytesToGigabytes(info.available).toStringAsFixed(2)} GB disponibles de ${bytesToGigabytes(info.total).toStringAsFixed(2)} GB ",
+            textAlign: TextAlign.center,
+            style: TextStyle(
+              fontSize: 13,
+              color: Colors.white,
             ),
           ),
         ],
       ),
     );
+  }
+
+  double bytesToGigabytes(int bytes) {
+    return bytes / (1024 * 1024 * 1024);
   }
 }
 
@@ -152,7 +182,7 @@ class Indicator extends StatelessWidget {
           text,
           style: TextStyle(
             fontWeight: FontWeight.bold,
-            color: Colors.black,
+            color: Colors.white,
           ),
         )
       ],
