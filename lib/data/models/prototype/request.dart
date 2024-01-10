@@ -36,7 +36,7 @@ class RequestService {
   }
 }
 
-enum StatusResponse { sucess, failed, problem }
+enum StatusResponse { sucess, failed, problem, serverNotConnected }
 
 class ResponseService {
   final StatusResponse responseStatus;

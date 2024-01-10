@@ -21,8 +21,8 @@ class PrototypeRepositoryImpl extends PrototypeRepository {
 
   bool _timerStarted = false;
   @override
-  Future<bool> connect() {
-    return prototypeService.connect();
+  Future<bool> connect() async {
+    return await prototypeService.connect();
   }
 
   @override

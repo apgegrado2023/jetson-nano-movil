@@ -1,6 +1,8 @@
 import 'dart:developer';
 
 import 'package:flutter_application_prgrado/domain/repository/session_repository.dart';
+import 'package:flutter_application_prgrado/domain/usecases/connection_prototype.dart';
+import 'package:flutter_application_prgrado/domain/usecases/connection_prototype_verification.dart';
 import 'package:flutter_application_prgrado/presentation/bloc/session/bloc/session_event.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -17,15 +19,27 @@ class SplashBloc extends Bloc<SplashEvent, SplashState> {
   final VerificationConnectionUseCase verificationConnectionUseCase;
   final ConnectionUseCase connectionUseCase;
   final SessionBloc sessionBloc;
+
+  final ConnectionPrototypeUseCase connectionProtypeUseCase;
+  final ConnectionProtypeVerificationUseCase
+      connectionProtypeVerificationUseCase;
+
   SplashBloc(
     this.sessionBloc,
     this.verificationConnectionUseCase,
     this.connectionUseCase,
     this._session,
+    this.connectionProtypeUseCase,
+    this.connectionProtypeVerificationUseCase,
   ) : super(SplashState()) {
     on<ChangeRoute>(onChangeRoute);
     on<InitialEvent>(initialEvent);
     //add(InitialEvent());
+  }
+
+  Future<void> init() async {
+    final isConnectedServer = await connectionProtypeVerificationUseCase();
+    if (isConnectedServer) {}
   }
 
   Future<void> initialEvent(

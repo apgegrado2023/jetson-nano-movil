@@ -1,9 +1,17 @@
+import 'package:flutter_application_prgrado/data/data_sources/remote/prototype/data_source_prototype_service.dart';
 import 'package:flutter_application_prgrado/data/data_sources/remote/prototype/prototype_api_service.dart';
+import 'package:flutter_application_prgrado/data/repository/information_prototype_repository_impl.dart';
+import 'package:flutter_application_prgrado/data/repository/prototype_device_repository_impl.dart';
 import 'package:flutter_application_prgrado/data/repository/session_repository_impl.dart';
+import 'package:flutter_application_prgrado/domain/repository/information_prototype_repository.dart';
+import 'package:flutter_application_prgrado/domain/repository/prototype_device_repository.dart';
 import 'package:flutter_application_prgrado/domain/repository/prototype_repository.dart';
 import 'package:flutter_application_prgrado/domain/repository/session_repository.dart';
 import 'package:flutter_application_prgrado/domain/repository/user_repository.dart';
 import 'package:flutter_application_prgrado/domain/usecases/connection.dart';
+import 'package:flutter_application_prgrado/domain/usecases/connection_prototype.dart';
+import 'package:flutter_application_prgrado/domain/usecases/connection_prototype_verification.dart';
+import 'package:flutter_application_prgrado/domain/usecases/get_information_prototype.dart';
 import 'package:flutter_application_prgrado/domain/usecases/verification_connection.dart';
 import 'package:flutter_application_prgrado/presentation/bloc/home/home_bloc.dart';
 import 'package:flutter_application_prgrado/presentation/bloc/login/login_bloc.dart';
@@ -20,7 +28,12 @@ final sl = GetIt.instance;
 
 Future<void> initializeDependencies() async {
   // Data Sources
-  sl.registerSingleton<PrototypApieService>(PrototypApieService());
+  sl.registerSingleton<PrototypApieService>(
+    PrototypApieService(),
+  );
+  sl.registerSingleton<DataSourcePrototypeService>(
+    DataSourcePrototypeService(),
+  );
 
   // Repositories
   sl.registerSingleton<PrototypeRepository>(
@@ -30,11 +43,40 @@ Future<void> initializeDependencies() async {
   sl.registerFactory<SessionRepository>(
       () => SessionRepositoryImpl(sl<UserRepository>()));
 
+  sl.registerSingleton<PrototypeDeviceRepository>(
+    PrototypeDeviceRepositoryImpl(
+      sl<DataSourcePrototypeService>(),
+    ),
+  );
+
+  sl.registerSingleton<InformationPrototypeRepository>(
+      InformationPrototypeRepositoryImpl(
+    sl<DataSourcePrototypeService>(),
+  ));
+
   // UseCases
   sl.registerFactory<VerificationConnectionUseCase>(
       () => VerificationConnectionUseCase(sl<PrototypeRepository>()));
   sl.registerFactory<ConnectionUseCase>(
       () => ConnectionUseCase(sl<PrototypeRepository>()));
+
+  sl.registerFactory<ConnectionPrototypeUseCase>(
+    () => ConnectionPrototypeUseCase(
+      sl<PrototypeDeviceRepository>(),
+    ),
+  );
+
+  sl.registerFactory<ConnectionProtypeVerificationUseCase>(
+    () => ConnectionProtypeVerificationUseCase(
+      sl<PrototypeDeviceRepository>(),
+    ),
+  );
+
+  sl.registerFactory<GetInformationPrototypeUseCase>(
+    () => GetInformationPrototypeUseCase(
+      sl<InformationPrototypeRepository>(),
+    ),
+  );
 
   //Presentation - Bloc
 

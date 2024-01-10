@@ -142,11 +142,16 @@ class HomePage extends StatelessWidget {
                               SizedBox(
                                 width: 8,
                               ),
-                              Text(
-                                "Verificar",
-                                style: TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 16,
+                              InkWell(
+                                onTap: () {
+                                  print("tap");
+                                },
+                                child: Text(
+                                  "Verificar",
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 16,
+                                  ),
                                 ),
                               )
                             ]),

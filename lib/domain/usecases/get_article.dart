@@ -5,7 +5,7 @@ import 'package:flutter_application_prgrado/domain/repository/article_repository
 import '../../core/resources/data_state.dart';
 
 class GetArticleUseCase
-    implements UseCase<DataState<List<ArticleEntity>>, void> {
+    implements UseCaseFuture<DataState<List<ArticleEntity>>, void> {
   final ArticleRepository _articleRepository;
 
   GetArticleUseCase(this._articleRepository);
