@@ -1,15 +1,15 @@
 import 'package:flutter_application_prgrado/core/usecase/usecase.dart';
 import 'package:flutter_application_prgrado/data/models/prototype/information_system.dart';
-import 'package:flutter_application_prgrado/domain/repository/information_prototype_repository.dart';
+import 'package:flutter_application_prgrado/domain/repository/device_repository.dart';
 
 class GetInformationPrototypeUseCase
-    implements UseCase<Stream<SystemInfo>, void> {
-  final InformationPrototypeRepository informationPrototypeRepository;
+    implements UseCase<Stream<SystemInfoModel>, void> {
+  final DeviceRepository informationPrototypeRepository;
 
   GetInformationPrototypeUseCase(this.informationPrototypeRepository);
 
   @override
-  Stream<SystemInfo> call({void params}) {
+  Stream<SystemInfoModel> call({void params}) {
     return informationPrototypeRepository.informationStream;
   }
 }

@@ -46,7 +46,7 @@ dependencies:
   floor_generator: ^1.4.2
   build_runner: ^2.3.3
   cached_network_image: ^3.2.3
-  dio: ^5.3.3
+
   google_fonts: ^4.0.4
   web_socket_channel: ^2.4.0
   connectivity_plus: ^5.0.1
@@ -57,6 +57,8 @@ dependencies:
   video_player: ^2.7.0
   webview_flutter: ^4.2.2
   udp: ^5.0.3
+  flutter_hooks: ^0.20.5
+  http: ^0.13.5
 
 dev_dependencies:
   flutter_test:

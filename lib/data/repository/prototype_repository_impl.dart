@@ -11,8 +11,8 @@ import 'package:flutter_application_prgrado/domain/repository/prototype_reposito
 class PrototypeRepositoryImpl extends PrototypeRepository {
   final PrototypApieService prototypeService;
   Timer? timer;
-  StreamController<SystemInfo> systemStreamController =
-      StreamController<SystemInfo>.broadcast();
+  StreamController<SystemInfoModel> systemStreamController =
+      StreamController<SystemInfoModel>.broadcast();
   PrototypeRepositoryImpl(this.prototypeService);
   @override
   Future<bool> isConnect() async {
@@ -26,7 +26,7 @@ class PrototypeRepositoryImpl extends PrototypeRepository {
   }
 
   @override
-  Stream<SystemInfo> get informationStream {
+  Stream<SystemInfoModel> get informationStream {
     if (!_timerStarted) {
       _startTimer();
       _timerStarted = true;
@@ -66,7 +66,7 @@ class PrototypeRepositoryImpl extends PrototypeRepository {
   }
 
   @override
-  Future<SystemInfo?> getInformationDevice() async {
+  Future<SystemInfoModel?> getInformationDevice() async {
     try {
       final uniqueCode = generateUniqueCode();
       final request = RequestService(
@@ -79,7 +79,7 @@ class PrototypeRepositoryImpl extends PrototypeRepository {
       if (response.responseStatus == StatusResponse.failed) {
         return null;
       }
-      final info = SystemInfo.fromJson(response.data!);
+      final info = SystemInfoModel.fromJson(response.data!);
 
       return info;
     } catch (e) {

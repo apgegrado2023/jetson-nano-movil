@@ -1,3 +1,27 @@
+class ApiBaseURL {
+  static const String _ipServer = '192.168.3.58';
+  static const int _portServer = 5000;
+
+  static Uri get url {
+    return Uri(
+      scheme: "http",
+      host: _ipServer,
+      port: _portServer,
+    );
+  }
+
+  static Uri pathSegments(List<String> pathSegments) {
+    return Uri(
+      scheme: "http",
+      host: _ipServer,
+      port: _portServer,
+      pathSegments: pathSegments,
+    );
+  }
+}
+
+const String newsAPIBaseURL = 'http://192.168.3.58:5000';
+
 class Constants {
   Constants({
     this.ipServer = '0.0.0.0',

@@ -3,9 +3,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter/src/widgets/container.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter_application_prgrado/data/models/prototype/information_system.dart';
+import 'package:flutter_application_prgrado/domain/entities/information_system.dart';
 
 class MemorySwapWidget extends StatelessWidget {
-  final MemoryInfoSwap memoryInfoSwap;
+  final MemoryInfoSwapEntity memoryInfoSwap;
   const MemorySwapWidget({super.key, required this.memoryInfoSwap});
   double bytesToGigabytes(int bytes) {
     return bytes / (1024 * 1024 * 1024);
@@ -16,9 +17,9 @@ class MemorySwapWidget extends StatelessWidget {
     print(memoryInfoSwap.free);
     print(memoryInfoSwap.percentUsed);
     print(memoryInfoSwap.total);
-    double percentUsed =
-        ((memoryInfoSwap.total - memoryInfoSwap.free) / memoryInfoSwap.total) *
-            100;
+    double percentUsed = ((memoryInfoSwap.total! - memoryInfoSwap.free!) /
+            memoryInfoSwap.total!) *
+        100;
     return Container(
       height: 131,
       padding: EdgeInsets.all(10),

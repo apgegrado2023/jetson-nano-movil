@@ -1,9 +1,10 @@
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_application_prgrado/data/models/prototype/information_system.dart';
+import 'package:flutter_application_prgrado/domain/entities/information_system.dart';
 
 class MemoryWidget extends StatelessWidget {
-  final MemoryInfo info;
+  final MemoryInfoEntity info;
   const MemoryWidget({super.key, required this.info});
 
   @override
@@ -11,7 +12,7 @@ class MemoryWidget extends StatelessWidget {
     print(info.available);
     print(info.percentUsed);
     print(info.total);
-    double percentUsed = ((info.total - info.available) / info.total) * 100;
+    double percentUsed = ((info.total! - info.available!) / info.total!) * 100;
     List<PieChartSectionData> showingSections() {
       return List.generate(2, (i) {
         final radius = 50.0;
@@ -21,7 +22,7 @@ class MemoryWidget extends StatelessWidget {
             return PieChartSectionData(
               color: Color.fromARGB(255, 255, 255, 255),
               value: double.parse(info.available.toString()),
-              title: "${100 - info.percentUsed}%",
+              title: "${100 - info.percentUsed!}%",
               radius: radius,
               titleStyle: TextStyle(
                 fontWeight: FontWeight.bold,
@@ -31,7 +32,7 @@ class MemoryWidget extends StatelessWidget {
           case 1:
             return PieChartSectionData(
               color: Color.fromARGB(255, 138, 221, 181),
-              value: double.parse((info.total - info.available).toString()),
+              value: double.parse((info.total! - info.available!).toString()),
               title: "${info.percentUsed}%",
               radius: radius,
               titleStyle: TextStyle(
@@ -125,7 +126,7 @@ class MemoryWidget extends StatelessWidget {
             ),
           ),
           Text(
-            "${bytesToGigabytes(info.available).toStringAsFixed(2)} GB disponibles de ${bytesToGigabytes(info.total).toStringAsFixed(2)} GB ",
+            "${bytesToGigabytes(info.available!).toStringAsFixed(2)} GB disponibles de ${bytesToGigabytes(info.total!).toStringAsFixed(2)} GB ",
             textAlign: TextAlign.center,
             style: TextStyle(
               fontSize: 13,

@@ -8,3 +8,5 @@ class ChangeRoute extends SplashEvent {
 }
 
 class InitialEvent extends SplashEvent {}
+
+class ReloadConnectionEvent extends SplashEvent {}

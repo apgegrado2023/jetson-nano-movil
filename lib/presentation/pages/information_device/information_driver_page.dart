@@ -2,13 +2,16 @@ import 'package:flutter/material.dart';
 import 'package:flutter/src/widgets/container.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter_application_prgrado/domain/repository/prototype_repository.dart';
+import 'package:flutter_application_prgrado/domain/usecases/get_information_prototype.dart';
 import 'package:flutter_application_prgrado/injection_container.dart';
+import 'package:flutter_application_prgrado/presentation/bloc/information_device/information_device_bloc.dart';
 import 'package:flutter_application_prgrado/presentation/pages/information_device/widgets/cpu_widget.dart';
 import 'package:flutter_application_prgrado/presentation/pages/information_device/widgets/memory_swap_widget.dart';
 import 'package:flutter_application_prgrado/presentation/pages/information_device/widgets/memory_widget.dart';
 import 'package:flutter_application_prgrado/presentation/pages/information_device/widgets/temp_widget.dart';
 import 'package:flutter_application_prgrado/presentation/pages/information_device/widgets/storage_widget.dart';
 import 'package:flutter_application_prgrado/presentation/widgets/text/custom_title.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:lottie/lottie.dart';
 
 import '../../../data/models/prototype/information_system.dart';
@@ -18,7 +21,10 @@ class InformationDevicePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(body: const InformationDeviceView());
+    return BlocProvider(
+      create: (context) => sl<InformationDeviceBloc>()..add(InitialEvent()),
+      child: Scaffold(body: const InformationDeviceView()),
+    );
   }
 }
 
@@ -43,9 +49,9 @@ class _InformationDeviceViewState extends State<InformationDeviceView> {
             isBoldTitle: true,
             colorTitle: Colors.white,
           ),*/
-          StreamBuilder<SystemInfo>(
-            stream: sl<PrototypeRepository>()
-                .informationStream, // systemInfoService.informationStream, // Asigna tu stream aquí
+          StreamBuilder<SystemInfoModel>(
+            stream: sl<GetInformationPrototypeUseCase>()
+                .call(), // systemInfoService.informationStream, // Asigna tu stream aquí
             builder: (context, snapshot) {
               if (snapshot.hasData) {
                 final systemInfo = snapshot.data!;
@@ -55,14 +61,14 @@ class _InformationDeviceViewState extends State<InformationDeviceView> {
                     Row(
                       children: [
                         Expanded(
-                          child: StorageWidget(temp: systemInfo.storageInfo),
+                          child: StorageWidget(temp: systemInfo.storageInfo!),
                         ),
                         SizedBox(
                           width: 8,
                         ),
                         Expanded(
                           child: TemperatureWidget(
-                              temp: systemInfo.cpuTemperature),
+                              temp: systemInfo.cpuTemperature!),
                         ),
                       ],
                     ),
@@ -75,7 +81,7 @@ class _InformationDeviceViewState extends State<InformationDeviceView> {
                       children: [
                         Expanded(
                           flex: 2,
-                          child: MemoryWidget(info: systemInfo.memoryInfo),
+                          child: MemoryWidget(info: systemInfo.memoryInfo!),
                         ),
                         SizedBox(
                           width: 8,
@@ -85,12 +91,12 @@ class _InformationDeviceViewState extends State<InformationDeviceView> {
                           mainAxisSize: MainAxisSize.max,
                           crossAxisAlignment: CrossAxisAlignment.stretch,
                           children: [
-                            CpuWidget(cpuUsage: systemInfo.cpuUsage),
+                            CpuWidget(cpuUsage: systemInfo.cpuUsage!),
                             SizedBox(
                               height: 8,
                             ),
                             MemorySwapWidget(
-                                memoryInfoSwap: systemInfo.memoryInfoSwap),
+                                memoryInfoSwap: systemInfo.memoryInfoSwap!),
                           ],
                         )),
                       ],

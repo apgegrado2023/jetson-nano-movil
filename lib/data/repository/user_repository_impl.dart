@@ -1,16 +1,18 @@
-import 'dart:convert';
 import 'dart:math';
-import 'package:dio/dio.dart';
+import 'package:flutter_application_prgrado/data/data_sources/remote/prototype/data_source_prototype_service.dart';
 import 'package:flutter_application_prgrado/data/data_sources/remote/prototype/prototype_api_service.dart';
 import 'package:flutter_application_prgrado/data/models/prototype/request.dart';
 import 'package:flutter_application_prgrado/data/models/user.dart';
 import 'package:flutter_application_prgrado/domain/repository/user_repository.dart';
-import 'package:flutter_application_prgrado/injection_container.dart';
 
 class UserRepositoryImpl extends UserRepository {
-  final PrototypApieService prototypApieService;
+  //final PrototypApieService prototypApieService;
+  //final DataSourcePrototypeService dataSourcePrototypeService;
 
-  UserRepositoryImpl(this.prototypApieService);
+  UserRepositoryImpl(
+      //this.prototypApieService,
+      // this.dataSourcePrototypeService,
+      );
 
   // Método para generar un código único de 5 dígitos
   String generateUniqueCode() {
@@ -21,7 +23,7 @@ class UserRepositoryImpl extends UserRepository {
 
   @override
   Future<bool> insert(User user) async {
-    /*try {*/
+    /*/*try {*/
     print("se llama al registrar");
     final uniqueCode = generateUniqueCode();
     final request = RequestService(
@@ -30,7 +32,7 @@ class UserRepositoryImpl extends UserRepository {
       body: user.toJson(),
     );
 
-    final response = await prototypApieService.request(request);
+    final response = await dataSourcePrototypeService.request(request);
 
     if (response.responseStatus == StatusResponse.failed) {
       return false;
@@ -42,12 +44,13 @@ class UserRepositoryImpl extends UserRepository {
     /*} catch (e) {
       // Maneja la excepción adecuadamente
       return false;
-    }*/
+    }*/*/
+    return false;
   }
 
   @override
   Future<User?> getById(String id) async {
-    try {
+    /*try {
       final uniqueCode = generateUniqueCode();
       final request = RequestService(
         type: "service_database_user_getById",
@@ -55,7 +58,7 @@ class UserRepositoryImpl extends UserRepository {
         command: uniqueCode,
       );
 
-      final response = await prototypApieService.request(request);
+      final response = await dataSourcePrototypeService.request(request);
 
       if (response.responseStatus == StatusResponse.failed) {
         return null;
@@ -66,7 +69,7 @@ class UserRepositoryImpl extends UserRepository {
     } catch (e) {
       // Maneja la excepción adecuadamente
       return null;
-    }
+    }*/
   }
 
   Map<String, dynamic> toJson(String userName, String password) {
@@ -75,7 +78,7 @@ class UserRepositoryImpl extends UserRepository {
 
   @override
   Future<User?> getByParams(String userName, String password) async {
-    try {
+    /*try {
       final uniqueCode = generateUniqueCode();
       final request = RequestService(
         type: "service_database_user_get_params",
@@ -83,7 +86,7 @@ class UserRepositoryImpl extends UserRepository {
         command: uniqueCode,
       );
 
-      final response = await prototypApieService.request(request);
+      final response = await dataSourcePrototypeService.request(request);
 
       if (response.responseStatus == StatusResponse.failed) {
         return null;
@@ -94,5 +97,6 @@ class UserRepositoryImpl extends UserRepository {
     } catch (e) {
       return null;
     }
+  }*/
   }
 }

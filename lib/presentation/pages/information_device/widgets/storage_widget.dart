@@ -2,17 +2,18 @@ import 'package:flutter/material.dart';
 import 'package:flutter/src/widgets/container.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter_application_prgrado/data/models/prototype/information_system.dart';
+import 'package:flutter_application_prgrado/domain/entities/information_system.dart';
 
 class StorageWidget extends StatelessWidget {
-  final StorageInfo temp;
+  final StorageInfoEntity temp;
   const StorageWidget({super.key, required this.temp});
 
   @override
   Widget build(BuildContext context) {
     _calculationPercentage() {
-      double valorMaximo = temp.total * 1.0;
+      double valorMaximo = temp.total! * 1.0;
 
-      double porcentaje = (temp.used / valorMaximo) * 100;
+      double porcentaje = (temp.used! / valorMaximo) * 100;
       return porcentaje;
     }
 
@@ -111,7 +112,7 @@ class StorageWidget extends StatelessWidget {
                 height: 10,
               ),
               Text(
-                "${bytesToGigabytes(temp.free).toStringAsFixed(0)} GB disponibles de ${bytesToGigabytes(temp.total).toStringAsFixed(0)} GB ",
+                "${bytesToGigabytes(temp.free!).toStringAsFixed(0)} GB disponibles de ${bytesToGigabytes(temp.total!).toStringAsFixed(0)} GB ",
                 textAlign: TextAlign.center,
                 style: TextStyle(
                   fontSize: 13,

@@ -1,14 +1,13 @@
-import 'dart:developer';
-
+import 'dart:async';
+import 'package:flutter_application_prgrado/core/resources/data_state.dart';
+import 'package:flutter_application_prgrado/domain/usecases/check_connection2.dart';
+import 'package:flutter_application_prgrado/domain/usecases/get_information_device2.dart';
+import 'package:http/http.dart' as http;
 import 'package:flutter_application_prgrado/domain/repository/session_repository.dart';
-import 'package:flutter_application_prgrado/domain/usecases/connection_prototype.dart';
-import 'package:flutter_application_prgrado/domain/usecases/connection_prototype_verification.dart';
-import 'package:flutter_application_prgrado/presentation/bloc/session/bloc/session_event.dart';
+import 'package:flutter_application_prgrado/domain/usecases/check_connection.dart';
+import 'package:flutter_application_prgrado/domain/usecases/get_information_device.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../../../config/routes/routes.dart';
-import '../../../domain/usecases/connection.dart';
-import '../../../domain/usecases/verification_connection.dart';
 import '../session/bloc/session_bloc.dart';
 
 part 'splash_event.dart';
@@ -16,33 +15,152 @@ part 'splash_state.dart';
 
 class SplashBloc extends Bloc<SplashEvent, SplashState> {
   final SessionRepository _session;
-  final VerificationConnectionUseCase verificationConnectionUseCase;
-  final ConnectionUseCase connectionUseCase;
+
   final SessionBloc sessionBloc;
 
-  final ConnectionPrototypeUseCase connectionProtypeUseCase;
-  final ConnectionProtypeVerificationUseCase
-      connectionProtypeVerificationUseCase;
+//new implementation
+  final GetInformationDeviceUseCase _getInformationDeviceUseCase;
 
+  final GetInformationDevice2UseCase _getInformationDevice2UseCase;
+  final CheckConnectionUseCase _checkConnectionUseCase;
+  final CheckConnection2UseCase _checkConnection2UseCase;
   SplashBloc(
     this.sessionBloc,
-    this.verificationConnectionUseCase,
-    this.connectionUseCase,
     this._session,
-    this.connectionProtypeUseCase,
-    this.connectionProtypeVerificationUseCase,
+    this._getInformationDeviceUseCase,
+    this._checkConnectionUseCase,
+    this._checkConnection2UseCase,
+    this._getInformationDevice2UseCase,
   ) : super(SplashState()) {
     on<ChangeRoute>(onChangeRoute);
-    on<InitialEvent>(initialEvent);
-    //add(InitialEvent());
+    on<InitialEvent>(init);
+    on<ReloadConnectionEvent>(reloadConnection);
   }
 
-  Future<void> init() async {
-    final isConnectedServer = await connectionProtypeVerificationUseCase();
-    if (isConnectedServer) {}
+  Future<void> reloadConnection(
+    ReloadConnectionEvent event,
+    Emitter<SplashState> emit,
+  ) async {
+    final dataState = await _getInformationDevice2UseCase();
+    if (dataState is DataSuccess) {
+      print(dataState.data!);
+    }
+
+    /*final data = await _checkConnection2UseCase();
+    if (data is DataSuccess) {
+      print(data.data);
+    } else {
+      print(data.data);
+    }*/
+    /*final dio = Dio(); // With default `Options`.
+    //dio.options.baseUrl = 'https://api.pub.dev';
+    dio.options.connectTimeout = Duration(seconds: 5);
+    dio.options.receiveTimeout = Duration(seconds: 5);
+    dio.options.sendTimeout = Duration(seconds: 5);
+
+    try {
+      final response = await dio.get('http://192.168.3.58:5000/device');
+      print(response);
+    } on DioError catch (e) {
+      // The request was made and the server responded with a status code
+      // that falls out of the range of 2xx and is also not 304.
+      if (e.response != null) {
+        print(e.response!.data);
+        print(e.response!.headers);
+        print(e.response!.requestOptions);
+      } else {
+        // Something happened in setting up or sending the request that triggered an Error
+        print(e.requestOptions);
+        print(e.message);
+      }
+    } catch (e) {
+      print(e);
+    }*/
+
+    //await fetchDataWithTimeout();
+    //verificarConexion();
+
+    try {
+      //await getLoginDetails();
+
+    } catch (e) {
+      print(e.toString());
+    }
   }
 
-  Future<void> initialEvent(
+  /*Future<bool> getLoginDetails() async {
+    Dio? dio;
+
+    if (dio == null) {
+      BaseOptions options = new BaseOptions(
+          baseUrl: "http://192.168.3.58:5000",
+          receiveDataWhenStatusError: true,
+          connectTimeout: Duration(seconds: 5), // 60 seconds
+          receiveTimeout: Duration(seconds: 5) // 60 seconds
+          );
+
+      dio = new Dio(options);
+    }
+    try {
+      await dio.get('/device');
+      //final LoginResponse loginResponse = LoginResponse.fromJson(response.data);
+      return true;
+    } on DioException catch (ex) {
+      if (ex.type == DioExceptionType.connectionTimeout) {
+        //throw Exception("Connection  Timeout Exception");
+      }
+      //throw Exception(ex.message);
+      return false;
+    }
+  }*/
+
+  Future<void> fetchDataWithTimeout() async {
+    try {
+      final client = http.Client();
+      final response = await client
+          .get(
+            Uri.parse('http://192.168.3.58:5000/device'),
+          )
+          .timeout(Duration(seconds: 5));
+
+      print(response.body);
+    } on TimeoutException catch (e) {
+      print('La solicitud excedió el tiempo de espera: $e');
+    } on http.ClientException catch (e) {
+      print('Error de cliente HTTP: $e');
+    } catch (e) {
+      print('Otro error: $e');
+    }
+  }
+
+  Future<void> init(InitialEvent event, Emitter<SplashState> emit) async {
+    print("nuevo");
+    /*emit(state.copyWith(connectionStateServer: ConnectionStateServer.loading));
+
+    final isConnected = await connectionProtypeUseCase();
+
+    if (!isConnected) {
+      emit(SplashState(
+        connectionStateServer: ConnectionStateServer.failed,
+      ));
+      return;
+    }
+    print(isConnected);
+    emit(state.copyWith(
+      connectionStateServer: ConnectionStateServer.connected,
+    ));
+
+    final user = await _session.getToSession();
+    String routeName = user == null ? Routes.login : Routes.home;
+
+    if (user != null) {
+      sessionBloc.add(ChangeSessionSessionEvent(user));
+    }
+
+    add(ChangeRoute(routeName));*/
+  }
+
+  /*Future<void> initialEvent(
     InitialEvent event,
     Emitter<SplashState> emit,
   ) async {
@@ -81,7 +199,7 @@ class SplashBloc extends Bloc<SplashEvent, SplashState> {
       add(ChangeRoute(routeName));
     }
   }
-
+*/
   void onChangeRoute(ChangeRoute event, Emitter<SplashState> emit) {
     print("comida");
     emit(state.copyWith(route: event.route));

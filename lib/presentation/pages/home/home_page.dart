@@ -22,7 +22,19 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:lottie/lottie.dart';
 
 class HomePage extends StatelessWidget {
-  HomePage({super.key});
+  const HomePage({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocProvider(
+      create: (context) => sl<HomeBloc>()..add(const InitHomeEvent()),
+      child: HomeView(),
+    );
+  }
+}
+
+class HomeView extends StatelessWidget {
+  HomeView({super.key});
 
   final list = <Widget>[
     const InformationDeviceView(),
@@ -33,7 +45,7 @@ class HomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final session = sl<SessionBloc>();
-    final bloc = sl<HomeBloc>()..add(const InitHomeEvent());
+    //final bloc = sl<HomeBloc>()..add(const InitHomeEvent());
     return SafeArea(
       child: Scaffold(
         /*appBar: AppBarCustom(
@@ -164,7 +176,7 @@ class HomePage extends StatelessWidget {
                 height: 20,
               ),
               BlocSelector<HomeBloc, HomeState, int?>(
-                  bloc: bloc,
+                  //bloc: bloc,
                   selector: (state) => state.index,
                   builder: (context, index) {
                     return Container(
@@ -176,7 +188,10 @@ class HomePage extends StatelessWidget {
                             text: 'Información',
                             isSelected: index == 0,
                             ontap: () {
-                              bloc.add(IndexChangedHomeEvent(0));
+                              //bloc.add(IndexChangedHomeEvent(0));
+                              context
+                                  .read<HomeBloc>()
+                                  .add(const IndexChangedHomeEvent(0));
                             },
                           ),
                           SizedBox(
@@ -186,7 +201,10 @@ class HomePage extends StatelessWidget {
                             text: 'Camaras',
                             isSelected: index == 1,
                             ontap: () {
-                              bloc.add(IndexChangedHomeEvent(1));
+                              context
+                                  .read<HomeBloc>()
+                                  .add(const IndexChangedHomeEvent(1));
+                              //bloc.add(IndexChangedHomeEvent(1));
                             },
                           ),
                           SizedBox(
@@ -196,7 +214,10 @@ class HomePage extends StatelessWidget {
                             text: 'Diagnosticar',
                             isSelected: index == 2,
                             ontap: () {
-                              bloc.add(IndexChangedHomeEvent(2));
+                              context
+                                  .read<HomeBloc>()
+                                  .add(const IndexChangedHomeEvent(2));
+                              //bloc.add(IndexChangedHomeEvent(2));
                             },
                           ),
                         ],
@@ -209,7 +230,7 @@ class HomePage extends StatelessWidget {
               Expanded(
                 child: Container(
                   child: BlocSelector<HomeBloc, HomeState, int?>(
-                    bloc: bloc,
+                    //bloc: bloc,
                     selector: (state) => state.index,
                     builder: (context, index) {
                       if (index == null) {

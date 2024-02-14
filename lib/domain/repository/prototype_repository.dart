@@ -6,9 +6,9 @@ abstract class PrototypeRepository {
   // API methods
   Future<bool> isConnect();
   Future<bool> connect();
-  Stream<SystemInfo> get informationStream;
+  Stream<SystemInfoModel> get informationStream;
   void dispose(); // Método para cerrar el StreamController
   void stopTimer();
-  Future<SystemInfo?>
+  Future<SystemInfoModel?>
       getInformationDevice(); // Declaración del método para obtener información
 }

@@ -1,4 +1,4 @@
-import 'package:flutter_application_prgrado/data/data_sources/remote/prototype/data_source_prototype_service.dart';
+/*import 'package:flutter_application_prgrado/data/data_sources/remote/prototype/data_source_prototype_service.dart';
 import 'package:flutter_application_prgrado/domain/repository/prototype_device_repository.dart';
 
 class PrototypeDeviceRepositoryImpl extends PrototypeDeviceRepository {
@@ -16,3 +16,4 @@ class PrototypeDeviceRepositoryImpl extends PrototypeDeviceRepository {
     return dataSourcePrototypeService.isConnected();
   }
 }
+*/
