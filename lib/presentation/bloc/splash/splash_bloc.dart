@@ -1,7 +1,9 @@
 import 'dart:async';
+import 'package:flutter_application_prgrado/config/routes/routes.dart';
 import 'package:flutter_application_prgrado/core/resources/data_state.dart';
-import 'package:flutter_application_prgrado/domain/usecases/check_connection2.dart';
-import 'package:flutter_application_prgrado/domain/usecases/get_information_device2.dart';
+import 'package:flutter_application_prgrado/domain/entities/user.dart';
+import 'package:flutter_application_prgrado/domain/usecases/get_session.dart';
+import 'package:flutter_application_prgrado/presentation/bloc/session/bloc/session_event.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter_application_prgrado/domain/repository/session_repository.dart';
 import 'package:flutter_application_prgrado/domain/usecases/check_connection.dart';
@@ -14,23 +16,16 @@ part 'splash_event.dart';
 part 'splash_state.dart';
 
 class SplashBloc extends Bloc<SplashEvent, SplashState> {
-  final SessionRepository _session;
-
   final SessionBloc sessionBloc;
-
-//new implementation
   final GetInformationDeviceUseCase _getInformationDeviceUseCase;
-
-  final GetInformationDevice2UseCase _getInformationDevice2UseCase;
   final CheckConnectionUseCase _checkConnectionUseCase;
-  final CheckConnection2UseCase _checkConnection2UseCase;
+  final GetSessionUseCase _getSessionUseCase;
+
   SplashBloc(
     this.sessionBloc,
-    this._session,
     this._getInformationDeviceUseCase,
     this._checkConnectionUseCase,
-    this._checkConnection2UseCase,
-    this._getInformationDevice2UseCase,
+    this._getSessionUseCase,
   ) : super(SplashState()) {
     on<ChangeRoute>(onChangeRoute);
     on<InitialEvent>(init);
@@ -41,7 +36,7 @@ class SplashBloc extends Bloc<SplashEvent, SplashState> {
     ReloadConnectionEvent event,
     Emitter<SplashState> emit,
   ) async {
-    final dataState = await _getInformationDevice2UseCase();
+    final dataState = await _getInformationDeviceUseCase();
     if (dataState is DataSuccess) {
       print(dataState.data!);
     }
@@ -133,31 +128,52 @@ class SplashBloc extends Bloc<SplashEvent, SplashState> {
     }
   }
 
-  Future<void> init(InitialEvent event, Emitter<SplashState> emit) async {
-    print("nuevo");
-    /*emit(state.copyWith(connectionStateServer: ConnectionStateServer.loading));
+  Future<bool> checkConnection() async {
+    final checkResponse = await _checkConnectionUseCase.call();
+    if (checkResponse is DataSuccess) {
+      return checkResponse.data!;
+    } else {
+      return false;
+    }
+  }
 
-    final isConnected = await connectionProtypeUseCase();
+  Future<UserEntity?> getSession() async {
+    final userResponse = await _getSessionUseCase();
+    if (userResponse is DataSuccess) {
+      return userResponse.data;
+    } else {
+      return null;
+    }
+  }
+
+  Future<void> init(InitialEvent event, Emitter<SplashState> emit) async {
+    print("iniciando...");
+    emit(state.copyWith(connectionStateServer: ConnectionStateServer.loading));
+
+    final isConnected = await checkConnection();
 
     if (!isConnected) {
-      emit(SplashState(
+      /*emit(SplashState(
         connectionStateServer: ConnectionStateServer.failed,
-      ));
-      return;
+      ));*/
+      print("No conectado...");
+      //return;
     }
-    print(isConnected);
+    print("Conectado...");
     emit(state.copyWith(
       connectionStateServer: ConnectionStateServer.connected,
     ));
 
-    final user = await _session.getToSession();
+    final user = await getSession();
+
     String routeName = user == null ? Routes.login : Routes.home;
 
     if (user != null) {
-      sessionBloc.add(ChangeSessionSessionEvent(user));
+      sessionBloc.add(SaveSessionEvent(user));
+      print("Session encontrada");
     }
-
-    add(ChangeRoute(routeName));*/
+    print("No hyay sesion");
+    add(ChangeRoute(routeName));
   }
 
   /*Future<void> initialEvent(

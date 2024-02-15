@@ -1,4 +1,4 @@
-import 'package:flutter_application_prgrado/domain/usecases/get_article.dart';
+/*import 'package:flutter_application_prgrado/domain/usecases/get_article.dart';
 import 'package:flutter_application_prgrado/presentation/bloc/article/remote/remote_article_event.dart';
 import 'package:flutter_application_prgrado/presentation/bloc/article/remote/remote_article_state.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -27,3 +27,4 @@ class RemoteArticlesBloc
     }
   }
 }
+*/

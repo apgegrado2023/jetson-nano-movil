@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/src/widgets/container.dart';
-import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter_application_prgrado/domain/repository/prototype_repository.dart';
 import 'package:flutter_application_prgrado/domain/usecases/get_information_prototype.dart';
 import 'package:flutter_application_prgrado/injection_container.dart';
@@ -10,9 +8,7 @@ import 'package:flutter_application_prgrado/presentation/pages/information_devic
 import 'package:flutter_application_prgrado/presentation/pages/information_device/widgets/memory_widget.dart';
 import 'package:flutter_application_prgrado/presentation/pages/information_device/widgets/temp_widget.dart';
 import 'package:flutter_application_prgrado/presentation/pages/information_device/widgets/storage_widget.dart';
-import 'package:flutter_application_prgrado/presentation/widgets/text/custom_title.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:lottie/lottie.dart';
 
 import '../../../data/models/prototype/information_system.dart';
 

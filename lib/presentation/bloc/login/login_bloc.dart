@@ -1,36 +1,31 @@
 import 'dart:async';
 
-import 'dart:math';
-import 'package:connectivity_plus/connectivity_plus.dart';
-
 import 'package:bloc/bloc.dart';
-import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_application_prgrado/domain/repository/session_repository.dart';
-import 'package:flutter_application_prgrado/domain/repository/user_repository.dart';
-import 'package:flutter_application_prgrado/domain/usecases/connection.dart';
-import 'package:flutter_application_prgrado/domain/usecases/verification_connection.dart';
+import 'package:flutter_application_prgrado/core/resources/data_state.dart';
+import 'package:flutter_application_prgrado/domain/entities/user.dart';
+import 'package:flutter_application_prgrado/domain/usecases/login.dart';
+import 'package:flutter_application_prgrado/domain/usecases/save_session.dart';
 import 'package:flutter_application_prgrado/presentation/bloc/login/login_event.dart';
 import 'package:flutter_application_prgrado/presentation/bloc/login/login_state.dart';
 import 'package:flutter_application_prgrado/presentation/bloc/session/bloc/session_bloc.dart';
-import 'package:socket_io_client/socket_io_client.dart';
+import 'package:flutter_application_prgrado/presentation/bloc/session/bloc/session_event.dart';
 
 import '../../../config/routes/routes.dart';
 import '../../../config/utils/input_validators.dart';
 import '../../../data/models/error_dialog_data.dart';
-import '../../../data/models/user.dart';
 import '../../widgets/dialogs/dialogs.dart';
 import '../../widgets/loading/loading.dart';
 
 class LoginBloc extends Bloc<LoginEvent, LoginState> {
   final SessionBloc sessionBloc;
-  final UserRepository userRepository;
+  final SaveSessionUseCase _saveSessionUseCase;
+  final LoginUseCase _loginUseCase;
   final GlobalKey<FormState> formKey = GlobalKey<FormState>();
-  final SessionRepository _session;
   LoginBloc(
     this.sessionBloc,
-    this.userRepository,
-    this._session,
+    this._saveSessionUseCase,
+    this._loginUseCase,
   ) : super(const LoginState()) {
     on<EmailChangedLoginEvent>((event, emit) => _onEmailChanged(event, emit));
     on<PasswordChangedLoginEvent>(
@@ -58,60 +53,34 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
     ));
   }
 
-  Future<Uri?> checkPort(String ipAddress, int port) async {
-    Uri url = Uri(scheme: "http", host: ipAddress, port: port);
-    //Socket socket = io(url);
-
-    Socket socket = io(url.toString() + '/mi-token_secreto', <String, dynamic>{
-      'transports': ['websocket'],
-    });
-
-    socket.on('connect', (_) {
-      print('Conectado al servidor WebSocket');
-    });
-
-    socket.on('disconnect', (_) {
-      print('Desconectado del servidor WebSocket');
-    });
-  }
-
   Future<void> _onLoginSubmitted(
     LoginSubmittedLoginEvent event,
     Emitter<LoginState> emit,
   ) async {
-    try {
-      final BuildContext buildContext = event.context;
+    final buildContext = event.context;
 
-      final email = state.email;
-      final password = state.password;
+    if (!isFormValid()) return;
 
-      if (!isFormValid()) {
-        return;
-      }
+    Loading.showText(buildContext, "Iniciando Sesión...");
 
-      // Muestra la carga antes de la solicitud asincrónica
-      Loading.showText(buildContext, "Iniciando Sesión...");
+    final email = state.email;
+    final password = state.password;
 
-      final response = await _submit(password!, email!);
+    final response = await submit(password!, email!);
 
-      // Cierra la carga después de la solicitud asincrónica
-      Loading.close();
-
-      if (response != null) {
-        setUserInSession(response);
-        await _session.saveToSession(response);
-        // Navega a la ruta después de asegurarte de que el contexto esté montado
-        WidgetsBinding.instance.addPostFrameCallback((_) {
-          if (Navigator.canPop(buildContext)) {
-            Navigator.pushReplacementNamed(buildContext, Routes.home);
-          }
-        });
-      } else {
-        WidgetsBinding.instance.addPostFrameCallback((_) {
-          showErrorMessage(buildContext, event, emit);
-        });
-      }
-    } catch (e) {}
+    Loading.close();
+    if (response is DataSuccess) {
+      saveSession(response.data!);
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (Navigator.canPop(buildContext)) {
+          Navigator.pushReplacementNamed(buildContext, Routes.home);
+        }
+      });
+    } else {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        showErrorMessage(buildContext, event, emit);
+      });
+    }
   }
 
   Future<void> showErrorMessage(
@@ -127,7 +96,7 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
         "Reintentar",
         () async {
           Dialogs.close();
-          await _onLoginSubmitted(event, emit); // Llamada al mismo método
+          await _onLoginSubmitted(event, emit);
         },
         false,
       ),
@@ -139,26 +108,18 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
     return isEnableForm != null && formKey.currentState!.validate();
   }
 
-  void setUserInSession(User response) {
-    sessionBloc.setUser(response);
+  Future<bool> saveSession(UserEntity userEntity) async {
+    sessionBloc.add(SaveSessionEvent(userEntity));
+    final response = await _saveSessionUseCase.call(params: userEntity);
+    if (response is DataSuccess) {
+      return response.data!;
+    } else {
+      return false;
+    }
   }
 
-  void navigateToHome(BuildContext context) {
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (Navigator.canPop(context)) {
-        Future.microtask(() {
-          Navigator.pushReplacementNamed(context, Routes.home);
-        });
-      }
-    });
-  }
-
-  Future<User?> _submit(
-    String password,
-    String email,
-  ) async {
-    print("hola");
-    return await userRepository.getByParams(email, password);
+  Future<DataState<UserEntity>> submit(String password, String userName) async {
+    return await _loginUseCase.call(params: LoginParams(userName, password));
   }
 
   String? Function(String?) get validationUserName => (String? value) {
@@ -175,19 +136,4 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
 
         return null;
       };
-
-  /*Future<void> _getDevicesInNetwork() async {
-    final Connectivity _connectivity = Connectivity();
-    var connectivityResult = await (_connectivity.checkConnectivity());
-
-    if (connectivityResult == ConnectivityResult.wifi) {
-      final wifiInfo = await (_connectivity.getfiBSSID());
-
-      // Parse the BSSID to obtain the IP range.
-      final ipRange = wifiInfo.split('.').take(3).join('.');
-
-      // Now you can scan the IP range for devices using the methods mentioned earlier.
-      // ...
-    }
-  }*/
 }

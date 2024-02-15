@@ -1,41 +1,32 @@
-import 'dart:convert';
+import 'package:flutter_application_prgrado/domain/entities/user.dart';
 
-import 'package:flutter_application_prgrado/data/models/model_base.dart';
+class UserModel extends UserEntity {
+  const UserModel({
+    String? id,
+    String? name,
+    String? lastName,
+    String? lastNameSecond,
+    String? password,
+    String? typeUser,
+    String? userName,
+    String? creatorId,
+    DateTime? registrationDate,
+    DateTime? updateDate,
+    int? status,
+  }) : super(
+            id: id,
+            name: name,
+            lastName: lastName,
+            lastNameSecond: lastNameSecond,
+            password: password,
+            typeUser: typeUser,
+            userName: userName,
+            creatorId: creatorId,
+            registrationDate: registrationDate,
+            updateDate: updateDate,
+            status: status);
 
-abstract class ModelConvert<T> {
-  Map<String, dynamic> toJson();
-  T fromSnapshot(Map<String, dynamic> snapshot);
-}
-
-abstract class DropdownInfo<T> {
-  T get value;
-  String get tag;
-}
-
-class User extends ModelBase implements ModelConvert<User>, DropdownInfo<User> {
-  String id;
-  String name;
-  String lastName;
-  String lastNameSecond;
-  String password;
-  String typeUser;
-  String userName;
-
-  User({
-    required this.id,
-    required this.name,
-    required this.lastName,
-    required this.lastNameSecond,
-    required this.typeUser,
-    required this.password,
-    required this.userName,
-    required String creatorId,
-    required DateTime registrationDate,
-    required DateTime updateDate,
-    required int status,
-  }) : super(status, registrationDate, updateDate, creatorId);
-
-  User.create(
+  /*UserModel.create(
       {required this.id,
       required this.name,
       required this.lastName,
@@ -44,75 +35,54 @@ class User extends ModelBase implements ModelConvert<User>, DropdownInfo<User> {
       required String creatorId,
       required this.userName})
       : typeUser = 'driver',
-        super.create(creatorId: creatorId);
+        super.create(creatorId: creatorId);*/
 
-  String jsonString() {
-    Map<String, dynamic> jsonData = toJson();
-
-    String jsonString = jsonEncode(jsonData);
-    return jsonString;
-  }
-
-  @override
   Map<String, dynamic> toJson() {
-    final parentJson = super.toJson();
     return {
-      ...parentJson,
       'id': id,
       'name': name,
-      'lastName': lastName,
-      'lastNameSecond': lastNameSecond,
-      'typeUser': typeUser,
+      'last_name': lastName,
+      'last_name_second': lastNameSecond,
+      'type_user': typeUser,
       'password': password,
-      'userName': userName
+      'user_name': userName,
+      'creator_id': creatorId,
+      'registration_date': registrationDate.toString(),
+      'update_date': updateDate.toString(),
+      'status': status,
     };
   }
 
-  @override
-  String toString() {
-    return 'ID: $id\n'
-        'Nombre: $name\n'
-        'Apellido: $lastName\n'
-        'Segundo apellido: $lastNameSecond\n'
-        'Tipo de usuario: $typeUser';
-  }
-
-  @override
-  fromSnapshot(Map<String, dynamic>? data) => User.fromSnapshot(data);
-
-  String get fullName => "$name $lastName $lastNameSecond";
-
-  factory User.fromSnapshot(Map<String, dynamic>? data) {
-    return User(
-      id: data?['id'] ?? '',
-      name: data?['name'] ?? '',
-      password: data?['password'] ?? '',
-      lastName: data?['lastName'] ?? '',
-      lastNameSecond: data?['lastNameSecond'] ?? '',
-      typeUser: data?['typeUser'] ?? 'usuario normal',
-      userName: data?['userName'] ?? '',
-      registrationDate:
-          (data?['registrationDate'] as DateTime? ?? DateTime.now()),
-      updateDate: (data?['updateDate'] as DateTime? ?? DateTime.now()),
-      status: data?['status'] ?? -1,
-      creatorId: data?['creatorId'] ?? '',
+  factory UserModel.fromEntity(UserEntity user) {
+    return UserModel(
+      id: user.id,
+      name: user.name,
+      password: user.password,
+      lastName: user.lastName,
+      lastNameSecond: user.lastNameSecond,
+      typeUser: user.typeUser,
+      userName: user.userName,
+      registrationDate: user.registrationDate,
+      updateDate: user.updateDate,
+      status: user.status,
+      creatorId: user.creatorId,
     );
   }
 
-  @override
-  bool operator ==(Object other) {
-    if (identical(this, other)) return true;
-    return other is User && other.name == name;
+  factory UserModel.fromJson(Map<String, dynamic>? data) {
+    return UserModel(
+      id: data?['id'] ?? '',
+      name: data?['name'] ?? '',
+      password: data?['password'] ?? '',
+      lastName: data?['last_name'] ?? '',
+      lastNameSecond: data?['last_name_second'] ?? '',
+      typeUser: data?['type_user'] ?? 'usuario normal',
+      userName: data?['user_name'] ?? '',
+      registrationDate:
+          (data?['registration_date'] as DateTime? ?? DateTime.now()),
+      updateDate: (data?['update_date'] as DateTime? ?? DateTime.now()),
+      status: data?['status'] ?? -1,
+      creatorId: data?['creator_id'] ?? '',
+    );
   }
-
-  @override
-  int get hashCode => name.hashCode;
-
-  @override
-  // TODO: implement tag
-  String get tag => '$name $lastName $lastNameSecond';
-
-  @override
-  // TODO: implement value
-  User get value => this;
 }

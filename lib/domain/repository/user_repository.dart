@@ -1,9 +1,11 @@
+import 'package:flutter_application_prgrado/core/resources/data_state.dart';
 import 'package:flutter_application_prgrado/data/models/user.dart';
+import 'package:flutter_application_prgrado/domain/entities/user.dart';
 
 abstract class UserRepository {
-  Future<bool> insert(User user);
+  Future<DataState<bool>> insert(UserEntity user);
 
-  Future<User?> getById(String id);
+  Future<DataState<UserModel>> getById(String id);
 
-  Future<User?> getByParams(String userName, String password);
+  Future<DataState<UserModel>> getByParams(String userName, String password);
 }

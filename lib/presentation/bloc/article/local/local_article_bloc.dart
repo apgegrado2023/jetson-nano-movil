@@ -1,6 +1,6 @@
 import 'package:flutter_application_prgrado/presentation/bloc/article/local/local_article_event.dart';
 import 'package:flutter_application_prgrado/presentation/bloc/article/local/local_article_state.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
+/*import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../domain/usecases/get_saved_article.dart';
 import '../../../../domain/usecases/remove_article.dart';
@@ -39,3 +39,4 @@ class LocalArticleBloc extends Bloc<LocalArticlesEvent, LocalArticlesState> {
     emit(LocalArticlesDone(articles));
   }
 }
+*/

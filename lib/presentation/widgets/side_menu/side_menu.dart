@@ -163,11 +163,11 @@ class NavigatorDrawer extends StatelessWidget {
             Expanded(
               child: ListTile(
                 title: Text(
-                  sessionBloc.state.user!.name,
+                  sessionBloc.state.user!.name!,
                   style: TextStyle(fontSize: 16),
                 ),
                 subtitle: Text(
-                  sessionBloc.state.user!.typeUser,
+                  sessionBloc.state.user!.typeUser!,
                   style: TextStyle(fontSize: 13),
                 ),
               ),

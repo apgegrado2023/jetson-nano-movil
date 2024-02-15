@@ -1,23 +1,18 @@
-import 'package:equatable/equatable.dart';
-import 'package:flutter_application_prgrado/data/models/user.dart';
+import 'package:flutter_application_prgrado/domain/entities/user.dart';
 
-abstract class SessionEvent extends Equatable {
+abstract class SessionEvent {
   const SessionEvent();
 }
 
 class StartedSessionEvent extends SessionEvent {
   const StartedSessionEvent() : super();
-
-  @override
-  // TODO: implement props
-  List<Object?> get props => throw UnimplementedError();
 }
 
-class ChangeSessionSessionEvent extends SessionEvent {
-  final User? user;
-  const ChangeSessionSessionEvent(this.user) : super();
+class SaveSessionEvent extends SessionEvent {
+  final UserEntity user;
+  const SaveSessionEvent(this.user) : super();
+}
 
-  @override
-  // TODO: implement props
-  List<Object?> get props => throw UnimplementedError();
+class RemoveSessionEvent extends SessionEvent {
+  const RemoveSessionEvent();
 }

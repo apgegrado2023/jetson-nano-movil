@@ -1,77 +1,47 @@
-/*import 'dart:math';
+import 'dart:developer';
+import 'dart:io';
+import 'dart:convert' as convert;
+import 'package:flutter_application_prgrado/core/constants/constants.dart';
+import 'package:flutter_application_prgrado/data/data_sources/remote/prototype/service_base/http_response.dart';
+import 'package:flutter_application_prgrado/data/data_sources/remote/prototype/service_base/service_api.dart';
 
-import 'package:flutter_application_prgrado/data/models/prototype/request.dart';
 import 'package:flutter_application_prgrado/data/models/user.dart';
 
-import '../../../../injection_container.dart';
-import '../prototype/prototype_api_service.dart';
-
 class UserApiService {
-  PrototypApieService prototypApieService;
-
-  Request? request;
-  String generateUniqueCode() {
-    final random = Random();
-    final uniqueCode = random.nextInt(90000) + 10000;
-    return uniqueCode.toString();
-  }
-
-  UserApiService(this.prototypApieService);
-  Future<ResponseService?> insert(User user) async {
-    try {
-      request = Request.service(
-        "service_database",
-        Service(
-          "POST",
-          body: user.jsonString(),
-        ),
-        generateUniqueCode(),
-      );
-
-      final response = await prototypApieService.request(request!);
-
-      return response;
-    } catch (e) {
-      return null;
+  Future<HttpServiceResponse<bool>> insert(UserModel user) async {
+    final response =
+        await ServiceApi.post(ApiBaseURL.pathSegments(['user']), user.toJson());
+    if (response.statusCode == HttpStatus.created) {
+      var json = convert.jsonDecode(response.body) as Map<String, dynamic>;
+      print(json);
+      return HttpServiceResponse(true, response);
     }
+
+    return HttpServiceResponse(false, response);
   }
 
-  Future<ResponseService?> getById(String id) async {
-    try {
-      request = Request.service(
-        "service_database",
-        Service(
-          "GET",
-          body: ({"id": id}).toString(),
-        ),
-        generateUniqueCode(),
-      );
-
-      final response = await prototypApieService.request(request!);
-
-      return response;
-    } catch (e) {
-      return null;
+  Future<HttpServiceResponse<UserModel?>> getById(String id) async {
+    final response =
+        await ServiceApi.get(ApiBaseURL.pathSegments(['user', id]));
+    if (response.statusCode == HttpStatus.ok) {
+      var json = convert.jsonDecode(response.body) as Map<String, dynamic>;
+      return HttpServiceResponse(UserModel.fromJson(json), response);
     }
+
+    return HttpServiceResponse(null, response);
   }
 
-  Future<ResponseService?> getByParams(String userName, String password) async {
-    //try {
-    request = Request.service(
-      "service_database",
-      Service(
-        "GET",
-        body: ({"userName": userName, "password": password}).toString(),
-      ),
-      generateUniqueCode(),
+  Future<HttpServiceResponse<UserModel?>> getLogin(
+      String userName, String password) async {
+    final response = await ServiceApi.post(
+      ApiBaseURL.pathSegments(['login']),
+      {'username': userName, 'password': password},
     );
+    if (response.statusCode == HttpStatus.ok) {
+      var json = convert.jsonDecode(response.body) as Map<String, dynamic>;
+      return HttpServiceResponse(UserModel.fromJson(json), response);
+    }
 
-    final response = await prototypApieService.request(request!);
-    print(response!.data);
-    return response;
-    /*} catch (e) {
-      return null;
-    }*/
+    return HttpServiceResponse(null, response);
   }
 }
-*/

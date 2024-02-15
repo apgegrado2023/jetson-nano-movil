@@ -1,24 +1,42 @@
+import 'dart:convert';
+
 import 'package:flutter_application_prgrado/data/models/user.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 class SessionService {
-  //final UserRepository _userRepository = Get.find<UserRepository>();
-
-  Future<void> saveToSession(User user) async {
-    final prefs = await SharedPreferences.getInstance();
-    prefs.setString('id', user.id);
+  Future<bool> saveToSession(UserModel user) async {
+    try {
+      const storage = FlutterSecureStorage();
+      final userJson = user.toJson();
+      String userJsonString = jsonEncode(userJson);
+      await storage.write(key: 'user', value: userJsonString);
+      return true;
+    } on Exception catch (e) {
+      print(e);
+      return false;
+    }
   }
 
-  Future<void> removeToSession() async {
-    final prefs = await SharedPreferences.getInstance();
-    prefs.remove('id');
+  Future<bool> removeToSession() async {
+    try {
+      const storage = FlutterSecureStorage();
+
+      await storage.delete(key: 'user');
+      return true;
+    } on Exception catch (e) {
+      print(e);
+      return false;
+    }
   }
 
-  /* Future<User?> getToSession() async {
-    final prefs = await SharedPreferences.getInstance();
-    final id = prefs.getString('id');
-    if (id == null) return null;
-    final user = await _userRepository.getById(id);
-    return user;
-  }*/
+  Future<UserModel?> getToSession() async {
+    const storage = FlutterSecureStorage();
+    final userJson = await storage.read(key: 'user');
+    if (userJson != null) {
+      Map<String, dynamic> userMap = jsonDecode(userJson);
+      return UserModel.fromJson(userMap);
+    } else {
+      return null;
+    }
+  }
 }

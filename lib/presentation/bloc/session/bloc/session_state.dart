@@ -1,17 +1,22 @@
-import 'package:flutter_application_prgrado/data/models/user.dart';
+import 'package:flutter_application_prgrado/domain/entities/user.dart';
+
+enum StatusConnection { connected, failed, disable }
 
 class SessionState {
-  final User? user;
+  final UserEntity? user;
+  final StatusConnection? statusConnection;
 
-  SessionState({
-    this.user,
-  });
+  SessionState({this.user, this.statusConnection});
 
   SessionState copyWith({
-    User? user,
+    UserEntity? user,
+    StatusConnection? statusConnection,
   }) {
     return SessionState(
       user: user ?? this.user,
+      statusConnection: statusConnection ?? this.statusConnection,
     );
   }
 }
+
+class RemoveSessionState extends SessionState {}

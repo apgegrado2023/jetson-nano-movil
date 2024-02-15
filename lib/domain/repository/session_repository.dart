@@ -1,7 +1,8 @@
-import '../../data/models/user.dart';
+import 'package:flutter_application_prgrado/core/resources/data_state.dart';
+import 'package:flutter_application_prgrado/domain/entities/user.dart';
 
 abstract class SessionRepository {
-  Future<void> saveToSession(User user);
-  Future<void> removeToSession();
-  Future<User?> getToSession();
+  Future<DataState<bool>> saveToSession(UserEntity user);
+  Future<DataState<bool>> removeToSession();
+  Future<DataState<UserEntity>> getToSession();
 }
