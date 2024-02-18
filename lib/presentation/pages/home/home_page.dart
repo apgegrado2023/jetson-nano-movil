@@ -11,6 +11,7 @@ import 'package:flutter_application_prgrado/presentation/bloc/session/bloc/sessi
 import 'package:flutter_application_prgrado/presentation/pages/camera_managment/camera_managment.dart';
 import 'package:flutter_application_prgrado/presentation/pages/camera_managment/camera_managment2.dart';
 import 'package:flutter_application_prgrado/presentation/pages/camera_managment/prueba.dart';
+import 'package:flutter_application_prgrado/presentation/pages/cameras_device/cameras_device_page.dart';
 import 'package:flutter_application_prgrado/presentation/pages/gestion/gestion_page.dart';
 import 'package:flutter_application_prgrado/presentation/pages/gestion_page/gestion_page.dart';
 import 'package:flutter_application_prgrado/presentation/pages/home/widgets/button_widget.dart';
@@ -37,8 +38,8 @@ class HomeView extends StatelessWidget {
   HomeView({super.key});
 
   final list = <Widget>[
-    const InformationDeviceView(),
-    const CameraManagmentPage(),
+    const InformationDevicePage(),
+    const CamerasDevicePage(),
     const GestionPrototypePage()
   ];
 

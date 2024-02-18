@@ -2,7 +2,6 @@ import 'dart:io';
 import 'dart:math';
 import 'package:flutter_application_prgrado/core/resources/data_state.dart';
 import 'package:flutter_application_prgrado/data/data_sources/remote/user/user_api_service.dart';
-import 'package:flutter_application_prgrado/data/models/prototype/request.dart';
 import 'package:flutter_application_prgrado/data/models/user.dart';
 import 'package:flutter_application_prgrado/domain/entities/user.dart';
 import 'package:flutter_application_prgrado/domain/repository/user_repository.dart';
@@ -25,7 +24,7 @@ class UserRepositoryImpl extends UserRepository {
       final httpResponse =
           await _userApiService.insert(UserModel.fromEntity(user));
       if (httpResponse.response.statusCode == HttpStatus.created) {
-        return DataSuccess(httpResponse.data!);
+        return DataSuccess(httpResponse.data);
       } else {
         return DataFailed(
           ClientException(httpResponse.response.body),

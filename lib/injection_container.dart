@@ -8,7 +8,7 @@ import 'package:flutter_application_prgrado/domain/repository/session_repository
 import 'package:flutter_application_prgrado/domain/repository/user_repository.dart';
 import 'package:flutter_application_prgrado/domain/usecases/check_connection.dart';
 import 'package:flutter_application_prgrado/domain/usecases/get_information_device.dart';
-import 'package:flutter_application_prgrado/domain/usecases/get_information_prototype.dart';
+import 'package:flutter_application_prgrado/domain/usecases/get_information_device_stream.dart';
 import 'package:flutter_application_prgrado/domain/usecases/get_session.dart';
 import 'package:flutter_application_prgrado/domain/usecases/login.dart';
 import 'package:flutter_application_prgrado/domain/usecases/save_session.dart';
@@ -50,8 +50,8 @@ Future<void> initializeDependencies() async {
   sl.registerSingleton<GetInformationDeviceUseCase>(
     GetInformationDeviceUseCase(sl()),
   );
-  sl.registerSingleton<GetInformationPrototypeUseCase>(
-      GetInformationPrototypeUseCase(sl()));
+  sl.registerSingleton<GetInformationDeviceStreamUseCase>(
+      GetInformationDeviceStreamUseCase(sl()));
 
   sl.registerSingleton<CheckConnectionUseCase>(
     CheckConnectionUseCase(
@@ -105,5 +105,5 @@ Future<void> initializeDependencies() async {
   sl.registerFactory<HomeBloc>(() => HomeBloc(
       sl<SessionBloc>(), sl<UserRepository>(), sl<SessionRepository>()));
 
-  sl.registerFactory<InformationDeviceBloc>(() => InformationDeviceBloc());
+  sl.registerFactory<InformationDeviceBloc>(() => InformationDeviceBloc(sl()));
 }

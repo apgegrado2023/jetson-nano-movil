@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_application_prgrado/domain/repository/prototype_repository.dart';
-import 'package:flutter_application_prgrado/domain/usecases/get_information_prototype.dart';
+import 'package:flutter_application_prgrado/domain/entities/information_system.dart';
 import 'package:flutter_application_prgrado/injection_container.dart';
 import 'package:flutter_application_prgrado/presentation/bloc/information_device/information_device_bloc.dart';
 import 'package:flutter_application_prgrado/presentation/pages/information_device/widgets/cpu_widget.dart';
@@ -10,28 +9,21 @@ import 'package:flutter_application_prgrado/presentation/pages/information_devic
 import 'package:flutter_application_prgrado/presentation/pages/information_device/widgets/storage_widget.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../../../data/models/prototype/information_system.dart';
-
 class InformationDevicePage extends StatelessWidget {
   const InformationDevicePage({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
+    return BlocProvider<InformationDeviceBloc>(
       create: (context) => sl<InformationDeviceBloc>()..add(InitialEvent()),
-      child: Scaffold(body: const InformationDeviceView()),
+      child: const InformationDeviceView(),
     );
   }
 }
 
-class InformationDeviceView extends StatefulWidget {
+class InformationDeviceView extends StatelessWidget {
   const InformationDeviceView({super.key});
 
-  @override
-  State<InformationDeviceView> createState() => _InformationDeviceViewState();
-}
-
-class _InformationDeviceViewState extends State<InformationDeviceView> {
   @override
   Widget build(BuildContext context) {
     print("se construye");
@@ -45,9 +37,8 @@ class _InformationDeviceViewState extends State<InformationDeviceView> {
             isBoldTitle: true,
             colorTitle: Colors.white,
           ),*/
-          StreamBuilder<SystemInfoModel>(
-            stream: sl<GetInformationPrototypeUseCase>()
-                .call(), // systemInfoService.informationStream, // Asigna tu stream aquí
+          StreamBuilder<SystemInfoEntity>(
+            stream: context.read<InformationDeviceBloc>().obtenerDatos(),
             builder: (context, snapshot) {
               if (snapshot.hasData) {
                 final systemInfo = snapshot.data!;
@@ -115,11 +106,11 @@ class _InformationDeviceViewState extends State<InformationDeviceView> {
     );
   }
 
-  @override
+  /*@override
   void dispose() {
     super.dispose();
     print("dispose");
     sl<PrototypeRepository>().dispose();
     sl<PrototypeRepository>().stopTimer();
-  }
+  }*/
 }
