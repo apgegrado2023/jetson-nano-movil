@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_application_prgrado/config/routes/app_routes.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'config/routes/routes.dart';
@@ -7,7 +8,10 @@ import 'injection_container.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
+
   await initializeDependencies();
+
+  SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
   runApp(const MyApp());
 }
 

@@ -40,8 +40,9 @@ class InformationDeviceBloc
   @override
   Future<void> close() {
     print("se cierra");
-    timer?.cancel();
+
     streamControllerSystem.close();
+    timer?.cancel();
     return super.close();
   }
 }

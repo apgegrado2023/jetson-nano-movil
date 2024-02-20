@@ -78,9 +78,10 @@ class UserModel extends UserEntity {
       lastNameSecond: data?['last_name_second'] ?? '',
       typeUser: data?['type_user'] ?? 'usuario normal',
       userName: data?['user_name'] ?? '',
-      registrationDate:
-          (data?['registration_date'] as DateTime? ?? DateTime.now()),
-      updateDate: (data?['update_date'] as DateTime? ?? DateTime.now()),
+      registrationDate: DateTime.parse(
+          data?['registration_date'] ?? DateTime.now().toString()),
+      updateDate:
+          DateTime.parse(data?['update_date'] ?? DateTime.now().toString()),
       status: data?['status'] ?? -1,
       creatorId: data?['creator_id'] ?? '',
     );
