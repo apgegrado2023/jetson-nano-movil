@@ -147,19 +147,20 @@ class SplashBloc extends Bloc<SplashEvent, SplashState> {
   }
 
   Future<void> init(InitialEvent event, Emitter<SplashState> emit) async {
+    //await fetchDataWithTimeout();
     print("iniciando...");
     emit(state.copyWith(connectionStateServer: ConnectionStateServer.loading));
 
     final isConnected = await checkConnection();
 
-    if (!isConnected) {
-      /*emit(SplashState(
-        connectionStateServer: ConnectionStateServer.failed,
-      ));*/
-      print("No conectado...");
-      //return;
+    if (isConnected) {
+      sessionBloc.add(const ConnectedSessionEvent(true));
+      print("Si hay conexion");
+    } else {
+      sessionBloc.add(const ConnectedSessionEvent(false));
+      print("No hay conexion");
     }
-    print("Conectado...");
+
     emit(state.copyWith(
       connectionStateServer: ConnectionStateServer.connected,
     ));
@@ -170,9 +171,11 @@ class SplashBloc extends Bloc<SplashEvent, SplashState> {
 
     if (user != null) {
       sessionBloc.add(SaveSessionEvent(user));
-      print("Session encontrada");
+      print("Session encontrada local");
+    } else {
+      print("No hay sesion local");
     }
-    print("No hyay sesion");
+
     add(ChangeRoute(routeName));
   }
 

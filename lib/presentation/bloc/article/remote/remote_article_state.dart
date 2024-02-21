@@ -1,5 +1,4 @@
 import 'package:equatable/equatable.dart';
-import 'package:dio/dio.dart';
 import 'package:http/http.dart';
 import '../../../../domain/entities/article.dart';
 

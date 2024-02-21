@@ -31,13 +31,75 @@ class InformationDeviceView extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          /*CustomTitle2(
-            title: 'Widgets',
-            fontSize: 20,
-            isBoldTitle: true,
-            colorTitle: Colors.white,
-          ),*/
-          StreamBuilder<SystemInfoEntity>(
+          BlocBuilder<InformationDeviceBloc, InformationDeviceState>(
+            builder: (context, state) {
+              if (state is InformationDeviceDone) {
+                final storageInfoEntity = state.storageInfoEntity!;
+                final memoryInfoEntity = state.memoryInfoEntity!;
+                final memoryInfoSwapEntity = state.memoryInfoSwapEntity!;
+                final temperature = state.temperature!;
+                final cpuUsage = state.cpuUsage!;
+                return Column(
+                  //mainAxisAlignment: MainAxisAlignment.center,
+                  children: <Widget>[
+                    Row(
+                      children: [
+                        Expanded(
+                          child: StorageWidget(temp: storageInfoEntity),
+                        ),
+                        SizedBox(
+                          width: 8,
+                        ),
+                        Expanded(
+                          child: TemperatureWidget(temp: temperature),
+                        ),
+                      ],
+                    ),
+
+                    SizedBox(
+                      height: 8,
+                    ),
+
+                    Row(
+                      children: [
+                        Expanded(
+                          flex: 2,
+                          child: MemoryWidget(info: memoryInfoEntity),
+                        ),
+                        SizedBox(
+                          width: 8,
+                        ),
+                        Expanded(
+                            child: Column(
+                          mainAxisSize: MainAxisSize.max,
+                          crossAxisAlignment: CrossAxisAlignment.stretch,
+                          children: [
+                            CpuWidget(cpuUsage: cpuUsage),
+                            SizedBox(
+                              height: 8,
+                            ),
+                            MemorySwapWidget(
+                                memoryInfoSwap: memoryInfoSwapEntity),
+                          ],
+                        )),
+                      ],
+                    ),
+
+                    // Agrega más widgets según sea necesario para mostrar la información
+                  ],
+                );
+              } else if (state is InformationDeviceLoading) {
+                return Center(child: CircularProgressIndicator());
+                //return Text('Error al obtener la información');
+              } else {
+                return Center(
+                    child:
+                        CircularProgressIndicator()); // Muestra un indicador de carga mientras se obtiene la información
+              }
+            },
+          ),
+
+          /*StreamBuilder<SystemInfoEntity>(
             stream: context.read<InformationDeviceBloc>().obtenerDatos(),
             builder: (context, snapshot) {
               if (snapshot.hasData) {
@@ -100,7 +162,7 @@ class InformationDeviceView extends StatelessWidget {
                         CircularProgressIndicator()); // Muestra un indicador de carga mientras se obtiene la información
               }
             },
-          ),
+          ),*/
         ],
       ),
     );

@@ -2,8 +2,8 @@ import 'dart:developer';
 import 'dart:io';
 import 'dart:convert' as convert;
 import 'package:flutter_application_prgrado/core/constants/constants.dart';
-import 'package:flutter_application_prgrado/data/data_sources/remote/prototype/service_base/http_response.dart';
-import 'package:flutter_application_prgrado/data/data_sources/remote/prototype/service_base/service_api.dart';
+import 'package:flutter_application_prgrado/data/data_sources/remote/service_base/http_response.dart';
+import 'package:flutter_application_prgrado/data/data_sources/remote/service_base/service_api.dart';
 
 import 'package:flutter_application_prgrado/data/models/user.dart';
 

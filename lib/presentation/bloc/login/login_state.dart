@@ -1,5 +1,5 @@
-import 'package:dio/dio.dart';
 import 'package:equatable/equatable.dart';
+import 'package:http/http.dart';
 
 enum LoginStatus {
   loginStatusInitial,
@@ -11,7 +11,7 @@ enum LoginStatus {
 class LoginState {
   final String? email;
   final String? password;
-  final DioException? error;
+  final ClientException? error;
 
   const LoginState({
     this.email,
@@ -22,7 +22,7 @@ class LoginState {
   LoginState copyWith({
     String? email,
     String? password,
-    DioException? error,
+    ClientException? error,
   }) {
     return LoginState(
       email: email ?? this.email,

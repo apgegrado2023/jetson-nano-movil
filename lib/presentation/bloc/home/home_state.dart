@@ -1,5 +1,5 @@
-import 'package:dio/dio.dart';
 import 'package:equatable/equatable.dart';
+import 'package:http/http.dart';
 
 enum HomeStatus {
   loginStatusInitial,
@@ -11,7 +11,7 @@ enum HomeStatus {
 class HomeState {
   final int? index;
 
-  final DioException? error;
+  final ClientException? error;
 
   const HomeState({
     this.index,
@@ -20,7 +20,7 @@ class HomeState {
 
   HomeState copyWith({
     int? index,
-    DioException? error,
+    ClientException? error,
   }) {
     return HomeState(
       index: index ?? this.index,

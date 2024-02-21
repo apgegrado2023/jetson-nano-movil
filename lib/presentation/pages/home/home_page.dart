@@ -1,26 +1,17 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/src/widgets/container.dart';
-import 'package:flutter/src/widgets/framework.dart';
-import 'package:flutter_application_prgrado/config/routes/routes.dart';
-import 'package:flutter_application_prgrado/config/utils/my_colors.dart';
 import 'package:flutter_application_prgrado/injection_container.dart';
 import 'package:flutter_application_prgrado/presentation/bloc/home/home_bloc.dart';
 import 'package:flutter_application_prgrado/presentation/bloc/home/home_event.dart';
 import 'package:flutter_application_prgrado/presentation/bloc/home/home_state.dart';
 import 'package:flutter_application_prgrado/presentation/bloc/session/bloc/session_bloc.dart';
-import 'package:flutter_application_prgrado/presentation/pages/camera_managment/camera_managment.dart';
-import 'package:flutter_application_prgrado/presentation/pages/camera_managment/camera_managment2.dart';
-import 'package:flutter_application_prgrado/presentation/pages/camera_managment/prueba.dart';
+import 'package:flutter_application_prgrado/presentation/bloc/session/bloc/session_state.dart';
 import 'package:flutter_application_prgrado/presentation/pages/cameras_device/cameras_device_page.dart';
 import 'package:flutter_application_prgrado/presentation/pages/gestion/gestion_page.dart';
-import 'package:flutter_application_prgrado/presentation/pages/gestion_page/gestion_page.dart';
 import 'package:flutter_application_prgrado/presentation/pages/home/widgets/button_widget.dart';
+import 'package:flutter_application_prgrado/presentation/pages/home/widgets/connection_widget.dart';
 import 'package:flutter_application_prgrado/presentation/pages/information_device/information_driver_page.dart';
-import 'package:flutter_application_prgrado/presentation/widgets/appBar/appBar_custom.dart';
-import 'package:flutter_application_prgrado/presentation/widgets/side_menu/side_menu.dart';
 import 'package:flutter_application_prgrado/presentation/widgets/text/custom_title.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:lottie/lottie.dart';
 
 class HomePage extends StatelessWidget {
   const HomePage({super.key});
@@ -114,60 +105,63 @@ class HomeView extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Expanded(
-                      child: Container(
-                        child: Row(children: [
-                          Icon(
-                            Icons.circle,
-                            color: Color.fromARGB(255, 96, 109, 204),
-                          ),
-                          SizedBox(
-                            width: 8,
-                          ),
-                          Text(
-                            "Conectado",
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontSize: 16,
-                            ),
-                          )
-                        ]),
+                      child: BlocSelector<SessionBloc, SessionState,
+                          StatusConnection?>(
+                        bloc: session,
+                        selector: (state) => state.statusConnection,
+                        builder: ((context, s) {
+                          switch (s) {
+                            case StatusConnection.connected:
+                              return const ConnectionWidget(isConnection: true);
+                            case StatusConnection.failed:
+                              return const ConnectionWidget(
+                                  isConnection: false);
+
+                            case StatusConnection.disable:
+                              return const ConnectionWidget(
+                                  isConnection: false);
+                            default:
+                              return const ConnectionWidget(
+                                  isConnection: false);
+                          }
+                        }),
                       ),
                     ),
                     Expanded(
-                      child: Container(
-                        child: Row(
-                            mainAxisAlignment: MainAxisAlignment.end,
-                            children: [
-                              Container(
-                                padding: EdgeInsets.all(5),
-                                decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(
-                                      10), // Ajusta este valor para cambiar el radio de los bordes
-                                  color: Color.fromARGB(255, 51, 51,
-                                      51), // Cambia el color del contenedor según lo necesites
+                      child: InkWell(
+                        onTap: () {
+                          print("tap");
+                        },
+                        child: Container(
+                          child: Row(
+                              mainAxisAlignment: MainAxisAlignment.end,
+                              children: [
+                                Container(
+                                  padding: EdgeInsets.all(5),
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(
+                                        10), // Ajusta este valor para cambiar el radio de los bordes
+                                    color: Color.fromARGB(255, 51, 51,
+                                        51), // Cambia el color del contenedor según lo necesites
+                                  ),
+                                  child: Icon(
+                                    Icons.verified_outlined,
+                                    color: Colors.white,
+                                    size: 17,
+                                  ),
                                 ),
-                                child: Icon(
-                                  Icons.verified_outlined,
-                                  color: Colors.white,
-                                  size: 17,
+                                SizedBox(
+                                  width: 8,
                                 ),
-                              ),
-                              SizedBox(
-                                width: 8,
-                              ),
-                              InkWell(
-                                onTap: () {
-                                  print("tap");
-                                },
-                                child: Text(
+                                Text(
                                   "Verificar",
                                   style: TextStyle(
                                     color: Colors.white,
                                     fontSize: 16,
                                   ),
                                 ),
-                              )
-                            ]),
+                              ]),
+                        ),
                       ),
                     ),
                   ],

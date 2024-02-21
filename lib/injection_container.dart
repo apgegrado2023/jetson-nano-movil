@@ -1,5 +1,5 @@
 import 'package:flutter_application_prgrado/data/data_sources/local/session/session_service.dart';
-import 'package:flutter_application_prgrado/data/data_sources/remote/prototype/device_api_service.dart';
+import 'package:flutter_application_prgrado/data/data_sources/remote/device/device_api_service.dart';
 import 'package:flutter_application_prgrado/data/data_sources/remote/user/user_api_service.dart';
 import 'package:flutter_application_prgrado/data/repository/device_repository_impl.dart';
 import 'package:flutter_application_prgrado/data/repository/session_repository_impl.dart';
@@ -8,7 +8,6 @@ import 'package:flutter_application_prgrado/domain/repository/session_repository
 import 'package:flutter_application_prgrado/domain/repository/user_repository.dart';
 import 'package:flutter_application_prgrado/domain/usecases/check_connection.dart';
 import 'package:flutter_application_prgrado/domain/usecases/get_information_device.dart';
-import 'package:flutter_application_prgrado/domain/usecases/get_information_device_stream.dart';
 import 'package:flutter_application_prgrado/domain/usecases/get_session.dart';
 import 'package:flutter_application_prgrado/domain/usecases/login.dart';
 import 'package:flutter_application_prgrado/domain/usecases/save_session.dart';
@@ -50,8 +49,6 @@ Future<void> initializeDependencies() async {
   sl.registerSingleton<GetInformationDeviceUseCase>(
     GetInformationDeviceUseCase(sl()),
   );
-  sl.registerSingleton<GetInformationDeviceStreamUseCase>(
-      GetInformationDeviceStreamUseCase(sl()));
 
   sl.registerSingleton<CheckConnectionUseCase>(
     CheckConnectionUseCase(

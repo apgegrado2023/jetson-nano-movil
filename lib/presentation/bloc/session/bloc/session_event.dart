@@ -13,6 +13,11 @@ class SaveSessionEvent extends SessionEvent {
   const SaveSessionEvent(this.user) : super();
 }
 
+class ConnectedSessionEvent extends SessionEvent {
+  final bool connected;
+  const ConnectedSessionEvent(this.connected) : super();
+}
+
 class RemoveSessionEvent extends SessionEvent {
   const RemoveSessionEvent();
 }

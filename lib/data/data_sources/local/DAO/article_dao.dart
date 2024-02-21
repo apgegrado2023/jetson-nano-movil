@@ -1,4 +1,4 @@
-import 'package:floor/floor.dart';
+/*import 'package:floor/floor.dart';
 
 import '../../../models/article.dart';
 
@@ -13,3 +13,4 @@ abstract class ArticleDao {
   @Query('SELECT * FROM article')
   Future<List<ArticleModel>> getArticles();
 }
+*/

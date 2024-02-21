@@ -1,4 +1,4 @@
-import 'package:floor_generator/value_object/entity.dart';
+/*import 'package:floor_generator/value_object/entity.dart';
 import 'package:flutter_application_prgrado/domain/entities/article.dart';
 
 class ArticleModel extends ArticleEntity {
@@ -46,3 +46,4 @@ class ArticleModel extends ArticleEntity {
         content: entity.content);
   }
 }
+*/
