@@ -17,38 +17,39 @@ class LoginPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final Image image = Image.asset('images/logo.webp');
-    final color = CustomColorPrimary().c;
+    final Image image = Image.asset(
+      'assets/images/logo1.png',
+      width: 70,
+    );
+
+    final Image imageFont = Image.asset(
+      'assets/images/font2.png',
+      width: 220,
+    );
+    final color = Color(0xFF151515);
     final bloc = sl<LoginBloc>();
     return Scaffold(
       resizeToAvoidBottomInset: true,
       body: SingleChildScrollView(
         child: Container(
           decoration: BoxDecoration(
-            image: DecorationImage(
+              /* image: DecorationImage(
               image: AssetImage('assets/images/back2.jpg'), // Ruta de la imagen
               fit: BoxFit.cover,
-            ),
-          ),
+            ),*/
+              color: color),
           child: Container(
-            color: color.withOpacity(0.6), // Color azul con opacidad
+            //color: color.withOpacity(0.6), // Color azul con opacidad
             child: Column(
               children: [
                 SizedBox(
                   height: 80,
                 ),
-                Icon(
-                  Icons.abc,
-                  color: Colors.white,
-                  size: 120,
+                image,
+                SizedBox(
+                  height: 20,
                 ),
-                Text(
-                  "Vision driver",
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 30,
-                  ),
-                ),
+                imageFont,
                 SizedBox(
                   height: 80,
                 ),
@@ -109,6 +110,7 @@ class LoginPage extends StatelessWidget {
                                   height: 20,
                                 ),
                                 CustomButton(
+                                  colorButton: color,
                                   textButton: 'Iniciar Sesión',
                                   onPressed: () => bloc.add(
                                     LoginSubmittedLoginEvent(context),
@@ -120,6 +122,7 @@ class LoginPage extends StatelessWidget {
                                   textAlign: TextAlign.center,
                                 ),
                                 CustomTextButton(
+                                  color: color,
                                   text: 'Crear cuenta',
                                   onPressed: () {
                                     Navigator.pushNamed(

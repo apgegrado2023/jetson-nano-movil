@@ -1,13 +1,18 @@
 import 'dart:async';
 import 'dart:io';
 import 'dart:convert' as convert;
+import 'package:dio/dio.dart';
+import 'package:flutter_application_prgrado/core/resources/http_state.dart';
 import 'package:flutter_application_prgrado/data/data_sources/remote/service_base/http_response.dart';
 import 'package:flutter_application_prgrado/data/data_sources/remote/service_base/service_api.dart';
 import 'package:flutter_application_prgrado/data/models/prototype/information_system.dart';
-import 'package:http/http.dart';
+import 'package:retrofit/retrofit.dart';
 import '../../../../../core/constants/constants.dart';
 
 class DeviceApiService {
+  final Dio dio;
+  DeviceApiService(this.dio);
+
   Future<HttpServiceResponse<bool>> checkConnection() async {
     //try {
     final response =
@@ -31,5 +36,45 @@ class DeviceApiService {
     /* } catch (s) {
       return HttpServiceResponse(null, Response(s.toString(), 500));
     }*/
+  }
+
+  Future<HttpResponse<SystemInfoModel?>> getDSystemInfo() async {
+    final response = await dio.get('/device');
+    if (response.statusCode == HttpStatus.ok) {
+      var json = convert.jsonDecode(response.data) as Map<String, dynamic>;
+      return HttpResponse(SystemInfoModel.fromJson(json), response);
+    }
+    return HttpResponse(null, response);
+  }
+
+  Future<HttpState<bool>> checkDConnection() async {
+    try {
+      final response =
+          await dio.getUri(ApiBaseURL.pathSegments(['check_connection']));
+      if (response.statusCode == HttpStatus.ok) {
+        final httpResponse = HttpResponse(true, response);
+        return HttpSuccess<bool>(httpResponse);
+      } else {
+        final httpResponse = HttpResponse(false, response);
+        return HttpSuccess<bool>(httpResponse);
+      }
+    } on DioException catch (e) {
+      print(e);
+      return HttpFailed(e);
+    } on SocketException catch (s) {
+      return HttpFailed(
+        DioException(
+          requestOptions: RequestOptions(),
+          message: s.message,
+        ),
+      );
+    } catch (e) {
+      return HttpFailed(
+        DioException(
+          requestOptions: RequestOptions(),
+          message: e.toString(),
+        ),
+      );
+    }
   }
 }

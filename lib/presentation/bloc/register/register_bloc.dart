@@ -111,7 +111,7 @@ class RegisterBloc extends Bloc<RegisterEvent, RegisterState> {
   ) async {
     final buildContext = event.context;
     if (!isFormValid()) return;
-    FocusScope.of(buildContext).unfocus();
+    //FocusScope.of(buildContext).unfocus();
     Loading.showText(buildContext, "Registrando...");
     final response = await _submit();
     Loading.close();

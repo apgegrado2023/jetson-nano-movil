@@ -1,3 +1,5 @@
+import 'package:dio/dio.dart';
+import 'package:flutter_application_prgrado/core/constants/constants.dart';
 import 'package:flutter_application_prgrado/data/data_sources/local/session/session_service.dart';
 import 'package:flutter_application_prgrado/data/data_sources/remote/device/device_api_service.dart';
 import 'package:flutter_application_prgrado/data/data_sources/remote/user/user_api_service.dart';
@@ -23,10 +25,24 @@ import 'package:get_it/get_it.dart';
 import 'data/repository/user_repository_impl.dart';
 
 final sl = GetIt.instance;
+final dio = Dio();
 Future<void> initializeDependencies() async {
+  dio.options.baseUrl = ApiBaseURL.url.path;
+  dio.options.headers = ApiBaseURL.headers;
+  dio.options.connectTimeout = Duration(seconds: 5);
+  dio.options.receiveTimeout = Duration(seconds: 3);
+  /*Dio dio = Dio(
+    BaseOptions(
+      baseUrl: ApiBaseURL.url.path,
+      connectTimeout: Duration(seconds: 5),
+      receiveTimeout: Duration(seconds: 5),
+      headers: ApiBaseURL.headers,
+    ),
+  );
+*/
   // Data Sources
   sl.registerSingleton<DeviceApiService>(
-    DeviceApiService(),
+    DeviceApiService(dio),
   );
   sl.registerSingleton<UserApiService>(
     UserApiService(),

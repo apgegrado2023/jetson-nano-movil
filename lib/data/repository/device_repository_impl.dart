@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:flutter_application_prgrado/core/resources/data_state.dart';
+import 'package:flutter_application_prgrado/core/resources/http_state.dart';
 import 'package:flutter_application_prgrado/data/data_sources/remote/device/device_api_service.dart';
 import 'package:flutter_application_prgrado/data/models/prototype/information_system.dart';
 import 'package:flutter_application_prgrado/domain/repository/device_repository.dart';
@@ -15,18 +16,16 @@ class DeviceRepositoryImpl implements DeviceRepository {
 
   @override
   Future<DataState<bool>> checkConnection() async {
-    try {
-      final httpResponse = await _informationApiService.checkConnection();
-      if (httpResponse.response.statusCode == HttpStatus.ok) {
-        return const DataSuccess(true);
-      } else {
-        return DataFailed(
-          ClientException(httpResponse.response.body),
-        );
-      }
-    } on ClientException catch (e) {
-      return DataFailed(e);
+    //try {
+    final httpState = await _informationApiService.checkDConnection();
+    if (httpState is HttpSuccess) {
+      return DataSuccess(httpState.httpResponse!.data);
+    } else {
+      return DataFailed2(httpState.error!);
     }
+    /*} on ClientException catch (e) {
+      return DataFailed(e);
+    }*/
   }
 
   @override

@@ -133,6 +133,7 @@ class SplashBloc extends Bloc<SplashEvent, SplashState> {
     if (checkResponse is DataSuccess) {
       return checkResponse.data!;
     } else {
+      print(checkResponse.dioException);
       return false;
     }
   }

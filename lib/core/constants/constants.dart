@@ -10,6 +10,13 @@ class ApiBaseURL {
     );
   }
 
+  static Map<String, dynamic> get headers {
+    return {
+      'Content-Type': 'application/json',
+      'Accept': 'application/json',
+    };
+  }
+
   static Uri pathSegments(List<String> pathSegments) {
     return Uri(
       scheme: "http",

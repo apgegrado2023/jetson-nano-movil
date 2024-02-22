@@ -17,9 +17,14 @@ class RegisterPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final color = CustomColorPrimary().c;
+    final color = Color(0xFF151515);
     final bloc = sl<RegisterBloc>();
+    final Image image = Image.asset(
+      'assets/images/logo1.png',
+      width: 70,
+    );
     return Scaffold(
+      backgroundColor: Colors.white,
       resizeToAvoidBottomInset: true,
       appBar: AppBarCustom(
         background: color,
@@ -27,99 +32,107 @@ class RegisterPage extends StatelessWidget {
         colorIcon: Colors.white,
         elevation: 0,
       ),
-      body: SingleChildScrollView(
-        child: BlocBuilder<RegisterBloc, RegisterState>(
-          bloc: bloc,
-          builder: (contextBloc, state) {
-            return Form(
-              key: bloc.formKey,
-              child: Container(
-                color: color,
-                child: Column(
-                  children: [
-                    const CustomTitle2(
-                      isBoldTitle: true,
-                      fontSize: 25,
-                      textAlignTitle: TextAlign.center,
-                      textAlignSubTitle: TextAlign.center,
-                      title: "Crear una cuenta",
-                      subTitle: "Registro de usuario",
-                      colorSubTitle: Colors.white,
-                      colorTitle: Colors.white,
-                    ),
-                    SizedBox(
-                      height: 20,
-                    ),
-                    Container(
-                      decoration: const BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.only(
-                          topLeft: Radius.circular(30),
-                          topRight: Radius.circular(30),
-                        ), // Forma del borde (borde redondeado)
+      body: Container(
+        color: Colors.white,
+        child: SingleChildScrollView(
+          child: BlocBuilder<RegisterBloc, RegisterState>(
+            bloc: bloc,
+            builder: (contextBloc, state) {
+              return Form(
+                key: bloc.formKey,
+                child: Container(
+                  color: color,
+                  child: Column(
+                    children: [
+                      image,
+                      SizedBox(
+                        height: 20,
                       ),
-                      padding: const EdgeInsets.all(20),
-                      child: Column(
-                        children: [
-                          CustomInputField(
-                            onChanged: (value) => bloc.add(
-                              NameChangedRegisterEvent(value),
-                            ),
-                            isCapitalize: true,
-                            icon: const Icon(Icons.abc),
-                            label: "Nombre",
-                            validator: Validators.validationText,
-                          ),
-                          CustomInputField(
-                            onChanged: (value) => bloc.add(
-                              LastNameChangedRegisterEvent(value),
-                            ),
-                            isCapitalize: true,
-                            icon: const Icon(Icons.abc),
-                            label: "Primer Apellido",
-                            validator: Validators.validationText,
-                          ),
-                          CustomInputField(
-                            onChanged: (value) => bloc.add(
-                              LastNameSecondChangedRegisterEvent(value),
-                            ),
-                            icon: const Icon(Icons.abc),
-                            label: "Segundo Apellido",
-                            isCapitalize: true,
-                            validator: Validators.validationText,
-                          ),
-                          Text("Datos para inicio de Sesión"),
-                          CustomInputField(
-                            onChanged: (value) => bloc.add(
-                              UserNameChangedRegisterEvent(value),
-                            ),
-                            icon: const Icon(Icons.abc),
-                            label: "Usuario",
-                            validator: Validators.validationText,
-                          ),
-                          CustomInputField(
-                            onChanged: (value) => bloc.add(
-                              PasswordChangedRegisterEvent(value),
-                            ),
-                            icon: const Icon(Icons.password),
-                            label: "Contraseña",
-                            validator: Validators.validationPassword,
-                          ),
-                          CustomButton(
-                            height: 48,
-                            textButton: 'Registrar',
-                            onPressed: () => bloc.add(
-                              RegisterSubmittedRegisterEvent(context),
-                            ),
-                          ),
-                        ],
+                      const CustomTitle2(
+                        isBoldTitle: true,
+                        fontSize: 25,
+                        textAlignTitle: TextAlign.center,
+                        textAlignSubTitle: TextAlign.center,
+                        title: "Crear una cuenta",
+                        subTitle: "Registro de usuario",
+                        colorSubTitle: Colors.white,
+                        colorTitle: Colors.white,
                       ),
-                    ),
-                  ],
+                      SizedBox(
+                        height: 20,
+                      ),
+                      Container(
+                        decoration: const BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.only(
+                            topLeft: Radius.circular(30),
+                            topRight: Radius.circular(30),
+                          ), // Forma del borde (borde redondeado)
+                        ),
+                        padding: const EdgeInsets.all(20),
+                        child: Column(
+                          children: [
+                            CustomInputField(
+                              onChanged: (value) => bloc.add(
+                                NameChangedRegisterEvent(value),
+                              ),
+                              isCapitalize: true,
+                              //icon: const Icon(Icons.person),
+                              label: "Nombre",
+                              validator: Validators.validationText,
+                            ),
+                            CustomInputField(
+                              onChanged: (value) => bloc.add(
+                                LastNameChangedRegisterEvent(value),
+                              ),
+                              isCapitalize: true,
+                              //icon: const Icon(Icons.abc),
+                              label: "Primer Apellido",
+                              validator: Validators.validationText,
+                            ),
+                            CustomInputField(
+                              onChanged: (value) => bloc.add(
+                                LastNameSecondChangedRegisterEvent(value),
+                              ),
+                              //icon: const Icon(Icons.person),
+                              label: "Segundo Apellido",
+                              isCapitalize: true,
+                              validator: Validators.validationText,
+                            ),
+                            Text("Datos para inicio de Sesión"),
+                            CustomInputField(
+                              onChanged: (value) => bloc.add(
+                                UserNameChangedRegisterEvent(value),
+                              ),
+                              icon: const Icon(Icons.person),
+                              label: "Usuario",
+                              validator: Validators.validationText,
+                            ),
+                            CustomInputField(
+                              onChanged: (value) => bloc.add(
+                                PasswordChangedRegisterEvent(value),
+                              ),
+                              icon: const Icon(Icons.password),
+                              label: "Contraseña",
+                              isPassword: true,
+                              validator: Validators.validationPassword,
+                            ),
+                            CustomButton(
+                              colorButton: color,
+                              textButton: 'Registrar',
+                              onPressed: () => bloc.add(
+                                RegisterSubmittedRegisterEvent(context),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
-              ),
-            );
-          },
+              );
+            },
+          ),
         ),
       ),
     );
