@@ -13,7 +13,7 @@ class ConnectionWidget extends StatelessWidget {
         child: Row(children: [
       Icon(
         Icons.circle,
-        color: Colors.redAccent,
+        color: isConnection ? Colors.blueAccent : Colors.redAccent,
       ),
       SizedBox(
         width: 8,

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_application_prgrado/config/utils/my_colors.dart';
+import 'package:flutter_application_prgrado/data/models/warning_dialog_data.dart';
 
 import '../../../data/models/error_dialog_data.dart';
 import '../../../data/models/good_dialog_data.dart';
@@ -66,6 +67,74 @@ class ErrorDialog extends StatelessWidget {
           textButton: errorDialogData.textButton,
           onPressed: errorDialogData.onPressed,
           colorButton: Colors.redAccent,
+        )
+      ],
+      actionsAlignment: MainAxisAlignment.center,
+    );
+  }
+}
+
+class WarningDialog extends StatelessWidget {
+  final WarningDialogData warningDialogData;
+
+  const WarningDialog({super.key, required this.warningDialogData});
+
+  @override
+  Widget build(BuildContext context) {
+    return AlertDialog(
+      iconPadding: EdgeInsets.zero,
+      actionsPadding: EdgeInsets.only(
+        left: 40,
+        right: 40,
+        bottom: 40,
+      ),
+      icon: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Expanded(child: Container()),
+          Expanded(
+            child: Container(
+              margin: EdgeInsets.only(top: 40),
+              child: Icon(
+                Icons.warning,
+                size: 50,
+                color: Colors.orangeAccent,
+              ),
+            ),
+          ),
+          Expanded(
+            child: Align(
+              alignment: Alignment.topRight,
+              child: IconButton(
+                icon: Icon(Icons.close),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+              ),
+            ),
+          ),
+        ],
+      ),
+      title: Text(
+        warningDialogData.title,
+        style: TextStyle(
+          fontWeight: FontWeight.bold,
+          color: Colors.orangeAccent,
+        ),
+        textAlign: TextAlign.center,
+      ),
+      content: Text(
+        warningDialogData.message,
+        textAlign: TextAlign.center,
+        style: TextStyle(color: Colors.black54),
+      ),
+      actions: <Widget>[
+        CustomButton(
+          height: 50,
+          textButton: warningDialogData.textButton,
+          onPressed: warningDialogData.onPressed,
+          colorButton: Colors.orangeAccent,
         )
       ],
       actionsAlignment: MainAxisAlignment.center,
@@ -143,6 +212,18 @@ abstract class Dialogs {
       barrierDismissible: goodDialogData.barrierDismissible,
       builder: (BuildContext context) {
         return GoodDialog(goodDialogData: goodDialogData);
+      },
+    );
+  }
+
+  static void showWarningMessage(
+      BuildContext context, WarningDialogData warningDialogData) {
+    _context = context;
+    showDialog(
+      context: context,
+      barrierDismissible: warningDialogData.barrierDismissible,
+      builder: (BuildContext context) {
+        return WarningDialog(warningDialogData: warningDialogData);
       },
     );
   }

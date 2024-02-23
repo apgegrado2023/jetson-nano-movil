@@ -5,6 +5,7 @@ import 'package:flutter_application_prgrado/presentation/pages/home/home_page.da
 import 'package:flutter_application_prgrado/presentation/pages/information_device/information_driver_page.dart';
 import 'package:flutter_application_prgrado/presentation/pages/login/login_page.dart';
 import 'package:flutter_application_prgrado/presentation/pages/splash/splash_page.dart';
+import 'package:flutter_application_prgrado/presentation/pages/user_profile/user_profile.dart';
 
 import '../../presentation/pages/register/register_page.dart';
 import 'dafault.dart';
@@ -24,6 +25,7 @@ class AppRoutes {
         return _materialRoute(const CameraManagmentPage());
       case Routes.informationDevicePage:
         return _materialRoute(const InformationDevicePage());
+
       default:
         return _materialRoute(const Default());
     }

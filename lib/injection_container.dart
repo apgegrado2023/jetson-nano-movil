@@ -8,15 +8,19 @@ import 'package:flutter_application_prgrado/data/repository/session_repository_i
 import 'package:flutter_application_prgrado/domain/repository/device_repository.dart';
 import 'package:flutter_application_prgrado/domain/repository/session_repository.dart';
 import 'package:flutter_application_prgrado/domain/repository/user_repository.dart';
+import 'package:flutter_application_prgrado/domain/usecases/change_password.dart';
 import 'package:flutter_application_prgrado/domain/usecases/check_connection.dart';
 import 'package:flutter_application_prgrado/domain/usecases/get_information_device.dart';
 import 'package:flutter_application_prgrado/domain/usecases/get_session.dart';
 import 'package:flutter_application_prgrado/domain/usecases/login.dart';
+import 'package:flutter_application_prgrado/domain/usecases/remove_session.dart';
 import 'package:flutter_application_prgrado/domain/usecases/save_session.dart';
 import 'package:flutter_application_prgrado/domain/usecases/save_user.dart';
+import 'package:flutter_application_prgrado/domain/usecases/update_filed_user.dart';
 import 'package:flutter_application_prgrado/presentation/bloc/home/home_bloc.dart';
 import 'package:flutter_application_prgrado/presentation/bloc/information_device/information_device_bloc.dart';
 import 'package:flutter_application_prgrado/presentation/bloc/login/login_bloc.dart';
+import 'package:flutter_application_prgrado/presentation/bloc/profile/profile_bloc.dart';
 import 'package:flutter_application_prgrado/presentation/bloc/register/register_bloc.dart';
 import 'package:flutter_application_prgrado/presentation/bloc/session/bloc/session_bloc.dart';
 import 'package:flutter_application_prgrado/presentation/bloc/splash/splash_bloc.dart';
@@ -29,8 +33,8 @@ final dio = Dio();
 Future<void> initializeDependencies() async {
   dio.options.baseUrl = ApiBaseURL.url.path;
   dio.options.headers = ApiBaseURL.headers;
-  dio.options.connectTimeout = Duration(seconds: 5);
-  dio.options.receiveTimeout = Duration(seconds: 3);
+  dio.options.connectTimeout = Duration(seconds: 8);
+  dio.options.receiveTimeout = Duration(seconds: 8);
   /*Dio dio = Dio(
     BaseOptions(
       baseUrl: ApiBaseURL.url.path,
@@ -45,7 +49,7 @@ Future<void> initializeDependencies() async {
     DeviceApiService(dio),
   );
   sl.registerSingleton<UserApiService>(
-    UserApiService(),
+    UserApiService(dio),
   );
   sl.registerSingleton<SessionService>(SessionService());
 
@@ -95,9 +99,22 @@ Future<void> initializeDependencies() async {
     ),
   );
 
+  sl.registerSingleton<RemoveSessionUseCase>(
+    RemoveSessionUseCase(
+      sl(),
+    ),
+  );
+  sl.registerSingleton<UpdateFileUserUseCase>(
+    UpdateFileUserUseCase(
+      sl(),
+    ),
+  );
+  sl.registerSingleton<ChangePasswordUseCase>(
+    ChangePasswordUseCase(sl()),
+  );
   //Presentation - Bloc
 
-  sl.registerSingleton<SessionBloc>(SessionBloc());
+  sl.registerSingleton<SessionBloc>(SessionBloc(sl()));
 
   sl.registerFactory<SplashBloc>(
     () => SplashBloc(
@@ -118,5 +135,7 @@ Future<void> initializeDependencies() async {
   sl.registerFactory<HomeBloc>(() => HomeBloc(
       sl<SessionBloc>(), sl<UserRepository>(), sl<SessionRepository>()));
 
-  sl.registerFactory<InformationDeviceBloc>(() => InformationDeviceBloc(sl()));
+  sl.registerFactory<InformationDeviceBloc>(
+      () => InformationDeviceBloc(sl(), sl()));
+  sl.registerFactory<ProfileBloc>(() => ProfileBloc(sl(), sl(), sl(), sl()));
 }

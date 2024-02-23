@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter_application_prgrado/domain/entities/user.dart';
 
 abstract class SessionEvent {
@@ -11,6 +12,11 @@ class StartedSessionEvent extends SessionEvent {
 class SaveSessionEvent extends SessionEvent {
   final UserEntity user;
   const SaveSessionEvent(this.user) : super();
+}
+
+class LogoutSessionEvent extends SessionEvent {
+  final BuildContext context;
+  const LogoutSessionEvent(this.context);
 }
 
 class ConnectedSessionEvent extends SessionEvent {

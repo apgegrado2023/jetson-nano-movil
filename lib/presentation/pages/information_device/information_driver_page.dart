@@ -7,7 +7,9 @@ import 'package:flutter_application_prgrado/presentation/pages/information_devic
 import 'package:flutter_application_prgrado/presentation/pages/information_device/widgets/memory_widget.dart';
 import 'package:flutter_application_prgrado/presentation/pages/information_device/widgets/temp_widget.dart';
 import 'package:flutter_application_prgrado/presentation/pages/information_device/widgets/storage_widget.dart';
+import 'package:flutter_application_prgrado/presentation/widgets/inputs/custom_button.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:lottie/lottie.dart';
 
 class InformationDevicePage extends StatelessWidget {
   const InformationDevicePage({super.key});
@@ -89,12 +91,48 @@ class InformationDeviceView extends StatelessWidget {
                   ],
                 );
               } else if (state is InformationDeviceLoading) {
-                return Center(child: CircularProgressIndicator());
-                //return Text('Error al obtener la información');
-              } else {
                 return Center(
-                    child:
-                        CircularProgressIndicator()); // Muestra un indicador de carga mientras se obtiene la información
+                  child: Lottie.asset(
+                    'assets/lottie/animation_lny3vsqg.json',
+                    width: 200,
+                    height: 200,
+                  ),
+                );
+                //return Text('Error al obtener la información');
+              } else if (state is InformationDeviceDisconnection) {
+                return Center(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Lottie.asset(
+                        'assets/lottie/animation_lny44lqi.json',
+                        width: 150,
+                        height: 150,
+                      ),
+                      SizedBox(
+                        height: 20,
+                      ),
+                      const Text(
+                        "¡Ups al parecer te desconectaste",
+                        style: TextStyle(color: Colors.white),
+                      ),
+                      SizedBox(
+                        height: 20,
+                      ),
+                      /*CustomButton(
+                        textButton: "Volver a conectar",
+                        width: 200,
+                        onPressed: () {
+                          /*context
+                              .read<SplashBloc>()
+                              .add(ReloadConnectionEvent());*/
+                        },
+                      )*/
+                    ],
+                  ),
+                );
+              } else {
+                return const Center(child: CircularProgressIndicator());
               }
             },
           ),

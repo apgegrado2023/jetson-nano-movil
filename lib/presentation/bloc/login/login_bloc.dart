@@ -1,8 +1,10 @@
 import 'dart:async';
 
 import 'package:bloc/bloc.dart';
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_application_prgrado/core/resources/data_state.dart';
+import 'package:flutter_application_prgrado/data/models/warning_dialog_data.dart';
 import 'package:flutter_application_prgrado/domain/entities/user.dart';
 import 'package:flutter_application_prgrado/domain/usecases/login.dart';
 import 'package:flutter_application_prgrado/domain/usecases/save_session.dart';
@@ -72,15 +74,39 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
     if (response is DataSuccess) {
       saveSession(response.data!);
       WidgetsBinding.instance.addPostFrameCallback((_) {
-        if (Navigator.canPop(buildContext)) {
-          Navigator.pushReplacementNamed(buildContext, Routes.home);
-        }
+        //if (Navigator.canPop(buildContext)) {
+        Navigator.pushReplacementNamed(buildContext, Routes.home);
+        //}
       });
-    } else {
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        showErrorMessage(buildContext, event, emit);
-      });
+    } else if (response is DataFailed2) {
+      if (response.dioException!.type == DioExceptionType.connectionError) {
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          showWarningMessage(buildContext);
+        });
+      }
+      if (response.dioException!.type == DioExceptionType.badResponse) {
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          showErrorMessage(buildContext, event, emit);
+        });
+      }
     }
+  }
+
+  Future<void> showWarningMessage(
+    BuildContext buildContext,
+  ) async {
+    Dialogs.showWarningMessage(
+      buildContext,
+      WarningDialogData(
+        "No estas conectado y/o el servidor esta apagado",
+        "No hay conexión",
+        "Cerrar",
+        () async {
+          Dialogs.close();
+        },
+        false,
+      ),
+    );
   }
 
   Future<void> showErrorMessage(
@@ -110,6 +136,7 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
 
   Future<bool> saveSession(UserEntity userEntity) async {
     sessionBloc.add(SaveSessionEvent(userEntity));
+    sessionBloc.add(const ConnectedSessionEvent(true));
     final response = await _saveSessionUseCase.call(params: userEntity);
     if (response is DataSuccess) {
       return response.data!;

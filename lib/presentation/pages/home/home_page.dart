@@ -1,17 +1,23 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_application_prgrado/config/routes/routes.dart';
+import 'package:flutter_application_prgrado/domain/entities/user.dart';
 import 'package:flutter_application_prgrado/injection_container.dart';
 import 'package:flutter_application_prgrado/presentation/bloc/home/home_bloc.dart';
 import 'package:flutter_application_prgrado/presentation/bloc/home/home_event.dart';
 import 'package:flutter_application_prgrado/presentation/bloc/home/home_state.dart';
 import 'package:flutter_application_prgrado/presentation/bloc/session/bloc/session_bloc.dart';
+import 'package:flutter_application_prgrado/presentation/bloc/session/bloc/session_event.dart';
 import 'package:flutter_application_prgrado/presentation/bloc/session/bloc/session_state.dart';
 import 'package:flutter_application_prgrado/presentation/pages/cameras_device/cameras_device_page.dart';
 import 'package:flutter_application_prgrado/presentation/pages/gestion/gestion_page.dart';
 import 'package:flutter_application_prgrado/presentation/pages/home/widgets/button_widget.dart';
 import 'package:flutter_application_prgrado/presentation/pages/home/widgets/connection_widget.dart';
 import 'package:flutter_application_prgrado/presentation/pages/information_device/information_driver_page.dart';
+import 'package:flutter_application_prgrado/presentation/pages/user_profile/user_profile.dart';
 import 'package:flutter_application_prgrado/presentation/widgets/text/custom_title.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+
+enum Options { perfil, settings, logout }
 
 class HomePage extends StatelessWidget {
   const HomePage({super.key});
@@ -27,16 +33,55 @@ class HomePage extends StatelessWidget {
 
 class HomeView extends StatelessWidget {
   HomeView({super.key});
-
+  final session = sl<SessionBloc>();
   final list = <Widget>[
     const InformationDevicePage(),
     const CamerasDevicePage(),
     const GestionPrototypePage()
   ];
 
+  PopupMenuItem _buildPopupMenuItem(
+      String title, IconData iconData, int position) {
+    return PopupMenuItem(
+      value: position,
+      child: Row(
+        children: [
+          Icon(
+            iconData,
+            color: Colors.black,
+          ),
+          SizedBox(
+            width: 10,
+          ),
+          Text(
+            title,
+            style: TextStyle(fontSize: 15),
+          ),
+        ],
+      ),
+    );
+  }
+
+  _onMenuItemSelected(int value, BuildContext context) {
+    if (value == Options.perfil.index) {
+      print('perfil');
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => UserProfilePage()),
+      );
+    } else if (value == Options.settings.index) {
+      print('settings');
+      //_changeColorAccordingToMenuItem = Colors.green;
+    } else if (value == Options.logout.index) {
+      session.add(LogoutSessionEvent(context));
+      print('logout');
+    } else {
+      //_changeColorAccordingToMenuItem = Colors.purple;
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
-    final session = sl<SessionBloc>();
     //final bloc = sl<HomeBloc>()..add(const InitHomeEvent());
     return SafeArea(
       child: Scaffold(
@@ -55,39 +100,113 @@ class HomeView extends StatelessWidget {
                 height: 10,
               ),
               Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Image.asset(
                     'assets/images/logo1.png',
                     width: 50,
                   ),
-                  Container(
-                    padding: EdgeInsets.all(5),
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(
-                          10), // Ajusta este valor para cambiar el radio de los bordes
-                      color: Color.fromARGB(255, 51, 51,
-                          51), // Cambia el color del contenedor según lo necesites
-                    ),
-                    child: Icon(
-                      Icons.info_outline,
-                      color: Colors.white,
-                    ),
-                  ), // I
+                  Column(
+                    children: [
+                      PopupMenuButton(
+                        onSelected: (value) {
+                          _onMenuItemSelected(value as int, context);
+                        },
+                        child: Container(
+                          padding: EdgeInsets.all(5),
+                          decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            color: Color.fromARGB(255, 255, 255,
+                                255), // Cambia el color del contenedor según lo necesites
+                          ),
+                          child: Icon(
+                            Icons.person,
+                            size: 30,
+                          ),
+                        ),
+                        itemBuilder: (ctx) => [
+                          PopupMenuItem(
+                            value: 'opcion1',
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.stretch,
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Container(
+                                  padding: EdgeInsets.all(5),
+                                  decoration: BoxDecoration(
+                                    shape: BoxShape.circle,
+                                    color: Color.fromARGB(255, 39, 39, 39),
+                                  ),
+                                  child: Icon(
+                                    Icons.person,
+                                    color: Colors.white,
+                                    size: 30,
+                                  ),
+                                ),
+                                SizedBox(
+                                  height: 5,
+                                ),
+                                Text(
+                                  session.state.user!
+                                      .fullName, // Reemplaza con el nombre del usuario
+                                  style: TextStyle(
+                                    fontWeight: FontWeight.w600,
+                                  ),
+                                  textAlign: TextAlign.center,
+                                ),
+                              ],
+                            ),
+                          ),
+                          _buildPopupMenuItem(
+                              'Mi perfil', Icons.person, Options.perfil.index),
+                          _buildPopupMenuItem('Configuración', Icons.settings,
+                              Options.settings.index),
+                          _buildPopupMenuItem('Cerrar sesión', Icons.logout,
+                              Options.logout.index),
+                        ],
+                      ),
+
+                      SizedBox(
+                        height: 10,
+                      ),
+                      Container(
+                        padding: EdgeInsets.all(5),
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(
+                              10), // Ajusta este valor para cambiar el radio de los bordes
+                          color: Color.fromARGB(255, 51, 51,
+                              51), // Cambia el color del contenedor según lo necesites
+                        ),
+                        child: Icon(
+                          Icons.info_outline,
+                          color: Colors.white,
+                        ),
+                      ), //
+                    ],
+                  ),
                 ],
               ),
-              SizedBox(
+              /*SizedBox(
                 height: 20,
-              ),
+              ),*/
               Row(
                 children: [
-                  Expanded(
-                    child: CustomTitle3(
-                      title: "Bienvenido, ${session.state.user!.name}",
-                      colorTitle: Colors.white,
-                      fontSize: 30,
-                    ),
+                  BlocSelector<SessionBloc, SessionState, UserEntity?>(
+                    bloc: session,
+                    selector: (state) => state.user,
+                    builder: ((context, user) {
+                      if (user == null) return SizedBox();
+                      return Expanded(
+                        child: CustomTitle3(
+                          title: "Bienvenido, ${user.name}",
+                          colorTitle: Colors.white,
+                          fontSize: 30,
+                        ),
+                      );
+                    }),
                   ),
+
                   /*Center(
                     child: Lottie.asset(
                       'assets/lottie/Animation - 1699345190736.json', // Ruta a tu archivo JSON de animación

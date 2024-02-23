@@ -38,13 +38,41 @@ class DeviceApiService {
     }*/
   }
 
-  Future<HttpResponse<SystemInfoModel?>> getDSystemInfo() async {
-    final response = await dio.get('/device');
-    if (response.statusCode == HttpStatus.ok) {
-      var json = convert.jsonDecode(response.data) as Map<String, dynamic>;
-      return HttpResponse(SystemInfoModel.fromJson(json), response);
+  Future<HttpState<SystemInfoModel>> getDSystemInfo() async {
+    try {
+      final response = await dio.getUri(
+        ApiBaseURL.pathSegments(['device']),
+      );
+      if (response.statusCode == HttpStatus.ok) {
+        var json = response.data;
+        final httpResponse =
+            HttpResponse(SystemInfoModel.fromJson(json), response);
+        return HttpSuccess(httpResponse);
+      } else {
+        return HttpFailed(
+          DioException(
+            error: response.statusMessage,
+            response: response,
+            type: DioExceptionType.badResponse,
+            requestOptions: response.requestOptions,
+          ),
+        );
+      }
+    } on DioException catch (e) {
+      return HttpFailed(e);
+    } on SocketException catch (s) {
+      return HttpFailed(
+        DioException(requestOptions: RequestOptions(), message: s.message),
+      );
+    } catch (e) {
+      return HttpFailed(
+        DioException(
+          requestOptions: RequestOptions(),
+          message: e.toString(),
+          type: DioExceptionType.unknown,
+        ),
+      );
     }
-    return HttpResponse(null, response);
   }
 
   Future<HttpState<bool>> checkDConnection() async {

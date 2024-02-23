@@ -5,4 +5,5 @@ class Routes {
   static const String home = '/home';
   static const String cameraManagment = '/camera-managment';
   static const String informationDevicePage = '/information-device-page';
+  static const String profilePage = '/profile-page';
 }

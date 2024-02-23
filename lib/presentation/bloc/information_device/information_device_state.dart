@@ -29,6 +29,10 @@ class InformationDeviceLoading extends InformationDeviceState {
   const InformationDeviceLoading();
 }
 
+class InformationDeviceDisconnection extends InformationDeviceState {
+  const InformationDeviceDisconnection() : super();
+}
+
 class InformationDeviceDone extends InformationDeviceState {
   const InformationDeviceDone({
     required final StorageInfoEntity storageInfoEntity,

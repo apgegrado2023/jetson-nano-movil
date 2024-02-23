@@ -1,11 +1,10 @@
-import 'dart:io';
 import 'dart:math';
 import 'package:flutter_application_prgrado/core/resources/data_state.dart';
+import 'package:flutter_application_prgrado/core/resources/http_state.dart';
 import 'package:flutter_application_prgrado/data/data_sources/remote/user/user_api_service.dart';
 import 'package:flutter_application_prgrado/data/models/user.dart';
 import 'package:flutter_application_prgrado/domain/entities/user.dart';
 import 'package:flutter_application_prgrado/domain/repository/user_repository.dart';
-import 'package:http/http.dart';
 
 class UserRepositoryImpl extends UserRepository {
   final UserApiService _userApiService;
@@ -20,51 +19,66 @@ class UserRepositoryImpl extends UserRepository {
 
   @override
   Future<DataState<bool>> insert(UserEntity user) async {
-    try {
-      final httpResponse =
-          await _userApiService.insert(UserModel.fromEntity(user));
-      if (httpResponse.response.statusCode == HttpStatus.created) {
-        return DataSuccess(httpResponse.data);
-      } else {
-        return DataFailed(
-          ClientException(httpResponse.response.body),
-        );
-      }
-    } on ClientException catch (e) {
-      return DataFailed(e);
+    //try {
+    final httpState = await _userApiService.insertD(UserModel.fromEntity(user));
+    if (httpState is HttpSuccess) {
+      return DataSuccess(httpState.httpResponse!.data);
+    } else {
+      return DataFailed2(httpState.error!);
     }
+    /*} on ClientException catch (e) {
+      return DataFailed(e);
+    }*/
   }
 
   @override
   Future<DataState<UserModel>> getById(String id) async {
-    try {
-      final httpResponse = await _userApiService.getById(id);
-      if (httpResponse.response.statusCode == HttpStatus.ok) {
-        return DataSuccess(httpResponse.data!);
-      } else {
-        return DataFailed(
-          ClientException(httpResponse.response.body),
-        );
-      }
-    } on ClientException catch (e) {
-      return DataFailed(e);
+    final httpState = await _userApiService.getDById(id);
+    if (httpState is HttpSuccess) {
+      return DataSuccess(httpState.httpResponse!.data);
+    } else {
+      return DataFailed2(httpState.error!);
     }
   }
 
   @override
   Future<DataState<UserModel>> getByParams(
       String userName, String password) async {
-    try {
-      final httpResponse = await _userApiService.getLogin(userName, password);
-      if (httpResponse.response.statusCode == HttpStatus.ok) {
-        return DataSuccess(httpResponse.data!);
-      } else {
-        return DataFailed(
-          ClientException(httpResponse.response.body),
-        );
-      }
-    } on ClientException catch (e) {
+    //try {
+    final httpState = await _userApiService.getDLogin(userName, password);
+    if (httpState is HttpSuccess) {
+      return DataSuccess(httpState.httpResponse!.data);
+    } else {
+      return DataFailed2(httpState.error!);
+    }
+    /*} on ClientException catch (e) {
       return DataFailed(e);
+    }*/
+  }
+
+  @override
+  Future<DataState<UserEntity>> updateFiled(
+      String id, Map<String, dynamic> body) async {
+    final httpState = await _userApiService.updateFile(id, body);
+    if (httpState is HttpSuccess) {
+      return DataSuccess(httpState.httpResponse!.data);
+    } else {
+      return DataFailed2(httpState.error!);
+    }
+  }
+
+  @override
+  Future<DataState<bool>> changePassword(
+      String newPassword, String oldPassword, String id) async {
+    final httpState = await _userApiService.changePassword(
+      id,
+      oldPassword,
+      newPassword,
+    );
+    if (httpState is HttpSuccess) {
+      return DataSuccess(httpState.httpResponse!.data);
+    } else {
+      return DataFailed2(httpState.error!);
     }
   }
 }

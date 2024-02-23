@@ -2,6 +2,7 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_application_prgrado/core/resources/data_state.dart';
+import 'package:flutter_application_prgrado/data/models/warning_dialog_data.dart';
 import 'package:flutter_application_prgrado/domain/entities/user.dart';
 import 'package:flutter_application_prgrado/domain/repository/user_repository.dart';
 import 'package:flutter_application_prgrado/domain/usecases/save_session.dart';
@@ -111,27 +112,38 @@ class RegisterBloc extends Bloc<RegisterEvent, RegisterState> {
   ) async {
     final buildContext = event.context;
     if (!isFormValid()) return;
-    //FocusScope.of(buildContext).unfocus();
-    Loading.showText(buildContext, "Registrando...");
-    final response = await _submit();
-    Loading.close();
-    if (response != null) {
-      await saveSession(response);
 
+    Loading.showText(buildContext, "Registrando...");
+    UserEntity user = createUserFromState(state);
+    final response = await _saveUserUseCase.call(params: user);
+    Loading.close();
+
+    if (response is DataSuccess) {
+      if (response.data!) {
+        await saveSession(user);
+
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          if (Navigator.canPop(buildContext)) {
+            Navigator.pushReplacementNamed(buildContext, Routes.home);
+          }
+        });
+      } else {
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          showErrorMessage(buildContext, event, emit);
+        });
+      }
+    }
+
+    if (response is DataFailed2) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
-        if (Navigator.canPop(buildContext)) {
-          Navigator.pushReplacementNamed(buildContext, Routes.home);
-        }
-      });
-    } else {
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        showErrorMessage(buildContext, event, emit);
+        showWarningMessage(buildContext);
       });
     }
   }
 
   Future<bool> saveSession(UserEntity userEntity) async {
     sessionBloc.add(SaveSessionEvent(userEntity));
+    sessionBloc.add(const ConnectedSessionEvent(true));
     final response = await _saveSessionUseCase.call(params: userEntity);
     if (response is DataSuccess) {
       return response.data!;
@@ -170,6 +182,23 @@ class RegisterBloc extends Bloc<RegisterEvent, RegisterState> {
     );
   }
 
+  Future<void> showWarningMessage(
+    BuildContext buildContext,
+  ) async {
+    Dialogs.showWarningMessage(
+      buildContext,
+      WarningDialogData(
+        "No estas conectado y/o el servidor esta apagado",
+        "No hay conexión",
+        "Cerrar",
+        () async {
+          Dialogs.close();
+        },
+        false,
+      ),
+    );
+  }
+
   String generarIdUnico() {
     final now = DateTime.now();
     final formattedDate = "${now.year}${now.month}${now.day}";
@@ -184,8 +213,10 @@ class RegisterBloc extends Bloc<RegisterEvent, RegisterState> {
   }
 
   UserEntity createUserFromState(RegisterState state) {
+    final id = generarIdUnico();
+    print(id);
     final user = UserEntity(
-      id: generarIdUnico(),
+      id: id,
       name: state.name ?? '',
       lastName: state.lastName ?? '',
       lastNameSecond: state.lastNameSecond ?? '',
@@ -201,13 +232,10 @@ class RegisterBloc extends Bloc<RegisterEvent, RegisterState> {
     return user;
   }
 
-  Future<UserEntity?> _submit() async {
+  Future<DataState<bool>> _submit() async {
     UserEntity user = createUserFromState(state);
     final response = await _saveUserUseCase.call(params: user);
-    if (response is DataSuccess && response.data == true) {
-      return user;
-    }
-    return null;
+    return response;
   }
 
   bool isFormValid() {

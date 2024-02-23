@@ -30,17 +30,11 @@ class DeviceRepositoryImpl implements DeviceRepository {
 
   @override
   Future<DataState<SystemInfoModel>> getInformationDevice() async {
-    try {
-      final httpResponse = await _informationApiService.getSystemInfo();
-      if (httpResponse.response.statusCode == HttpStatus.ok) {
-        return DataSuccess(httpResponse.data!);
-      } else {
-        return DataFailed(
-          ClientException(httpResponse.response.body),
-        );
-      }
-    } on ClientException catch (e) {
-      return DataFailed(e);
+    final httpState = await _informationApiService.getDSystemInfo();
+    if (httpState is HttpSuccess) {
+      return DataSuccess(httpState.httpResponse!.data);
+    } else {
+      return DataFailed2(httpState.error!);
     }
   }
 }
