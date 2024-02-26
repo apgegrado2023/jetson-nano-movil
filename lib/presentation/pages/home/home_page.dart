@@ -9,6 +9,7 @@ import 'package:flutter_application_prgrado/presentation/bloc/session/bloc/sessi
 import 'package:flutter_application_prgrado/presentation/bloc/session/bloc/session_event.dart';
 import 'package:flutter_application_prgrado/presentation/bloc/session/bloc/session_state.dart';
 import 'package:flutter_application_prgrado/presentation/pages/cameras_device/cameras_device_page.dart';
+import 'package:flutter_application_prgrado/presentation/pages/detection_history/detection_history_page.dart';
 import 'package:flutter_application_prgrado/presentation/pages/gestion/gestion_page.dart';
 import 'package:flutter_application_prgrado/presentation/pages/home/widgets/button_widget.dart';
 import 'package:flutter_application_prgrado/presentation/pages/home/widgets/connection_widget.dart';
@@ -37,7 +38,7 @@ class HomeView extends StatelessWidget {
   final list = <Widget>[
     const InformationDevicePage(),
     const CamerasDevicePage(),
-    const GestionPrototypePage()
+    const DetectionHistoryPage()
   ];
 
   PopupMenuItem _buildPopupMenuItem(
@@ -325,7 +326,7 @@ class HomeView extends StatelessWidget {
                             width: 8,
                           ),
                           ButtonWidget(
-                            text: 'Diagnosticar',
+                            text: 'Historial',
                             isSelected: index == 2,
                             ontap: () {
                               context

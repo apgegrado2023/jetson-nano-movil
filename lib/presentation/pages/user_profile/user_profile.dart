@@ -99,10 +99,11 @@ class UserProfile extends StatelessWidget {
                         ),
                       ),
                       SizedBox(height: 16),
-                      _widget("Nombre:", userEntity!.name!,
-                          Icon(Icons.person).icon!, () {
+                      _widget(
+                          "Nombre:", userEntity.name!, Icon(Icons.person).icon!,
+                          () {
                         _showChangeFileDialog(context, 'Cambiar Nombre',
-                            userEntity!.name!, 'Nombre', () {
+                            userEntity.name!, 'Nombre', () {
                           print('ses1');
                           context.read<ProfileBloc>().add(
                               NameChangedProfileEvent(

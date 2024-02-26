@@ -39,6 +39,7 @@ class InformationDeviceBloc
       if (httpResponse is DataSuccess) {
         sessionBloc.add(ConnectedSessionEvent(true));
         add(ChangeData(httpResponse.data!));
+        print(httpResponse.data);
       } else {
         //_timerStarted = false;
         sessionBloc.add(ConnectedSessionEvent(false));
