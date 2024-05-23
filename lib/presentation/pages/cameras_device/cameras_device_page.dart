@@ -23,8 +23,8 @@ class _CamerasDeviceViewState extends State<CamerasDeviceView> {
   late WebViewController controller;
   late WebViewController controller2;
 
-  final Uri uriOne = Uri.parse('http://192.168.3.58:5000/video_feedOne');
-  final Uri uriTwo = Uri.parse('http://192.168.3.58:5000/video_feedTwo');
+  final Uri uriOne = Uri.parse('http://192.168.3.98:5000/video_feedOne');
+  final Uri uriTwo = Uri.parse('http://192.168.3.98:5000/video_feedTwo');
 
   @override
   void initState() {
@@ -100,7 +100,8 @@ class _CamerasDeviceViewState extends State<CamerasDeviceView> {
                     width: screenWidth,
                     child: WebViewWidget(controller: controller)),
                 Container(
-                  margin: EdgeInsets.only(left: 10, right: 10, bottom: 15),
+                  margin:
+                      EdgeInsets.only(left: 10, right: 10, bottom: 10, top: 10),
                   alignment: Alignment.centerLeft,
                   child: Row(
                     children: [
@@ -185,7 +186,8 @@ class _CamerasDeviceViewState extends State<CamerasDeviceView> {
                   ),
                 ),
                 Container(
-                  margin: EdgeInsets.only(left: 10, right: 10, bottom: 15),
+                  margin:
+                      EdgeInsets.only(left: 10, right: 10, bottom: 10, top: 10),
                   alignment: Alignment.centerLeft,
                   child: Row(
                     children: [

@@ -68,7 +68,7 @@ class CustomTitle2 extends StatelessWidget {
       ),
       subtitle: subTitle != null
           ? Text(
-              "\n" + subTitle!,
+              subTitle!,
               textAlign: textAlignSubTitle,
               style: TextStyle(color: colorSubTitle, fontSize: 15),
             )

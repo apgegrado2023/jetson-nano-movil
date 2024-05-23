@@ -1,4 +1,4 @@
-part of 'detection_history_bloc.dart';
+/*part of 'detection_history_bloc.dart';
 
 abstract class DetectionHistoryState extends Equatable {
   final List<DetectionHistoryEntity>? listDetectionHistory;
@@ -23,3 +23,4 @@ class DetectionHistoryDone extends DetectionHistoryState {
           listDetectionHistory: listDetectionHistory,
         );
 }
+*/

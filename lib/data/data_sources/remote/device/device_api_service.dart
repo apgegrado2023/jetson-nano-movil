@@ -13,12 +13,22 @@ class DeviceApiService {
   final Dio dio;
   DeviceApiService(this.dio);
 
-  Future<HttpServiceResponse<bool>> checkConnection() async {
+  Future<HttpServiceResponse<bool>> checkConnection(
+      {bool isSingle = false}) async {
     //try {
-    final response =
-        await ServiceApi.get(ApiBaseURL.pathSegments(['check_connection']));
-    final httpResponse = HttpServiceResponse<bool>(true, response);
-    return httpResponse;
+
+    if (isSingle) {
+      final response = await ServiceApi.get(
+          ApiBaseURL.pathSegments(['check_connection_single']));
+      final httpResponse = HttpServiceResponse<bool>(true, response);
+      return httpResponse;
+    } else {
+      final response =
+          await ServiceApi.get(ApiBaseURL.pathSegments(['check_connection']));
+      final httpResponse = HttpServiceResponse<bool>(true, response);
+      return httpResponse;
+    }
+
     /* } catch (s) {
       return HttpServiceResponse(false, Response(s.toString(), 500));
     }*/
@@ -75,10 +85,45 @@ class DeviceApiService {
     }
   }
 
-  Future<HttpState<bool>> checkDConnection() async {
+  Future<HttpState<bool>> checkDConnection(bool isSingle) {
+    return isSingle ? checkDConnectionSingle() : checkDConnectionSound();
+  }
+
+  Future<HttpState<bool>> checkDConnectionSound() async {
     try {
       final response =
           await dio.getUri(ApiBaseURL.pathSegments(['check_connection']));
+      if (response.statusCode == HttpStatus.ok) {
+        final httpResponse = HttpResponse(true, response);
+        return HttpSuccess<bool>(httpResponse);
+      } else {
+        final httpResponse = HttpResponse(false, response);
+        return HttpSuccess<bool>(httpResponse);
+      }
+    } on DioException catch (e) {
+      print(e);
+      return HttpFailed(e);
+    } on SocketException catch (s) {
+      return HttpFailed(
+        DioException(
+          requestOptions: RequestOptions(),
+          message: s.message,
+        ),
+      );
+    } catch (e) {
+      return HttpFailed(
+        DioException(
+          requestOptions: RequestOptions(),
+          message: e.toString(),
+        ),
+      );
+    }
+  }
+
+  Future<HttpState<bool>> checkDConnectionSingle() async {
+    try {
+      final response = await dio
+          .getUri(ApiBaseURL.pathSegments(['check_connection_single']));
       if (response.statusCode == HttpStatus.ok) {
         final httpResponse = HttpResponse(true, response);
         return HttpSuccess<bool>(httpResponse);

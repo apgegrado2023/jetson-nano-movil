@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_application_prgrado/config/routes/routes.dart';
+import 'package:flutter_application_prgrado/config/utils/my_colors.dart';
 import 'package:flutter_application_prgrado/domain/entities/user.dart';
 import 'package:flutter_application_prgrado/injection_container.dart';
 import 'package:flutter_application_prgrado/presentation/bloc/home/home_bloc.dart';
@@ -15,6 +16,7 @@ import 'package:flutter_application_prgrado/presentation/pages/home/widgets/butt
 import 'package:flutter_application_prgrado/presentation/pages/home/widgets/connection_widget.dart';
 import 'package:flutter_application_prgrado/presentation/pages/information_device/information_driver_page.dart';
 import 'package:flutter_application_prgrado/presentation/pages/user_profile/user_profile.dart';
+import 'package:flutter_application_prgrado/presentation/widgets/inputs/custom_button.dart';
 import 'package:flutter_application_prgrado/presentation/widgets/text/custom_title.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -247,41 +249,41 @@ class HomeView extends StatelessWidget {
                         }),
                       ),
                     ),
-                    Expanded(
-                      child: InkWell(
-                        onTap: () {
-                          print("tap");
-                        },
-                        child: Container(
-                          child: Row(
-                              mainAxisAlignment: MainAxisAlignment.end,
-                              children: [
-                                Container(
-                                  padding: EdgeInsets.all(5),
-                                  decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(
-                                        10), // Ajusta este valor para cambiar el radio de los bordes
-                                    color: Color.fromARGB(255, 51, 51,
-                                        51), // Cambia el color del contenedor según lo necesites
-                                  ),
-                                  child: Icon(
-                                    Icons.verified_outlined,
-                                    color: Colors.white,
-                                    size: 17,
-                                  ),
+                    InkWell(
+                      onTap: () {
+                        context
+                            .read<HomeBloc>()
+                            .add(CheckConnectionEvent(context));
+                      },
+                      child: Container(
+                        child: Row(
+                            mainAxisAlignment: MainAxisAlignment.end,
+                            children: [
+                              Container(
+                                padding: EdgeInsets.all(5),
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(
+                                      10), // Ajusta este valor para cambiar el radio de los bordes
+                                  color: Color.fromARGB(255, 51, 51,
+                                      51), // Cambia el color del contenedor según lo necesites
                                 ),
-                                SizedBox(
-                                  width: 8,
+                                child: Icon(
+                                  Icons.verified_outlined,
+                                  color: Colors.white,
+                                  size: 17,
                                 ),
-                                Text(
-                                  "Verificar",
-                                  style: TextStyle(
-                                    color: Colors.white,
-                                    fontSize: 16,
-                                  ),
+                              ),
+                              SizedBox(
+                                width: 8,
+                              ),
+                              Text(
+                                "Verificar",
+                                style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 16,
                                 ),
-                              ]),
-                        ),
+                              ),
+                            ]),
                       ),
                     ),
                   ],
@@ -295,47 +297,50 @@ class HomeView extends StatelessWidget {
                   selector: (state) => state.index,
                   builder: (context, index) {
                     return Container(
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          ButtonWidget(
-                            text: 'Información',
-                            isSelected: index == 0,
-                            ontap: () {
-                              //bloc.add(IndexChangedHomeEvent(0));
-                              context
-                                  .read<HomeBloc>()
-                                  .add(const IndexChangedHomeEvent(0));
-                            },
-                          ),
-                          SizedBox(
-                            width: 8,
-                          ),
-                          ButtonWidget(
-                            text: 'Camaras',
-                            isSelected: index == 1,
-                            ontap: () {
-                              context
-                                  .read<HomeBloc>()
-                                  .add(const IndexChangedHomeEvent(1));
-                              //bloc.add(IndexChangedHomeEvent(1));
-                            },
-                          ),
-                          SizedBox(
-                            width: 8,
-                          ),
-                          ButtonWidget(
-                            text: 'Historial',
-                            isSelected: index == 2,
-                            ontap: () {
-                              context
-                                  .read<HomeBloc>()
-                                  .add(const IndexChangedHomeEvent(2));
-                              //bloc.add(IndexChangedHomeEvent(2));
-                            },
-                          ),
-                        ],
+                      child: SingleChildScrollView(
+                        scrollDirection: Axis.horizontal,
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            ButtonWidget(
+                              text: 'Información',
+                              isSelected: index == 0,
+                              ontap: () {
+                                //bloc.add(IndexChangedHomeEvent(0));
+                                context
+                                    .read<HomeBloc>()
+                                    .add(const IndexChangedHomeEvent(0));
+                              },
+                            ),
+                            SizedBox(
+                              width: 8,
+                            ),
+                            ButtonWidget(
+                              text: 'Camaras',
+                              isSelected: index == 1,
+                              ontap: () {
+                                context
+                                    .read<HomeBloc>()
+                                    .add(const IndexChangedHomeEvent(1));
+                                //bloc.add(IndexChangedHomeEvent(1));
+                              },
+                            ),
+                            SizedBox(
+                              width: 8,
+                            ),
+                            ButtonWidget(
+                              text: 'Historial',
+                              isSelected: index == 2,
+                              ontap: () {
+                                context
+                                    .read<HomeBloc>()
+                                    .add(const IndexChangedHomeEvent(2));
+                                //bloc.add(IndexChangedHomeEvent(2));
+                              },
+                            ),
+                          ],
+                        ),
                       ),
                     );
                   }),
@@ -400,6 +405,53 @@ class HomeView extends StatelessWidget {
         color: color, // Cambia el color del contenedor según lo necesites
       ),
       child: child,
+    );
+  }
+}
+
+class ServerStatusDialog extends StatelessWidget {
+  final bool isConnected;
+
+  ServerStatusDialog({required this.isConnected});
+
+  @override
+  Widget build(BuildContext context) {
+    return AlertDialog(
+      iconPadding: EdgeInsets.only(top: 40, bottom: 20),
+      actionsPadding: EdgeInsets.only(
+        left: 40,
+        right: 40,
+        bottom: 40,
+      ),
+      icon: Icon(
+        Icons.task_alt,
+        size: 50,
+        color: Colors.green,
+      ),
+      title: Text(
+        "Conexión establecida",
+        style: TextStyle(
+          fontWeight: FontWeight.bold,
+          color: Colors.green,
+        ),
+        textAlign: TextAlign.center,
+      ),
+      content: Text(
+        "Verificación de conexión correcta",
+        textAlign: TextAlign.center,
+        style: TextStyle(color: Colors.black54),
+      ),
+      actions: <Widget>[
+        CustomButton(
+            height: 50,
+            textButton: "Cerrar",
+            colorButton: Colors.green,
+            onPressed: () {
+              Navigator.of(context).pop();
+            } // Cerrar el diálogo},
+            )
+      ],
+      actionsAlignment: MainAxisAlignment.center,
     );
   }
 }

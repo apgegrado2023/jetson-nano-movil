@@ -40,6 +40,14 @@ class _SecondPageState extends State<SecondPage> {
   }
 
   @override
+  void dispose() {
+    // TODO: implement dispose
+    super.dispose();
+
+    SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
+  }
+
+  @override
   Widget build(BuildContext context) {
     // Configurar la orientación a vertical solo para esta pantalla
     SystemChrome.setPreferredOrientations([DeviceOrientation.landscapeLeft]);

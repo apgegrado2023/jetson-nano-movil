@@ -135,9 +135,16 @@ class RegisterBloc extends Bloc<RegisterEvent, RegisterState> {
     }
 
     if (response is DataFailed2) {
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        showWarningMessage(buildContext);
-      });
+      if (response.dioException?.response?.statusCode != null &&
+          response.dioException?.response?.statusCode == 409) {
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          showUserAlreadyExistMessage(buildContext);
+        });
+      } else {
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          showWarningMessage(buildContext);
+        });
+      }
     }
   }
 
@@ -176,6 +183,23 @@ class RegisterBloc extends Bloc<RegisterEvent, RegisterState> {
         () async {
           Dialogs.close();
           await _onRegisterSubmitted(event, emit); // Llamada al mismo método
+        },
+        false,
+      ),
+    );
+  }
+
+  Future<void> showUserAlreadyExistMessage(
+    BuildContext buildContext,
+  ) async {
+    Dialogs.showErrorMessage(
+      buildContext,
+      ErrorDialogData(
+        "El usuario o telefono ya estan en uso",
+        "Problemas",
+        "Cerrar",
+        () async {
+          Dialogs.close();
         },
         false,
       ),

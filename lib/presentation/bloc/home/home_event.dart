@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:flutter/cupertino.dart';
 
 abstract class HomeEvent {
   const HomeEvent();
@@ -11,4 +11,9 @@ class IndexChangedHomeEvent implements HomeEvent {
 
 class InitHomeEvent implements HomeEvent {
   const InitHomeEvent();
+}
+
+class CheckConnectionEvent implements HomeEvent {
+  final BuildContext context;
+  const CheckConnectionEvent(this.context);
 }

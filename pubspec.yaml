@@ -55,10 +55,17 @@ dependencies:
   flutter_archive: ^6.0.0
   path_provider: ^2.1.0
   archive: ^3.4.2
+  flutter_launcher_icons: ^0.13.1
+  elegant_notification: ^2.1.2
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
+
+flutter_launcher_icons:
+  image_path: "assets/images/logo1.png"
+  android: true
+  ios: true
 
   # The "flutter_lints" package below contains a set of recommended lints to
   # encourage good coding practices. The lint set provided by the package is
@@ -78,6 +85,7 @@ flutter:
   assets:
     - assets/lottie/
     - assets/images/
+    - assets/images/logo1.png
   # To add assets to your application, add an assets section, like this:
   fonts:
     - family: Muli

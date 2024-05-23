@@ -107,10 +107,12 @@ class LoginPage extends StatelessWidget {
                                   isPassword: true,
                                 ),
                                 const SizedBox(
-                                  height: 20,
+                                  height: 10,
                                 ),
                                 CustomButton(
                                   colorButton: color,
+                                  height: 49,
+                                  colorTextButton: Colors.white,
                                   textButton: 'Iniciar Sesión',
                                   onPressed: () => bloc.add(
                                     LoginSubmittedLoginEvent(context),

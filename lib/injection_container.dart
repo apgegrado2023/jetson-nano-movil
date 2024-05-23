@@ -21,6 +21,7 @@ import 'package:flutter_application_prgrado/domain/usecases/remove_session.dart'
 import 'package:flutter_application_prgrado/domain/usecases/save_session.dart';
 import 'package:flutter_application_prgrado/domain/usecases/save_user.dart';
 import 'package:flutter_application_prgrado/domain/usecases/update_filed_user.dart';
+import 'package:flutter_application_prgrado/presentation/bloc/detection_history/cubit/detection_history_cubit.dart';
 import 'package:flutter_application_prgrado/presentation/bloc/detection_history/detection_history_bloc.dart';
 import 'package:flutter_application_prgrado/presentation/bloc/home/home_bloc.dart';
 import 'package:flutter_application_prgrado/presentation/bloc/information_device/information_device_bloc.dart';
@@ -36,8 +37,6 @@ import 'data/repository/user_repository_impl.dart';
 final sl = GetIt.instance;
 final dio = Dio();
 Future<void> initializeDependencies() async {
-  dio.options.baseUrl = ApiBaseURL.url.path;
-  dio.options.headers = ApiBaseURL.headers;
   dio.options.connectTimeout = Duration(seconds: 8);
   dio.options.receiveTimeout = Duration(seconds: 8);
   /*Dio dio = Dio(
@@ -150,10 +149,11 @@ Future<void> initializeDependencies() async {
       () => RegisterBloc(sl<SessionBloc>(), sl(), sl()));
 
   sl.registerFactory<HomeBloc>(() => HomeBloc(
-      sl<SessionBloc>(), sl<UserRepository>(), sl<SessionRepository>()));
+      sl<SessionBloc>(), sl<UserRepository>(), sl<SessionRepository>(), sl()));
 
   sl.registerFactory<InformationDeviceBloc>(
       () => InformationDeviceBloc(sl(), sl()));
   sl.registerFactory<ProfileBloc>(() => ProfileBloc(sl(), sl(), sl(), sl()));
-  sl.registerFactory<DetectionHistoryBloc>(() => DetectionHistoryBloc(sl()));
+  sl.registerFactory<DetectionHistoryCubit>(
+      () => DetectionHistoryCubit(sl(), sl(), sl()));
 }

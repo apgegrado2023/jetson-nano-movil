@@ -158,6 +158,7 @@ class UserApiService {
     try {
       final response = await dio.postUri(
         ApiBaseURL.pathSegments(['login']),
+        options: Options(method: 'POST'),
         data: {'user_name': userName, 'password': password},
       );
       if (response.statusCode == HttpStatus.ok) {

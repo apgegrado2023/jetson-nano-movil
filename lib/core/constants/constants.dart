@@ -1,5 +1,5 @@
 class ApiBaseURL {
-  static const String _ipServer = '192.168.3.58';
+  static const String _ipServer = '192.168.3.98';
   static const int _portServer = 5000;
 
   static Uri get url {
@@ -13,7 +13,6 @@ class ApiBaseURL {
   static Map<String, dynamic> get headers {
     return {
       'Content-Type': 'application/json',
-      'Accept': 'application/json',
     };
   }
 

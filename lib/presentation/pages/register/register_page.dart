@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_application_prgrado/config/utils/my_colors.dart';
 import 'package:flutter_application_prgrado/presentation/widgets/appBar/appBar_custom.dart';
+import 'package:flutter_application_prgrado/presentation/widgets/inputs/custom_input_field_state.dart';
 import 'package:flutter_application_prgrado/presentation/widgets/text/custom_title.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -72,45 +73,54 @@ class RegisterPage extends StatelessWidget {
                         padding: const EdgeInsets.all(20),
                         child: Column(
                           children: [
-                            CustomInputField(
+                            CustomInputFieldState(
                               onChanged: (value) => bloc.add(
                                 NameChangedRegisterEvent(value),
                               ),
+                              icon: const Icon(Icons.person_2),
                               isCapitalize: true,
                               //icon: const Icon(Icons.person),
-                              label: "Nombre",
+                              label: "Nombres",
+                              isNoSpace: false,
                               validator: Validators.validationText,
                             ),
-                            CustomInputField(
+                            CustomInputFieldState(
                               onChanged: (value) => bloc.add(
                                 LastNameChangedRegisterEvent(value),
                               ),
+                              icon: const Icon(Icons.person_2_outlined),
                               isCapitalize: true,
                               isNoSpace: false,
                               //icon: const Icon(Icons.abc),
                               label: "Apellidos",
                               validator: Validators.validationText,
                             ),
-                            Text("Datos para inicio de Sesión"),
-                            CustomInputField(
+                            //Text("Datos para inicio de Sesión"),
+                            CustomInputFieldState(
                               onChanged: (value) => bloc.add(
                                 UserNameChangedRegisterEvent(value),
                               ),
-                              icon: const Icon(Icons.person),
-                              label: "Usuario",
+                              icon: const Icon(Icons.person_3_rounded),
+                              label: "Usuario o telefono",
                               validator: Validators.validationText,
                             ),
-                            CustomInputField(
+                            CustomInputFieldState(
                               onChanged: (value) => bloc.add(
                                 PasswordChangedRegisterEvent(value),
                               ),
-                              icon: const Icon(Icons.password),
+                              icon: const Icon(Icons.security),
                               label: "Contraseña",
                               isPassword: true,
-                              validator: Validators.validationPassword,
+                              validator: (v) =>
+                                  Validators.validationPassword(v),
+                            ),
+                            SizedBox(
+                              height: 10,
                             ),
                             CustomButton(
+                              height: 48,
                               colorButton: color,
+                              colorTextButton: Colors.white,
                               textButton: 'Registrar',
                               onPressed: () => bloc.add(
                                 RegisterSubmittedRegisterEvent(context),

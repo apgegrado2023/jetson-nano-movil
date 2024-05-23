@@ -20,6 +20,8 @@ class MemorySwapWidget extends StatelessWidget {
     double percentUsed = ((memoryInfoSwap.total! - memoryInfoSwap.free!) /
             memoryInfoSwap.total!) *
         100;
+
+    double swapR = double.parse(percentUsed.toStringAsFixed(2));
     return Container(
       height: 131,
       padding: EdgeInsets.all(10),
@@ -60,7 +62,7 @@ class MemorySwapWidget extends StatelessWidget {
             ),
             Center(
               child: Text(
-                "$percentUsed %",
+                "$swapR %",
                 textAlign: TextAlign.center,
                 style: TextStyle(
                   fontSize: 17,

@@ -81,15 +81,24 @@ class _CustomInputFieldStateState extends State<CustomInputFieldState> {
             children: [
               SizedBox(
                 height: 48,
-                child: TextField(
+                child: TextFormField(
                   obscureText: _obscureText,
                   keyboardType: widget.inputType,
                   controller: _textEditingController,
                   decoration: InputDecoration(
                     prefixIcon: widget.icon,
+                    filled: true,
+                    fillColor: Color.fromARGB(255, 240, 240, 240),
                     contentPadding: contentPadding,
-                    enabledBorder: enableBorder,
-                    focusedBorder: focusBorder,
+                    enabledBorder: OutlineInputBorder(
+                      borderSide: BorderSide(color: Colors.transparent),
+                      borderRadius: BorderRadius.all(Radius.circular(8.0)),
+                    ),
+                    focusedBorder: OutlineInputBorder(
+                      borderSide:
+                          BorderSide(color: Color.fromARGB(95, 197, 197, 197)),
+                      borderRadius: BorderRadius.all(Radius.circular(8.0)),
+                    ),
                     hintText: widget.label,
                     suffixIcon: widget.isPassword
                         ? IconButton(

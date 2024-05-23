@@ -15,9 +15,9 @@ class DeviceRepositoryImpl implements DeviceRepository {
   final DeviceApiService _informationApiService;
 
   @override
-  Future<DataState<bool>> checkConnection() async {
+  Future<DataState<bool>> checkConnection(bool isSingle) async {
     //try {
-    final httpState = await _informationApiService.checkDConnection();
+    final httpState = await _informationApiService.checkDConnection(isSingle);
     if (httpState is HttpSuccess) {
       return DataSuccess(httpState.httpResponse!.data);
     } else {

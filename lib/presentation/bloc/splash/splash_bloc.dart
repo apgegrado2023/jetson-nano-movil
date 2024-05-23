@@ -129,7 +129,7 @@ class SplashBloc extends Bloc<SplashEvent, SplashState> {
   }
 
   Future<bool> checkConnection() async {
-    final checkResponse = await _checkConnectionUseCase.call();
+    final checkResponse = await _checkConnectionUseCase.call(false);
     if (checkResponse is DataSuccess) {
       return checkResponse.data!;
     } else {

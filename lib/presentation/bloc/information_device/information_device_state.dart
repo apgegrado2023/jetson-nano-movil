@@ -1,12 +1,11 @@
 part of 'information_device_bloc.dart';
 
-abstract class InformationDeviceState extends Equatable {
+class InformationDeviceState extends Equatable {
   final StorageInfoEntity? storageInfoEntity;
   final MemoryInfoEntity? memoryInfoEntity;
   final MemoryInfoSwapEntity? memoryInfoSwapEntity;
   final double? temperature;
   final double? cpuUsage;
-  final ClientException? error;
 
   const InformationDeviceState({
     this.storageInfoEntity,
@@ -14,11 +13,18 @@ abstract class InformationDeviceState extends Equatable {
     this.memoryInfoSwapEntity,
     this.temperature,
     this.cpuUsage,
-    this.error,
   });
 
   @override
-  List<Object> get props => [];
+  List<Object?> get props {
+    return [
+      storageInfoEntity,
+      memoryInfoEntity,
+      memoryInfoEntity,
+      temperature,
+      cpuUsage
+    ];
+  }
 }
 
 class InformationDeviceInitial extends InformationDeviceState {

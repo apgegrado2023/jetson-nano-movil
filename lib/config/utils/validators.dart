@@ -34,9 +34,34 @@ abstract class Validators {
         return null;
       };
 
-  static String? Function(String?) get validationPassword => (String? value) {
-        if (!InputValidators.isRequired(value)) {
+  static String? Function(String?) get validationPassword =>
+      (String? contrasena) {
+        if (!InputValidators.isRequired(contrasena)) {
           return "No se permite vacios";
+        }
+
+        if (contrasena!.length < 8) {
+          return 'La contraseña debe tener al menos 8 caracteres';
+        }
+
+        // Contiene al menos una letra mayúscula
+        if (!contrasena.contains(RegExp(r'[A-Z]'))) {
+          return "La contraseña debe contener al menos una letra mayúscula";
+        }
+
+        // Contiene al menos una letra minúscula
+        if (!contrasena.contains(RegExp(r'[a-z]'))) {
+          return "La contraseña debe contener al menos una letra minúscula";
+        }
+
+        // Contiene al menos un número
+        if (!contrasena.contains(RegExp(r'[0-9]'))) {
+          return "La contraseña debe contener al menos un número";
+        }
+
+        // Contiene al menos un carácter especial
+        if (!contrasena.contains(RegExp(r'[!@#$%^&*(),.?":{}|<>]'))) {
+          return "La contraseña debe contener al menos un carácter especial";
         }
 
         return null;
