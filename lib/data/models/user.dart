@@ -1,7 +1,7 @@
 import 'package:flutter_application_prgrado/domain/entities/user.dart';
 
 class UserModel extends UserEntity {
-  const UserModel({
+  UserModel({
     String? id,
     String? name,
     String? lastName,
@@ -14,17 +14,17 @@ class UserModel extends UserEntity {
     DateTime? updateDate,
     int? status,
   }) : super(
-            id: id,
-            name: name,
-            lastName: lastName,
-            lastNameSecond: lastNameSecond,
-            password: password,
-            typeUser: typeUser,
-            userName: userName,
-            creatorId: creatorId,
+            id: id ?? '',
+            name: name ?? '',
+            lastName: lastName ?? '',
+            lastNameSecond: lastNameSecond ?? '',
+            password: password ?? '',
+            typeUser: typeUser ?? '',
+            userName: userName ?? '',
+            creatorId: creatorId ?? '',
             registrationDate: registrationDate,
             updateDate: updateDate,
-            status: status);
+            status: status ?? 0);
 
   /*UserModel.create(
       {required this.id,

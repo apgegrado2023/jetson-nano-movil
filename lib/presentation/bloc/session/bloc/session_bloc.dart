@@ -65,8 +65,8 @@ class SessionBloc extends Bloc<SessionEvent, SessionState> {
       }
     }
 
-    if (response is DataFailed2) {
-      print(response.dioException);
+    if (response is DataFailed) {
+      //print(response.dioException);
     }
   }
 

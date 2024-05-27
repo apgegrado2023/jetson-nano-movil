@@ -95,7 +95,7 @@ class HomeView extends StatelessWidget {
         ),*/
         //drawer: const NavigatorDrawer(),
         body: Container(
-          padding: EdgeInsets.all(8),
+          padding: EdgeInsets.all(10),
           color: Color(0xFF151515),
           child: Column(
             children: [

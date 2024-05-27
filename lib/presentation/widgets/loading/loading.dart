@@ -5,19 +5,23 @@ abstract class Loading {
   static late BuildContext _context;
   static void show(BuildContext context) {
     _context = context;
+
     showCupertinoModalPopup(
       context: context,
       builder: (_) => SafeArea(
-        child: WillPopScope(
-            child: Container(
-              color: Colors.black12,
-              alignment: Alignment.center,
-              child: const CircularProgressIndicator(
-                color: Colors.blue,
-              ),
+          child: PopScope(
+        child: Center(
+          child: Container(
+            color: Colors.black12,
+            alignment: Alignment.center,
+            child: const CircularProgressIndicator(
+              color: Colors.blue,
             ),
-            onWillPop: () async => false),
-      ),
+          ),
+        ),
+      )
+          //onWillPop: () async => false),
+          ),
     );
   }
 
@@ -30,9 +34,11 @@ abstract class Loading {
         return AlertDialog(
           content: Container(
             height: 40,
-            color: Color.fromARGB(255, 255, 255, 255),
+            //color: Color.fromARGB(255, 255, 255, 255),
             alignment: Alignment.center,
             child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 const CircularProgressIndicator(
                   color: Colors.blue,

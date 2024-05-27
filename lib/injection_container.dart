@@ -30,6 +30,9 @@ import 'package:flutter_application_prgrado/presentation/bloc/profile/profile_bl
 import 'package:flutter_application_prgrado/presentation/bloc/register/register_bloc.dart';
 import 'package:flutter_application_prgrado/presentation/bloc/session/bloc/session_bloc.dart';
 import 'package:flutter_application_prgrado/presentation/bloc/splash/splash_bloc.dart';
+import 'package:flutter_application_prgrado/presentation/pages/information_device/cubit/information_device_cubit.dart';
+import 'package:flutter_application_prgrado/presentation/pages/login/cubit/login_cubit.dart';
+import 'package:flutter_application_prgrado/presentation/pages/register/cubit/register_cubit.dart';
 import 'package:get_it/get_it.dart';
 
 import 'data/repository/user_repository_impl.dart';
@@ -156,4 +159,26 @@ Future<void> initializeDependencies() async {
   sl.registerFactory<ProfileBloc>(() => ProfileBloc(sl(), sl(), sl(), sl()));
   sl.registerFactory<DetectionHistoryCubit>(
       () => DetectionHistoryCubit(sl(), sl(), sl()));
+
+  //CUBITS
+  sl.registerFactory<InformationDeviceCubit>(
+    () => InformationDeviceCubit(
+      sl(),
+      sl(),
+    ),
+  );
+
+  sl.registerFactory<LoginCubit>(
+    () => LoginCubit(
+      sl(),
+      sl(),
+    ),
+  );
+
+  sl.registerFactory<RegisterCubit>(
+    () => RegisterCubit(
+      sl(),
+      sl(),
+    ),
+  );
 }

@@ -48,7 +48,7 @@ class MemoryWidget extends StatelessWidget {
     }
 
     return Container(
-      height: 270,
+      height: 290,
       padding: EdgeInsets.all(10),
       decoration: BoxDecoration(
         color: Color.fromRGBO(51, 51, 51, 1), //

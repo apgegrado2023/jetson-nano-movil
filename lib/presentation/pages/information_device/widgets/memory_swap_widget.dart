@@ -23,7 +23,7 @@ class MemorySwapWidget extends StatelessWidget {
 
     double swapR = double.parse(percentUsed.toStringAsFixed(2));
     return Container(
-      height: 131,
+      height: 150,
       padding: EdgeInsets.all(10),
       decoration: BoxDecoration(
         color: Color(0xFF6FC498), // C
@@ -51,7 +51,7 @@ class MemorySwapWidget extends StatelessWidget {
               height: 15,
             ),
             Text(
-              "Mem. SWAP",
+              "Memoria repuesto",
               style: TextStyle(
                   fontSize: 17,
                   color: Colors.white,

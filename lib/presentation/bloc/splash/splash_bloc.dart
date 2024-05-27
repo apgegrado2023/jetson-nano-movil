@@ -77,7 +77,6 @@ class SplashBloc extends Bloc<SplashEvent, SplashState> {
 
     try {
       //await getLoginDetails();
-
     } catch (e) {
       print(e.toString());
     }
@@ -133,7 +132,7 @@ class SplashBloc extends Bloc<SplashEvent, SplashState> {
     if (checkResponse is DataSuccess) {
       return checkResponse.data!;
     } else {
-      print(checkResponse.dioException);
+      //print(checkResponse.dioException);
       return false;
     }
   }

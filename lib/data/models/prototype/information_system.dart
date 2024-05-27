@@ -8,11 +8,11 @@ class SystemInfoModel extends SystemInfoEntity {
     MemoryInfoModel? memoryInfo,
     MemoryInfoSwapModel? memoryInfoSwap,
   }) : super(
-          cpuTemperature: cpuTemperature,
-          storageInfo: storageInfo,
-          cpuUsage: cpuUsage,
-          memoryInfo: memoryInfo,
-          memoryInfoSwap: memoryInfoSwap,
+          cpuTemperature: cpuTemperature ?? 0.0,
+          storageInfo: storageInfo ?? const StorageInfoEntity.empty(),
+          cpuUsage: cpuUsage ?? 0.0,
+          memoryInfo: memoryInfo ?? const MemoryInfoEntity.empty(),
+          memoryInfoSwap: memoryInfoSwap ?? const MemoryInfoSwapEntity.empty(),
         );
 
   factory SystemInfoModel.fromJson(Map<String, dynamic> json) {
@@ -45,13 +45,13 @@ class SystemInfoModel extends SystemInfoEntity {
 
 class MemoryInfoModel extends MemoryInfoEntity {
   const MemoryInfoModel({
-    required int total,
-    required int available,
-    required double percentUsed,
+    required int? total,
+    required int? available,
+    required double? percentUsed,
   }) : super(
-          available: available,
-          total: total,
-          percentUsed: percentUsed,
+          available: available ?? 0,
+          total: total ?? 0,
+          percentUsed: percentUsed ?? 0.0,
         );
 
   factory MemoryInfoModel.fromJson(Map<String, dynamic> json) {
@@ -72,15 +72,15 @@ class MemoryInfoModel extends MemoryInfoEntity {
 
 class MemoryInfoSwapModel extends MemoryInfoSwapEntity {
   const MemoryInfoSwapModel({
-    required int total,
-    required int free,
-    required int used,
-    required double percentUsed,
+    required int? total,
+    required int? free,
+    required int? used,
+    required double? percentUsed,
   }) : super(
-          free: free,
-          used: used,
-          total: total,
-          percentUsed: percentUsed,
+          free: free ?? 0,
+          used: used ?? 0,
+          total: total ?? 0,
+          percentUsed: percentUsed ?? 0.0,
         );
 
   factory MemoryInfoSwapModel.fromJson(Map<String, dynamic> json) {
@@ -103,14 +103,14 @@ class MemoryInfoSwapModel extends MemoryInfoSwapEntity {
 
 class StorageInfoModel extends StorageInfoEntity {
   const StorageInfoModel({
-    required int total,
-    required int free,
-    required int used,
+    required int? total,
+    required int? free,
+    required int? used,
   }) : super(
-          total: total,
-          free: free,
-          used: used,
-          percentUsed: (used / total) * 100,
+          total: total ?? 0,
+          free: free ?? 0,
+          used: used ?? 0,
+          percentUsed: (used ?? 0 / (total ?? 0)) * 100,
         );
 
   factory StorageInfoModel.fromJson(Map<String, dynamic> json) {

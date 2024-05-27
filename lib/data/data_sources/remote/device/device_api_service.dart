@@ -1,8 +1,10 @@
 import 'dart:async';
+import 'dart:convert';
 import 'dart:io';
 import 'dart:convert' as convert;
 import 'package:dio/dio.dart';
 import 'package:flutter_application_prgrado/core/resources/http_state.dart';
+import 'package:flutter_application_prgrado/data/data_sources/api_method.dart';
 import 'package:flutter_application_prgrado/data/data_sources/remote/service_base/http_response.dart';
 import 'package:flutter_application_prgrado/data/data_sources/remote/service_base/service_api.dart';
 import 'package:flutter_application_prgrado/data/models/prototype/information_system.dart';
@@ -13,141 +15,97 @@ class DeviceApiService {
   final Dio dio;
   DeviceApiService(this.dio);
 
-  Future<HttpServiceResponse<bool>> checkConnection(
-      {bool isSingle = false}) async {
-    //try {
-
-    if (isSingle) {
-      final response = await ServiceApi.get(
-          ApiBaseURL.pathSegments(['check_connection_single']));
-      final httpResponse = HttpServiceResponse<bool>(true, response);
-      return httpResponse;
-    } else {
-      final response =
-          await ServiceApi.get(ApiBaseURL.pathSegments(['check_connection']));
-      final httpResponse = HttpServiceResponse<bool>(true, response);
-      return httpResponse;
-    }
-
-    /* } catch (s) {
-      return HttpServiceResponse(false, Response(s.toString(), 500));
-    }*/
-  }
-
-  Future<HttpServiceResponse<SystemInfoModel?>> getSystemInfo() async {
-    //try {
-    final response = await ServiceApi.get(ApiBaseURL.pathSegments(['device']));
-    if (response.statusCode == HttpStatus.ok) {
-      var json = convert.jsonDecode(response.body) as Map<String, dynamic>;
-      return HttpServiceResponse(SystemInfoModel.fromJson(json), response);
-    }
-
-    return HttpServiceResponse(null, response);
-    /* } catch (s) {
-      return HttpServiceResponse(null, Response(s.toString(), 500));
-    }*/
-  }
-
-  Future<HttpState<SystemInfoModel>> getDSystemInfo() async {
+  Future<bool> checkConnection({
+    bool isSingle = false,
+  }) async {
     try {
-      final response = await dio.getUri(
-        ApiBaseURL.pathSegments(['device']),
-      );
-      if (response.statusCode == HttpStatus.ok) {
-        var json = response.data;
-        final httpResponse =
-            HttpResponse(SystemInfoModel.fromJson(json), response);
-        return HttpSuccess(httpResponse);
-      } else {
-        return HttpFailed(
-          DioException(
-            error: response.statusMessage,
-            response: response,
-            type: DioExceptionType.badResponse,
-            requestOptions: response.requestOptions,
+      if (isSingle) {
+        await ApiMethod.get(
+          dio: dio,
+          uri: ApiBaseURL.pathSegments(
+            ['check_connection_single'],
           ),
         );
+
+        return true;
+      } else {
+        await ApiMethod.get(
+          dio: dio,
+          uri: ApiBaseURL.pathSegments(
+            ['check_connection'],
+          ),
+        );
+
+        return true;
       }
-    } on DioException catch (e) {
-      return HttpFailed(e);
-    } on SocketException catch (s) {
-      return HttpFailed(
-        DioException(requestOptions: RequestOptions(), message: s.message),
-      );
-    } catch (e) {
-      return HttpFailed(
-        DioException(
-          requestOptions: RequestOptions(),
-          message: e.toString(),
-          type: DioExceptionType.unknown,
-        ),
-      );
+    } catch (s) {
+      rethrow;
     }
   }
 
-  Future<HttpState<bool>> checkDConnection(bool isSingle) {
+  Future<SystemInfoModel> getSystemInfo() async {
+    try {
+      final response = await ApiMethod.get(
+        dio: dio,
+        uri: ApiBaseURL.pathSegments(
+          ['device'],
+        ),
+      );
+      final json = jsonDecode(response);
+      final result = SystemInfoModel.fromJson(json);
+
+      return result;
+    } catch (s) {
+      rethrow;
+    }
+  }
+
+  Future<SystemInfoModel> getDSystemInfo() async {
+    try {
+      final response = await ApiMethod.get(
+        dio: dio,
+        uri: ApiBaseURL.pathSegments(
+          ['device'],
+        ),
+      );
+      final json = jsonDecode(response);
+      final result = SystemInfoModel.fromJson(json);
+
+      return result;
+    } catch (s) {
+      rethrow;
+    }
+  }
+
+  Future<bool> checkDConnection(bool isSingle) {
     return isSingle ? checkDConnectionSingle() : checkDConnectionSound();
   }
 
-  Future<HttpState<bool>> checkDConnectionSound() async {
+  Future<bool> checkDConnectionSound() async {
     try {
-      final response =
-          await dio.getUri(ApiBaseURL.pathSegments(['check_connection']));
-      if (response.statusCode == HttpStatus.ok) {
-        final httpResponse = HttpResponse(true, response);
-        return HttpSuccess<bool>(httpResponse);
-      } else {
-        final httpResponse = HttpResponse(false, response);
-        return HttpSuccess<bool>(httpResponse);
-      }
-    } on DioException catch (e) {
-      print(e);
-      return HttpFailed(e);
-    } on SocketException catch (s) {
-      return HttpFailed(
-        DioException(
-          requestOptions: RequestOptions(),
-          message: s.message,
+      await ApiMethod.get(
+        dio: dio,
+        uri: ApiBaseURL.pathSegments(
+          ['check_connection'],
         ),
       );
+      return true;
     } catch (e) {
-      return HttpFailed(
-        DioException(
-          requestOptions: RequestOptions(),
-          message: e.toString(),
-        ),
-      );
+      rethrow;
     }
   }
 
-  Future<HttpState<bool>> checkDConnectionSingle() async {
+  Future<bool> checkDConnectionSingle() async {
     try {
-      final response = await dio
-          .getUri(ApiBaseURL.pathSegments(['check_connection_single']));
-      if (response.statusCode == HttpStatus.ok) {
-        final httpResponse = HttpResponse(true, response);
-        return HttpSuccess<bool>(httpResponse);
-      } else {
-        final httpResponse = HttpResponse(false, response);
-        return HttpSuccess<bool>(httpResponse);
-      }
-    } on DioException catch (e) {
-      print(e);
-      return HttpFailed(e);
-    } on SocketException catch (s) {
-      return HttpFailed(
-        DioException(
-          requestOptions: RequestOptions(),
-          message: s.message,
+      await ApiMethod.get(
+        dio: dio,
+        uri: ApiBaseURL.pathSegments(
+          ['check_connection_single'],
         ),
       );
+      return true;
     } catch (e) {
-      return HttpFailed(
-        DioException(
-          requestOptions: RequestOptions(),
-          message: e.toString(),
-        ),
-      );
+      rethrow;
     }
   }
 }

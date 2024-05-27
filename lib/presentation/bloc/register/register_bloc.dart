@@ -134,8 +134,8 @@ class RegisterBloc extends Bloc<RegisterEvent, RegisterState> {
       }
     }
 
-    if (response is DataFailed2) {
-      if (response.dioException?.response?.statusCode != null &&
+    if (response is DataFailed) {
+      /*if (response.dioException?.response?.statusCode != null &&
           response.dioException?.response?.statusCode == 409) {
         WidgetsBinding.instance.addPostFrameCallback((_) {
           showUserAlreadyExistMessage(buildContext);
@@ -144,7 +144,7 @@ class RegisterBloc extends Bloc<RegisterEvent, RegisterState> {
         WidgetsBinding.instance.addPostFrameCallback((_) {
           showWarningMessage(buildContext);
         });
-      }
+      }*/
     }
   }
 
@@ -174,7 +174,7 @@ class RegisterBloc extends Bloc<RegisterEvent, RegisterState> {
     RegisterSubmittedRegisterEvent event,
     Emitter<RegisterState> emit,
   ) async {
-    Dialogs.showErrorMessage(
+    /* Dialogs.showErrorMessage(
       buildContext,
       ErrorDialogData(
         "No se registro un nuevo usuario",
@@ -186,13 +186,13 @@ class RegisterBloc extends Bloc<RegisterEvent, RegisterState> {
         },
         false,
       ),
-    );
+    );*/
   }
 
   Future<void> showUserAlreadyExistMessage(
     BuildContext buildContext,
   ) async {
-    Dialogs.showErrorMessage(
+    /* Dialogs.showErrorMessage(
       buildContext,
       ErrorDialogData(
         "El usuario o telefono ya estan en uso",
@@ -203,13 +203,13 @@ class RegisterBloc extends Bloc<RegisterEvent, RegisterState> {
         },
         false,
       ),
-    );
+    );*/
   }
 
   Future<void> showWarningMessage(
     BuildContext buildContext,
   ) async {
-    Dialogs.showWarningMessage(
+    /* Dialogs.showWarningMessage(
       buildContext,
       WarningDialogData(
         "No estas conectado y/o el servidor esta apagado",
@@ -220,7 +220,7 @@ class RegisterBloc extends Bloc<RegisterEvent, RegisterState> {
         },
         false,
       ),
-    );
+    );*/
   }
 
   String generarIdUnico() {

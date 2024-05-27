@@ -1,8 +1,10 @@
 import 'dart:async';
+import 'dart:convert';
 import 'dart:io';
 import 'dart:typed_data';
 import 'package:dio/dio.dart';
 import 'package:flutter_application_prgrado/core/resources/http_state.dart';
+import 'package:flutter_application_prgrado/data/data_sources/api_method.dart';
 import 'package:flutter_application_prgrado/data/models/detection_history.dart';
 import 'package:retrofit/retrofit.dart';
 import '../../../../../core/constants/constants.dart';
@@ -92,6 +94,46 @@ class DetectionApiService {
           type: DioExceptionType.unknown,
         ),
       );
+    }
+  }
+
+  Future<List<DetectionHistoryModel>> getDetectionHistoryDevice() async {
+    try {
+      final response = await ApiMethod.get(
+        dio: dio,
+        uri: ApiBaseURL.pathSegments(['detection_history']),
+      );
+
+      final json = jsonDecode(response);
+
+      List<dynamic> dataList = json;
+      List<DetectionHistoryModel> detectionHistory = [];
+
+      for (var item in dataList) {
+        var s = DetectionHistoryModel.fromJson(item);
+        detectionHistory.add(s);
+      }
+
+      return detectionHistory;
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  Future<Uint8List> getImagesZipDevice(List<String> listNameFile) async {
+    try {
+      final response = await ApiMethod.postCustom(
+        dio: dio,
+        data: {'list_name_file': listNameFile},
+        uri: ApiBaseURL.pathSegments(['get_zip_images']),
+        options: Options(responseType: ResponseType.bytes),
+      );
+
+      final Uint8List zipBytes = response;
+
+      return zipBytes;
+    } catch (e) {
+      rethrow;
     }
   }
 }

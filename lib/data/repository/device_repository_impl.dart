@@ -2,11 +2,11 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:flutter_application_prgrado/core/resources/data_state.dart';
-import 'package:flutter_application_prgrado/core/resources/http_state.dart';
+import 'package:flutter_application_prgrado/data/data_sources/exceptions.dart';
+import 'package:flutter_application_prgrado/data/data_sources/failures.dart';
 import 'package:flutter_application_prgrado/data/data_sources/remote/device/device_api_service.dart';
 import 'package:flutter_application_prgrado/data/models/prototype/information_system.dart';
 import 'package:flutter_application_prgrado/domain/repository/device_repository.dart';
-import 'package:http/http.dart';
 
 class DeviceRepositoryImpl implements DeviceRepository {
   DeviceRepositoryImpl(
@@ -16,25 +16,33 @@ class DeviceRepositoryImpl implements DeviceRepository {
 
   @override
   Future<DataState<bool>> checkConnection(bool isSingle) async {
-    //try {
-    final httpState = await _informationApiService.checkDConnection(isSingle);
-    if (httpState is HttpSuccess) {
-      return DataSuccess(httpState.httpResponse!.data);
-    } else {
-      return DataFailed2(httpState.error!);
+    try {
+      final result = await _informationApiService.checkDConnection(isSingle);
+
+      return DataSuccess(result);
+    } on RequestException {
+      return DataFailed(RequestFailure());
+    } on SocketException {
+      return DataFailed(SocketFailure());
+    } on ResultException catch (e) {
+      return DataFailed(ResultFailure(e.message));
+    } on NoInternetException {
+      return DataFailed(NoInternetFailure());
     }
-    /*} on ClientException catch (e) {
-      return DataFailed(e);
-    }*/
   }
 
   @override
   Future<DataState<SystemInfoModel>> getInformationDevice() async {
-    final httpState = await _informationApiService.getDSystemInfo();
-    if (httpState is HttpSuccess) {
-      return DataSuccess(httpState.httpResponse!.data);
-    } else {
-      return DataFailed2(httpState.error!);
+    try {
+      final result = await _informationApiService.getDSystemInfo();
+
+      return DataSuccess(result);
+    } on RequestException {
+      return DataFailed(RequestFailure());
+    } on SocketException {
+      return DataFailed(SocketFailure());
+    } on ResultException catch (e) {
+      return DataFailed(ResultFailure(e.message));
     }
   }
 }

@@ -2,12 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_application_prgrado/config/utils/my_colors.dart';
 import 'package:flutter_application_prgrado/data/models/warning_dialog_data.dart';
 
-import '../../../data/models/error_dialog_data.dart';
-import '../../../data/models/good_dialog_data.dart';
 import '../inputs/custom_button.dart';
 
 class ErrorDialog extends StatelessWidget {
-  final ErrorDialogData errorDialogData;
+  final DialogData errorDialogData;
 
   const ErrorDialog({super.key, required this.errorDialogData});
 
@@ -67,6 +65,7 @@ class ErrorDialog extends StatelessWidget {
           textButton: errorDialogData.textButton,
           onPressed: errorDialogData.onPressed,
           colorButton: Colors.redAccent,
+          colorTextButton: Colors.white,
         )
       ],
       actionsAlignment: MainAxisAlignment.center,
@@ -75,13 +74,14 @@ class ErrorDialog extends StatelessWidget {
 }
 
 class WarningDialog extends StatelessWidget {
-  final WarningDialogData warningDialogData;
+  final DialogData warningDialogData;
 
   const WarningDialog({super.key, required this.warningDialogData});
 
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
+      backgroundColor: Colors.white,
       iconPadding: EdgeInsets.zero,
       actionsPadding: EdgeInsets.only(
         left: 40,
@@ -124,10 +124,12 @@ class WarningDialog extends StatelessWidget {
         ),
         textAlign: TextAlign.center,
       ),
-      content: Text(
-        warningDialogData.message,
-        textAlign: TextAlign.center,
-        style: TextStyle(color: Colors.black54),
+      content: Container(
+        child: Text(
+          warningDialogData.message,
+          textAlign: TextAlign.center,
+          style: TextStyle(color: Colors.black54),
+        ),
       ),
       actions: <Widget>[
         CustomButton(
@@ -135,6 +137,7 @@ class WarningDialog extends StatelessWidget {
           textButton: warningDialogData.textButton,
           onPressed: warningDialogData.onPressed,
           colorButton: Colors.orangeAccent,
+          colorTextButton: Colors.white,
         )
       ],
       actionsAlignment: MainAxisAlignment.center,
@@ -143,7 +146,7 @@ class WarningDialog extends StatelessWidget {
 }
 
 class GoodDialog extends StatelessWidget {
-  final GoodDialogData goodDialogData;
+  final DialogData goodDialogData;
 
   const GoodDialog({
     super.key,
@@ -193,7 +196,7 @@ abstract class Dialogs {
   static late BuildContext _context;
 
   static void showErrorMessage(
-      BuildContext context, ErrorDialogData errorDialogData) {
+      BuildContext context, DialogData errorDialogData) {
     _context = context;
     showDialog(
       context: context,
@@ -204,8 +207,7 @@ abstract class Dialogs {
     );
   }
 
-  static void showGoodMessage(
-      BuildContext context, GoodDialogData goodDialogData) {
+  static void showGoodMessage(BuildContext context, DialogData goodDialogData) {
     _context = context;
     showDialog(
       context: context,
@@ -217,7 +219,7 @@ abstract class Dialogs {
   }
 
   static void showWarningMessage(
-      BuildContext context, WarningDialogData warningDialogData) {
+      BuildContext context, DialogData warningDialogData) {
     _context = context;
     showDialog(
       context: context,

@@ -38,7 +38,7 @@ class StorageWidget extends StatelessWidget {
     print(obtenerDigitoMasGrande(_calculationPercentage().toInt()));
     print(10 - obtenerDigitoMasGrande(_calculationPercentage().toInt()));
     return Container(
-      height: 200,
+      height: 210,
       padding: EdgeInsets.all(10),
       decoration: BoxDecoration(
         color: Color(0xFF7880CD),
@@ -112,7 +112,7 @@ class StorageWidget extends StatelessWidget {
                 height: 10,
               ),
               Text(
-                "${bytesToGigabytes(temp.free!).toStringAsFixed(0)} GB disponibles de ${bytesToGigabytes(temp.total!).toStringAsFixed(0)} GB ",
+                "${bytesToGigabytes(temp.free!).toStringAsFixed(0)} GB libres de ${bytesToGigabytes(temp.total!).toStringAsFixed(0)} GB ",
                 textAlign: TextAlign.center,
                 style: TextStyle(
                   fontSize: 13,

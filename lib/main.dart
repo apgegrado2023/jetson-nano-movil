@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_application_prgrado/config/routes/app_routes.dart';
+import 'package:flutter_application_prgrado/presentation/bloc/session/bloc/session_bloc.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'config/routes/routes.dart';
 import 'config/utils/my_colors.dart';
@@ -20,19 +22,26 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: "Sytem security driver",
-      theme: ThemeData(
-        textTheme: GoogleFonts.ubuntuTextTheme(),
-        primarySwatch: CustomColorPrimary().materialColor,
-      ),
-      supportedLocales: const [
-        Locale('en', ''),
-        Locale('ar', ''), // arabic, no country code
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider(
+          create: (context) => sl<SessionBloc>(),
+        ),
       ],
-      debugShowCheckedModeBanner: false,
-      onGenerateRoute: AppRoutes.onGenerateRoutes,
-      initialRoute: Routes.home,
+      child: MaterialApp(
+        title: "Sytem security driver",
+        theme: ThemeData(
+          textTheme: GoogleFonts.ubuntuTextTheme(),
+          primarySwatch: CustomColorPrimary().materialColor,
+        ),
+        supportedLocales: const [
+          Locale('en', ''),
+          Locale('ar', ''), // arabic, no country code
+        ],
+        debugShowCheckedModeBanner: false,
+        onGenerateRoute: AppRoutes.onGenerateRoutes,
+        initialRoute: Routes.splash,
+      ),
     );
   }
 }

@@ -1,13 +1,13 @@
+import 'package:elegant_notification/elegant_notification.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_application_prgrado/domain/entities/information_system.dart';
+import 'package:flutter_application_prgrado/config/utils/my_colors.dart';
 import 'package:flutter_application_prgrado/injection_container.dart';
-import 'package:flutter_application_prgrado/presentation/bloc/information_device/information_device_bloc.dart';
+import 'package:flutter_application_prgrado/presentation/pages/information_device/cubit/information_device_cubit.dart';
 import 'package:flutter_application_prgrado/presentation/pages/information_device/widgets/cpu_widget.dart';
 import 'package:flutter_application_prgrado/presentation/pages/information_device/widgets/memory_swap_widget.dart';
 import 'package:flutter_application_prgrado/presentation/pages/information_device/widgets/memory_widget.dart';
 import 'package:flutter_application_prgrado/presentation/pages/information_device/widgets/temp_widget.dart';
 import 'package:flutter_application_prgrado/presentation/pages/information_device/widgets/storage_widget.dart';
-import 'package:flutter_application_prgrado/presentation/widgets/inputs/custom_button.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:lottie/lottie.dart';
 
@@ -16,8 +16,8 @@ class InformationDevicePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider<InformationDeviceBloc>(
-      create: (context) => sl<InformationDeviceBloc>()..add(InitialEvent()),
+    return BlocProvider<InformationDeviceCubit>(
+      create: (context) => sl<InformationDeviceCubit>()..initial(),
       child: const InformationDeviceView(),
     );
   }
@@ -28,68 +28,174 @@ class InformationDeviceView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    print("se construye");
+    return MultiBlocListener(
+      listeners: [
+        BlocListener<InformationDeviceCubit, InformationDeviceState>(
+          listenWhen: (previous, current) => previous.status != current.status,
+          listener: (context, state) {},
+        ),
+        BlocListener<InformationDeviceCubit, InformationDeviceState>(
+          listenWhen: (previous, current) =>
+              previous.dialog != current.dialog &&
+              current.dialog != DialogState.none,
+          listener: (context, state) {
+            final message = state.messageNotification;
+            final title = state.titleNotification;
+            if (state.dialog == DialogState.success) {
+              ElegantNotification.success(
+                title: Text(title),
+                description: Text(message),
+              ).show(context);
+            } else if (state.dialog == DialogState.error) {
+              ElegantNotification.error(
+                title: Text(title),
+                description: Text(message),
+              ).show(context);
+            } else if (state.dialog == DialogState.info) {
+              ElegantNotification.info(
+                title: Text(title),
+                description: Text(message),
+              ).show(context);
+            }
+
+            context
+                .read<InformationDeviceCubit>()
+                .onChangeDialogState(DialogState.none);
+          },
+        ),
+      ],
+      child: const InformationDeviceBody(),
+    );
+  }
+}
+
+class InformationDeviceBody extends StatelessWidget {
+  const InformationDeviceBody({super.key});
+
+  @override
+  Widget build(BuildContext context) {
     return SingleChildScrollView(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          BlocBuilder<InformationDeviceBloc, InformationDeviceState>(
+          BlocBuilder<InformationDeviceCubit, InformationDeviceState>(
+            buildWhen: ((previous, current) {
+              return previous.statusConnection != current.statusConnection;
+            }),
             builder: (context, state) {
-              if (state is InformationDeviceDone) {
-                final storageInfoEntity = state.storageInfoEntity!;
-                final memoryInfoEntity = state.memoryInfoEntity!;
-                final memoryInfoSwapEntity = state.memoryInfoSwapEntity!;
-                final temperature = state.temperature!;
-                final cpuUsage = state.cpuUsage!;
-                return Column(
-                  //mainAxisAlignment: MainAxisAlignment.center,
-                  children: <Widget>[
-                    Row(
+              switch (state.statusConnection) {
+                case StatusConnection.initial:
+                  return Center(
+                      child: Column(
+                    children: [
+                      SizedBox(
+                        height: 20,
+                      ),
+                      const Text(
+                        "Verificando conexión...",
+                        style: TextStyle(color: Colors.white),
+                      ),
+                      SizedBox(
+                        height: 20,
+                      ),
+                      CircularProgressIndicator(
+                        color: CustomColorPrimary().c,
+                      ),
+                    ],
+                  ));
+                case StatusConnection.disconnected:
+                  return Center(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Expanded(
-                          child: StorageWidget(temp: storageInfoEntity),
+                        Lottie.asset(
+                          'assets/lottie/animation_lny44lqi.json',
+                          width: 150,
+                          height: 150,
                         ),
                         SizedBox(
-                          width: 8,
+                          height: 20,
                         ),
-                        Expanded(
-                          child: TemperatureWidget(temp: temperature),
-                        ),
-                      ],
-                    ),
-
-                    SizedBox(
-                      height: 8,
-                    ),
-
-                    Row(
-                      children: [
-                        Expanded(
-                          flex: 2,
-                          child: MemoryWidget(info: memoryInfoEntity),
+                        const Text(
+                          "¡Ups al parecer te desconectaste",
+                          style: TextStyle(color: Colors.white),
                         ),
                         SizedBox(
-                          width: 8,
+                          height: 20,
                         ),
-                        Expanded(
-                            child: Column(
-                          mainAxisSize: MainAxisSize.max,
-                          crossAxisAlignment: CrossAxisAlignment.stretch,
-                          children: [
-                            CpuWidget(cpuUsage: cpuUsage),
-                            SizedBox(
-                              height: 8,
-                            ),
-                            MemorySwapWidget(
-                                memoryInfoSwap: memoryInfoSwapEntity),
-                          ],
-                        )),
+                        /*CustomButton(
+                        textButton: "Volver a conectar",
+                        width: 200,
+                        onPressed: () {
+                          /*context
+                              .read<SplashBloc>()
+                              .add(ReloadConnectionEvent());*/
+                        },
+                      )*/
                       ],
                     ),
-
-                    // Agrega más widgets según sea necesario para mostrar la información
-                  ],
-                );
+                  );
+                case StatusConnection.connected:
+                  return BlocBuilder<InformationDeviceCubit,
+                      InformationDeviceState>(
+                    buildWhen: (previous, current) =>
+                        previous.status != current.status,
+                    builder: (context, state) {
+                      final storageInfoEntity = state.storageInfoEntity;
+                      final memoryInfoEntity = state.memoryInfoEntity;
+                      final memoryInfoSwapEntity = state.memoryInfoSwapEntity;
+                      final temperature = state.temperature;
+                      final cpuUsage = state.cpuUsage;
+                      return Column(
+                        children: <Widget>[
+                          Row(
+                            children: [
+                              Expanded(
+                                child: StorageWidget(temp: storageInfoEntity),
+                              ),
+                              SizedBox(
+                                width: 8,
+                              ),
+                              Expanded(
+                                child: TemperatureWidget(temp: temperature),
+                              ),
+                            ],
+                          ),
+                          SizedBox(
+                            height: 8,
+                          ),
+                          Row(
+                            children: [
+                              Expanded(
+                                flex: 2,
+                                child: MemoryWidget(info: memoryInfoEntity),
+                              ),
+                              SizedBox(
+                                width: 8,
+                              ),
+                              Expanded(
+                                child: Column(
+                                  mainAxisSize: MainAxisSize.max,
+                                  crossAxisAlignment:
+                                      CrossAxisAlignment.stretch,
+                                  children: [
+                                    CpuWidget(cpuUsage: cpuUsage),
+                                    SizedBox(
+                                      height: 8,
+                                    ),
+                                    MemorySwapWidget(
+                                        memoryInfoSwap: memoryInfoSwapEntity),
+                                  ],
+                                ),
+                              ),
+                            ],
+                          ),
+                        ],
+                      );
+                    },
+                  );
+              }
+              /* if (state.statusConnection == StatusConnection.connected) {
               } else if (state is InformationDeviceLoading) {
                 return Center(
                   child: Lottie.asset(
@@ -133,7 +239,7 @@ class InformationDeviceView extends StatelessWidget {
                 );
               } else {
                 return const Center(child: CircularProgressIndicator());
-              }
+              }*/
             },
           ),
 

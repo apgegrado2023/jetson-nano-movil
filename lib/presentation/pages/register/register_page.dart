@@ -1,25 +1,88 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_application_prgrado/config/utils/my_colors.dart';
+import 'package:flutter_application_prgrado/config/routes/routes.dart';
+import 'package:flutter_application_prgrado/presentation/bloc/session/bloc/session_bloc.dart';
+import 'package:flutter_application_prgrado/presentation/bloc/session/bloc/session_event.dart';
+import 'package:flutter_application_prgrado/presentation/pages/register/cubit/register_cubit.dart';
 import 'package:flutter_application_prgrado/presentation/widgets/appBar/appBar_custom.dart';
+import 'package:flutter_application_prgrado/presentation/widgets/dialogs/dialogs.dart';
 import 'package:flutter_application_prgrado/presentation/widgets/inputs/custom_input_field_state.dart';
+import 'package:flutter_application_prgrado/presentation/widgets/loading/loading.dart';
 import 'package:flutter_application_prgrado/presentation/widgets/text/custom_title.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../config/utils/validators.dart';
 import '../../../injection_container.dart';
-import '../../bloc/register/register_bloc.dart';
-import '../../bloc/register/register_event.dart';
-import '../../bloc/register/register_state.dart';
 import '../../widgets/inputs/custom_button.dart';
-import '../../widgets/inputs/custom_input_field.dart';
 
 class RegisterPage extends StatelessWidget {
   const RegisterPage({super.key});
 
   @override
   Widget build(BuildContext context) {
+    return BlocProvider(
+      create: (context) => sl<RegisterCubit>(),
+      child: RegisterView(),
+    );
+  }
+}
+
+class RegisterView extends StatelessWidget {
+  const RegisterView({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    final sessionBloc = context.read<SessionBloc>();
+    return MultiBlocListener(
+      listeners: [
+        BlocListener<RegisterCubit, RegisterState>(
+          listenWhen: (previous, current) =>
+              previous.loadingDialog != current.loadingDialog,
+          listener: (context, state) {
+            if (state.loadingDialog == LoadingDialog.open) {
+              Loading.showText(context, state.messageDialogLoading);
+            } else if (state.loadingDialog == LoadingDialog.close) {
+              Loading.close();
+            }
+          },
+        ),
+        BlocListener<RegisterCubit, RegisterState>(
+          listenWhen: (previous, current) =>
+              previous.dialogShow != current.dialogShow,
+          listener: (context, state) {
+            final dialogData = state.dialogData;
+            if (state.dialogShow == DialogShow.warning) {
+              Dialogs.showWarningMessage(context, dialogData);
+            } else if (state.dialogShow == DialogShow.error) {
+              Dialogs.showErrorMessage(context, dialogData);
+            } else if (state.dialogShow == DialogShow.success) {
+              Dialogs.showGoodMessage(context, dialogData);
+            }
+            //context.read<RegisterCubit>().onChangeDialog(DialogShow.none);
+          },
+        ),
+        BlocListener<RegisterCubit, RegisterState>(
+          listenWhen: (previous, current) => previous.status != current.status,
+          listener: (context, state) {
+            if (state.status == RegisterStatus.success) {
+              sessionBloc.add(SaveSessionEvent(state.user));
+              sessionBloc.add(const ConnectedSessionEvent(true));
+              Navigator.pushReplacementNamed(context, Routes.home);
+            }
+          },
+        ),
+      ],
+      child: const RegisterBody(),
+    );
+  }
+}
+
+class RegisterBody extends StatelessWidget {
+  const RegisterBody({super.key});
+
+  @override
+  Widget build(BuildContext context) {
     final color = Color(0xFF151515);
-    final bloc = sl<RegisterBloc>();
+    final bloc = context.read<RegisterCubit>();
     final Image image = Image.asset(
       'assets/images/logo1.png',
       width: 70,
@@ -36,7 +99,7 @@ class RegisterPage extends StatelessWidget {
       body: Container(
         color: Colors.white,
         child: SingleChildScrollView(
-          child: BlocBuilder<RegisterBloc, RegisterState>(
+          child: BlocBuilder<RegisterCubit, RegisterState>(
             bloc: bloc,
             builder: (contextBloc, state) {
               return Form(
@@ -72,11 +135,17 @@ class RegisterPage extends StatelessWidget {
                         ),
                         padding: const EdgeInsets.all(20),
                         child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            CustomInputFieldState(
-                              onChanged: (value) => bloc.add(
-                                NameChangedRegisterEvent(value),
+                            Text(
+                              'Nombres',
+                              style: TextStyle(
+                                fontSize: 12,
+                                fontWeight: FontWeight.bold,
                               ),
+                            ),
+                            CustomInputFieldState(
+                              onChanged: (value) => bloc.onChangedName(value),
                               icon: const Icon(Icons.person_2),
                               isCapitalize: true,
                               //icon: const Icon(Icons.person),
@@ -84,10 +153,16 @@ class RegisterPage extends StatelessWidget {
                               isNoSpace: false,
                               validator: Validators.validationText,
                             ),
-                            CustomInputFieldState(
-                              onChanged: (value) => bloc.add(
-                                LastNameChangedRegisterEvent(value),
+                            Text(
+                              'Apellidos',
+                              style: TextStyle(
+                                fontSize: 12,
+                                fontWeight: FontWeight.bold,
                               ),
+                            ),
+                            CustomInputFieldState(
+                              onChanged: (value) =>
+                                  bloc.onChangedLastName(value),
                               icon: const Icon(Icons.person_2_outlined),
                               isCapitalize: true,
                               isNoSpace: false,
@@ -95,19 +170,30 @@ class RegisterPage extends StatelessWidget {
                               label: "Apellidos",
                               validator: Validators.validationText,
                             ),
-                            //Text("Datos para inicio de Sesión"),
-                            CustomInputFieldState(
-                              onChanged: (value) => bloc.add(
-                                UserNameChangedRegisterEvent(value),
+                            Text(
+                              "Nombre de usuario o número de teléfono",
+                              style: TextStyle(
+                                fontSize: 12,
+                                fontWeight: FontWeight.bold,
                               ),
-                              icon: const Icon(Icons.person_3_rounded),
+                            ),
+                            CustomInputFieldState(
+                              onChanged: (value) =>
+                                  bloc.onChangedUserName(value),
+                              icon: const Icon(Icons.person_add_alt_1_sharp),
                               label: "Usuario o telefono",
                               validator: Validators.validationText,
                             ),
-                            CustomInputFieldState(
-                              onChanged: (value) => bloc.add(
-                                PasswordChangedRegisterEvent(value),
+                            Text(
+                              "Contraseña",
+                              style: TextStyle(
+                                fontSize: 12,
+                                fontWeight: FontWeight.bold,
                               ),
+                            ),
+                            CustomInputFieldState(
+                              onChanged: (value) =>
+                                  bloc.onChangedPassword(value),
                               icon: const Icon(Icons.security),
                               label: "Contraseña",
                               isPassword: true,
@@ -122,9 +208,7 @@ class RegisterPage extends StatelessWidget {
                               colorButton: color,
                               colorTextButton: Colors.white,
                               textButton: 'Registrar',
-                              onPressed: () => bloc.add(
-                                RegisterSubmittedRegisterEvent(context),
-                              ),
+                              onPressed: () => bloc.onRegisterSubmitted(),
                             ),
                           ],
                         ),

@@ -119,7 +119,7 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
       return;
     }
 
-    if (response is DataFailed2) {
+    if (response is DataFailed) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
         showWarningMessage(buildContext);
       });
@@ -178,7 +178,7 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
       return;
     }
 
-    if (response is DataFailed2) {
+    /*if (response is DataFailed) {
       if (response.dioException!.response!.statusCode ==
           HttpStatus.unauthorized)
         WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -194,7 +194,7 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
           buildContext,
         );
       });
-    }
+    }*/
   }
 
   Future<void> _onChangedLastName(
@@ -221,7 +221,7 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
   Future<void> showErrorMessage(
     BuildContext buildContext,
   ) async {
-    Dialogs.showErrorMessage(
+    /*Dialogs.showErrorMessage(
       buildContext,
       ErrorDialogData(
         "Ocurrio un problema en el cambio de contraseña",
@@ -232,13 +232,13 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
         },
         false,
       ),
-    );
+    );*/
   }
 
   Future<void> showWarningMessage(
     BuildContext buildContext,
   ) async {
-    Dialogs.showWarningMessage(
+    /*Dialogs.showWarningMessage(
       buildContext,
       WarningDialogData(
         "No estas conectado y/o el servidor esta apagado",
@@ -249,13 +249,13 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
         },
         false,
       ),
-    );
+    );*/
   }
 
   Future<void> showPasswordFailedMessage(
     BuildContext buildContext,
   ) async {
-    Dialogs.showWarningMessage(
+    /*Dialogs.showWarningMessage(
       buildContext,
       WarningDialogData(
         "La contraseña actual es incorrecta",
@@ -266,13 +266,13 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
         },
         false,
       ),
-    );
+    );*/
   }
 
   Future<void> showGoodMessage(
     BuildContext buildContext,
   ) async {
-    Dialogs.showGoodMessage(
+    /*Dialogs.showGoodMessage(
       buildContext,
       GoodDialogData(
         "Se cambio el dato",
@@ -287,6 +287,6 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
         },
         false,
       ),
-    );
+    );*/
   }
 }

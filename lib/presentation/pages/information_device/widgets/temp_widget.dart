@@ -15,10 +15,10 @@ class TemperatureWidget extends StatelessWidget {
 
     // Definir el rango de temperaturas para los diferentes estados.
     if (temp > 50) {
-      estado = "Crítico";
-      color = Colors.red;
-    } else if (temp >= 30 && temp <= 49) {
       estado = "Alto";
+      color = Colors.red;
+    } else if (temp >= 35 && temp <= 49) {
+      estado = "Medio";
       color = Colors.orange;
     } else {
       estado = "Estable";
@@ -26,7 +26,7 @@ class TemperatureWidget extends StatelessWidget {
     }
 
     return Container(
-      height: 200,
+      height: 210,
       padding: EdgeInsets.all(10),
       decoration: BoxDecoration(
         color: Color.fromRGBO(51, 51, 51, 1), //
@@ -67,36 +67,42 @@ class TemperatureWidget extends StatelessWidget {
                 SizedBox(
                   height: 10,
                 ),
-                Center(
-                  child: Text(
-                    "$temp c°",
-                    style: TextStyle(
-                        fontSize: 17,
-                        color: Colors.white,
-                        fontWeight: FontWeight.w200),
-                  ),
-                ),
-                SizedBox(
-                  height: 10,
-                ),
-                Center(
-                  child: Container(
-                    padding: EdgeInsets.all(10),
-                    decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(
-                            10), // Ajusta este valor para cambiar el radio de los bordes
-                        color: Color.fromARGB(255, 43, 42, 42)),
-                    child: Text(
-                      estado,
-                      style: TextStyle(color: color),
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Center(
+                      child: Text(
+                        "$temp c°",
+                        style: TextStyle(
+                            fontSize: 17,
+                            color: Colors.white,
+                            fontWeight: FontWeight.w200),
+                      ),
                     ),
-                  ),
-                ), //
+                    SizedBox(
+                      width: 10,
+                    ),
+                    Center(
+                      child: Container(
+                        padding: EdgeInsets.all(10),
+                        decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(
+                                10), // Ajusta este valor para cambiar el radio de los bordes
+                            color: Color.fromARGB(255, 43, 42, 42)),
+                        child: Text(
+                          estado,
+                          style: TextStyle(color: color),
+                        ),
+                      ),
+                    ), //
+                  ],
+                ),
                 SizedBox(
                   height: 10,
                 ),
                 Text(
-                  "Temperatura del prototipo",
+                  "Temperatura del dispositivo",
                   textAlign: TextAlign.center,
                   style: TextStyle(
                     fontSize: 13,

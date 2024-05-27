@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:flutter_application_prgrado/core/resources/data_state.dart';
+import 'package:flutter_application_prgrado/data/data_sources/failures.dart';
 import 'package:flutter_application_prgrado/data/data_sources/local/session/session_service.dart';
 import 'package:flutter_application_prgrado/data/data_sources/remote/user/user_api_service.dart';
 import 'package:flutter_application_prgrado/data/models/user.dart';
@@ -22,8 +23,8 @@ class SessionRepositoryImpl extends SessionRepository {
           await _sessionService.saveToSession(UserModel.fromEntity(user));
 
       return DataSuccess(prefs);
-    } on Exception catch (e) {
-      return DataError(e);
+    } on Exception {
+      return DataFailed(InternalFailure());
     }
   }
 
@@ -34,7 +35,7 @@ class SessionRepositoryImpl extends SessionRepository {
 
       return DataSuccess(prefs);
     } on Exception catch (e) {
-      return DataError(e);
+      return DataFailed(InternalFailure());
     }
   }
 
@@ -43,11 +44,11 @@ class SessionRepositoryImpl extends SessionRepository {
     try {
       final prefs = await _sessionService.getToSession();
 
-      if (prefs == null) return DataError(Exception('No saved session'));
+      if (prefs == null) return DataFailed(ExeptionFailure('No saved session'));
 
       return DataSuccess(prefs);
-    } on Exception catch (e) {
-      return DataError(e);
+    } on Exception catch (s) {
+      return DataFailed(ExeptionFailure(s.toString()));
     }
   }
 }

@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_application_prgrado/config/utils/my_colors.dart';
 import 'package:flutter_application_prgrado/injection_container.dart';
-import 'package:flutter_application_prgrado/presentation/bloc/login/login_bloc.dart';
-import 'package:flutter_application_prgrado/presentation/bloc/login/login_state.dart';
+import 'package:flutter_application_prgrado/presentation/bloc/session/bloc/session_bloc.dart';
+import 'package:flutter_application_prgrado/presentation/bloc/session/bloc/session_event.dart';
+import 'package:flutter_application_prgrado/presentation/pages/login/cubit/login_cubit.dart';
+import 'package:flutter_application_prgrado/presentation/widgets/dialogs/dialogs.dart';
+import 'package:flutter_application_prgrado/presentation/widgets/loading/loading.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../config/routes/routes.dart';
-import '../../bloc/login/login_event.dart';
 import '../../widgets/inputs/custom_button.dart';
 import '../../widgets/inputs/custom_input_field_state.dart';
 import '../../widgets/inputs/custom_textButton.dart';
@@ -14,6 +15,68 @@ import '../../widgets/text/custom_title.dart';
 
 class LoginPage extends StatelessWidget {
   const LoginPage({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocProvider(
+      create: (context) => sl<LoginCubit>(),
+      child: LoginView(),
+    );
+  }
+}
+
+class LoginView extends StatelessWidget {
+  const LoginView({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    final sessionBloc = context.read<SessionBloc>();
+    return MultiBlocListener(
+      listeners: [
+        BlocListener<LoginCubit, LoginState>(
+          listenWhen: (previous, current) =>
+              previous.loadingDialog != current.loadingDialog,
+          listener: (context, state) {
+            if (state.loadingDialog == LoadingDialog.open) {
+              Loading.showText(context, state.messageDialogLoading);
+            } else if (state.loadingDialog == LoadingDialog.close) {
+              Loading.close();
+            }
+          },
+        ),
+        BlocListener<LoginCubit, LoginState>(
+          listenWhen: (previous, current) =>
+              previous.dialogShow != current.dialogShow,
+          listener: (context, state) {
+            final dialogData = state.dialogData;
+            if (state.dialogShow == DialogShow.warning) {
+              Dialogs.showWarningMessage(context, dialogData);
+            } else if (state.dialogShow == DialogShow.error) {
+              Dialogs.showErrorMessage(context, dialogData);
+            } else if (state.dialogShow == DialogShow.success) {
+              Dialogs.showGoodMessage(context, dialogData);
+            }
+            //context.read<LoginCubit>().onChangeDialog(DialogShow.none);
+          },
+        ),
+        BlocListener<LoginCubit, LoginState>(
+          listenWhen: (previous, current) => previous.status != current.status,
+          listener: (context, state) {
+            if (state.status == LoginStatus.success) {
+              sessionBloc.add(SaveSessionEvent(state.userEntity));
+              sessionBloc.add(const ConnectedSessionEvent(true));
+              Navigator.pushReplacementNamed(context, Routes.home);
+            }
+          },
+        ),
+      ],
+      child: LoginBody(),
+    );
+  }
+}
+
+class LoginBody extends StatelessWidget {
+  const LoginBody({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -27,7 +90,7 @@ class LoginPage extends StatelessWidget {
       width: 220,
     );
     final color = Color(0xFF151515);
-    final bloc = sl<LoginBloc>();
+    final cubit = context.read<LoginCubit>();
     return Scaffold(
       resizeToAvoidBottomInset: true,
       body: SingleChildScrollView(
@@ -64,12 +127,12 @@ class LoginPage extends StatelessWidget {
                   child: SingleChildScrollView(
                     child: Padding(
                       padding: const EdgeInsets.all(20),
-                      child: BlocBuilder<LoginBloc, LoginState>(
-                        bloc: bloc,
+                      child: BlocBuilder<LoginCubit, LoginState>(
                         builder: (contextBloc, state) {
                           return Form(
-                            key: bloc.formKey,
+                            key: cubit.formKey,
                             child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 /*SizedBox(
                                   width: 100,
@@ -89,47 +152,61 @@ class LoginPage extends StatelessWidget {
                                 const SizedBox(
                                   height: 20,
                                 ),
-                                CustomInputFieldState(
-                                  validator: bloc.validationUserName,
-                                  icon: const Icon(Icons.email),
-                                  label: "Usuario",
-                                  onChanged: (value) => bloc.add(
-                                    EmailChangedLoginEvent(value),
+                                Text(
+                                  "Nombre de usuario o número de teléfono",
+                                  style: TextStyle(
+                                    fontSize: 12,
+                                    fontWeight: FontWeight.bold,
                                   ),
                                 ),
                                 CustomInputFieldState(
-                                  validator: bloc.validationPassword,
+                                  validator: cubit.validationUserName,
+                                  icon:
+                                      const Icon(Icons.person_add_alt_1_sharp),
+                                  label: "Usuario o telefono",
+                                  onChanged: (value) =>
+                                      cubit.onEmailChanged(value),
+                                ),
+                                Text(
+                                  "Contraseña",
+                                  style: TextStyle(
+                                    fontSize: 12,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                                CustomInputFieldState(
+                                  validator: cubit.validationPassword,
                                   icon: const Icon(Icons.security_outlined),
                                   label: "Contraseña",
-                                  onChanged: (value) => bloc.add(
-                                    PasswordChangedLoginEvent(value),
-                                  ),
+                                  onChanged: (value) =>
+                                      cubit.onPasswordChanged(value),
                                   isPassword: true,
                                 ),
                                 const SizedBox(
                                   height: 10,
                                 ),
                                 CustomButton(
-                                  colorButton: color,
-                                  height: 49,
-                                  colorTextButton: Colors.white,
-                                  textButton: 'Iniciar Sesión',
-                                  onPressed: () => bloc.add(
-                                    LoginSubmittedLoginEvent(context),
+                                    colorButton: color,
+                                    height: 49,
+                                    colorTextButton: Colors.white,
+                                    textButton: 'Iniciar Sesión',
+                                    onPressed: () => cubit.onLoginSubmitted()),
+                                const SizedBox(height: 50),
+                                Center(
+                                  child: const Text(
+                                    '¿No tengo una cuenta?',
+                                    textAlign: TextAlign.center,
                                   ),
                                 ),
-                                const SizedBox(height: 50),
-                                const Text(
-                                  '¿No tengo una cuenta?',
-                                  textAlign: TextAlign.center,
-                                ),
-                                CustomTextButton(
-                                  color: color,
-                                  text: 'Crear cuenta',
-                                  onPressed: () {
-                                    Navigator.pushNamed(
-                                        context, Routes.register);
-                                  },
+                                Center(
+                                  child: CustomTextButton(
+                                    color: color,
+                                    text: 'Crear cuenta',
+                                    onPressed: () {
+                                      Navigator.pushNamed(
+                                          context, Routes.register);
+                                    },
+                                  ),
                                 )
                               ],
                             ),

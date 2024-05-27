@@ -1,10 +1,9 @@
 import 'dart:async';
 
 import 'package:bloc/bloc.dart';
-import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_application_prgrado/core/resources/data_state.dart';
-import 'package:flutter_application_prgrado/data/models/warning_dialog_data.dart';
+import 'package:flutter_application_prgrado/data/data_sources/failures.dart';
 import 'package:flutter_application_prgrado/domain/entities/user.dart';
 import 'package:flutter_application_prgrado/domain/usecases/login.dart';
 import 'package:flutter_application_prgrado/domain/usecases/save_session.dart';
@@ -15,8 +14,6 @@ import 'package:flutter_application_prgrado/presentation/bloc/session/bloc/sessi
 
 import '../../../config/routes/routes.dart';
 import '../../../config/utils/input_validators.dart';
-import '../../../data/models/error_dialog_data.dart';
-import '../../widgets/dialogs/dialogs.dart';
 import '../../widgets/loading/loading.dart';
 
 class LoginBloc extends Bloc<LoginEvent, LoginState> {
@@ -78,13 +75,12 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
         Navigator.pushReplacementNamed(buildContext, Routes.home);
         //}
       });
-    } else if (response is DataFailed2) {
-      if (response.dioException!.type == DioExceptionType.connectionError) {
+    } else if (response is DataFailed) {
+      if (response.failure == NoInternetFailure()) {
         WidgetsBinding.instance.addPostFrameCallback((_) {
           showWarningMessage(buildContext);
         });
-      }
-      if (response.dioException!.type == DioExceptionType.badResponse) {
+      } else if (response.failure == ResponseFailure) {
         WidgetsBinding.instance.addPostFrameCallback((_) {
           showErrorMessage(buildContext, event, emit);
         });
@@ -95,7 +91,7 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
   Future<void> showWarningMessage(
     BuildContext buildContext,
   ) async {
-    Dialogs.showWarningMessage(
+    /* Dialogs.showWarningMessage(
       buildContext,
       WarningDialogData(
         "No estas conectado y/o el servidor esta apagado",
@@ -106,7 +102,7 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
         },
         false,
       ),
-    );
+    );*/
   }
 
   Future<void> showErrorMessage(
@@ -114,7 +110,7 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
     LoginSubmittedLoginEvent event,
     Emitter<LoginState> emit,
   ) async {
-    Dialogs.showErrorMessage(
+    /*Dialogs.showErrorMessage(
       buildContext,
       ErrorDialogData(
         "Ocurrió un problema al iniciar sesión, puede que no tenga una cuenta.",
@@ -126,7 +122,7 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
         },
         false,
       ),
-    );
+    );*/
   }
 
   bool isFormValid() {

@@ -4,6 +4,8 @@ import 'dart:typed_data';
 
 import 'package:flutter_application_prgrado/core/resources/data_state.dart';
 import 'package:flutter_application_prgrado/core/resources/http_state.dart';
+import 'package:flutter_application_prgrado/data/data_sources/exceptions.dart';
+import 'package:flutter_application_prgrado/data/data_sources/failures.dart';
 import 'package:flutter_application_prgrado/data/data_sources/remote/detection/detection_api_service.dart';
 import 'package:flutter_application_prgrado/domain/entities/detection_history.dart';
 import 'package:flutter_application_prgrado/domain/repository/detection_history_repository.dart';
@@ -21,10 +23,10 @@ class DetectionHistoryRepositoryImpl implements DetectionHistoryRepository {
 
   @override
   Future<DataState<List<DetectionHistoryEntity>>> getDetectionHistory() async {
-    final httpState = await _detectionApiService.getDetectionHistory();
-    if (httpState is HttpSuccess) {
-      final listPath =
-          httpState.httpResponse!.data.expand((e) => e.listPath!).toList();
+    try {
+      final httpState = await _detectionApiService.getDetectionHistoryDevice();
+
+      final listPath = httpState.expand((e) => e.listPath!).toList();
       final appDocPath = await getDirectoryPath();
       final listNamesSaveImg = await getListImgSave(appDocPath);
 
@@ -33,14 +35,18 @@ class DetectionHistoryRepositoryImpl implements DetectionHistoryRepository {
       if (imagesNoContains.isNotEmpty) {
         await getImageUrl(imagesNoContains);
       }
-      var list = httpState.httpResponse!.data;
+      var list = httpState;
       list.forEach((objeto) {
         objeto.setListPath =
             objeto.listPath!.map((e) => path.join(appDocPath, e)).toList();
       });
-      return DataSuccess(httpState.httpResponse!.data);
-    } else {
-      return DataFailed2(httpState.error!);
+      return DataSuccess(list);
+    } on RequestException {
+      return DataFailed(RequestFailure());
+    } on SocketException {
+      return DataFailed(SocketFailure());
+    } on ResultException catch (e) {
+      return DataFailed(ResultFailure(e.message));
     }
   }
 
@@ -48,9 +54,12 @@ class DetectionHistoryRepositoryImpl implements DetectionHistoryRepository {
 
   @override
   Future<DataState<bool>> getImageUrl(List<String> listNameFile) async {
-    final httpState = await _detectionApiService.getImagesZip(listNameFile);
-    if (httpState is HttpSuccess) {
-      final zipBytes = httpState.httpResponse!.data;
+    try {
+      final result = await _detectionApiService.getImagesZipDevice(
+        listNameFile,
+      );
+
+      final zipBytes = result;
 
       Archive archive = ZipDecoder().decodeBytes(Uint8List.fromList(zipBytes));
       final String appDocPath = await getDirectoryPath();
@@ -73,8 +82,12 @@ class DetectionHistoryRepositoryImpl implements DetectionHistoryRepository {
       //final listNamesSaveImg = await getListImgSave(extractedImagesPath);
 
       return DataSuccess(true);
-    } else {
-      return DataFailed2(httpState.error!);
+    } on RequestException {
+      return DataFailed(RequestFailure());
+    } on SocketException {
+      return DataFailed(SocketFailure());
+    } on ResultException catch (e) {
+      return DataFailed(ResultFailure(e.message));
     }
   }
 
