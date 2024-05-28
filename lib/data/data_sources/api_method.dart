@@ -51,6 +51,7 @@ class ApiMethod<T> {
     try {
       final query = uri.toString();
       log('REQUEST $query ===> Done');
+      log('BODY $data ===> Done');
       final response = await dio.post<String>(
         query,
         data: data,
@@ -100,7 +101,7 @@ class ApiMethod<T> {
     try {
       final query = uri.toString();
       log('REQUEST $query ===> Done');
-      final response = await dio.post<String>(
+      final response = await dio.patch<String>(
         query,
         data: data,
         options: options,

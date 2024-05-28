@@ -14,7 +14,7 @@ import 'package:flutter_application_prgrado/presentation/pages/detection_history
 import 'package:flutter_application_prgrado/presentation/pages/gestion/gestion_page.dart';
 import 'package:flutter_application_prgrado/presentation/pages/home/widgets/button_widget.dart';
 import 'package:flutter_application_prgrado/presentation/pages/home/widgets/connection_widget.dart';
-import 'package:flutter_application_prgrado/presentation/pages/information_device/information_driver_page.dart';
+import 'package:flutter_application_prgrado/presentation/pages/information_device/views/information_driver_page.dart';
 import 'package:flutter_application_prgrado/presentation/pages/user_profile/user_profile.dart';
 import 'package:flutter_application_prgrado/presentation/widgets/inputs/custom_button.dart';
 import 'package:flutter_application_prgrado/presentation/widgets/text/custom_title.dart';
@@ -202,6 +202,7 @@ class HomeView extends StatelessWidget {
                       if (user == null) return SizedBox();
                       return Expanded(
                         child: CustomTitle3(
+                          textAlignTitle: TextAlign.left,
                           title: "Bienvenido, ${user.name}",
                           colorTitle: Colors.white,
                           fontSize: 30,

@@ -27,31 +27,23 @@ class RegisterCubit extends Cubit<RegisterState> {
 
   void onChangedName(String name) {
     emit(
-      state.copyWith(
-        name: name,
-      ),
+      state.copyWith(name: name),
     );
   }
 
   void onChangedPassword(String password) {
     emit(
-      state.copyWith(
-        password: password,
-      ),
+      state.copyWith(password: password),
     );
   }
 
   void onChangedLastName(String lastName) {
-    state.copyWith(
-      lastName: lastName,
-    );
+    emit(state.copyWith(lastName: lastName));
   }
 
   void onChangedUserName(String userName) {
     emit(
-      state.copyWith(
-        userName: userName,
-      ),
+      state.copyWith(userName: userName),
     );
   }
 

@@ -43,6 +43,8 @@ class DeviceRepositoryImpl implements DeviceRepository {
       return DataFailed(SocketFailure());
     } on ResultException catch (e) {
       return DataFailed(ResultFailure(e.message));
+    } on NoInternetException catch (e) {
+      return DataFailed(NoInternetFailure());
     }
   }
 }

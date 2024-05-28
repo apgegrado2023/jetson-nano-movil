@@ -59,6 +59,7 @@ class CustomButton extends StatelessWidget {
           ),
         ),
         style: ElevatedButton.styleFrom(
+          padding: EdgeInsets.only(top: 1, bottom: 1),
           backgroundColor: colorButton,
           side: colorBorderButton != null
               ? BorderSide(color: colorBorderButton!)

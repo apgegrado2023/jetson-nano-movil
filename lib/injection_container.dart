@@ -164,7 +164,6 @@ Future<void> initializeDependencies() async {
   sl.registerFactory<InformationDeviceCubit>(
     () => InformationDeviceCubit(
       sl(),
-      sl(),
     ),
   );
 
