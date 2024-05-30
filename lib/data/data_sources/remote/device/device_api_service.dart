@@ -15,6 +15,12 @@ class DeviceApiService {
   final Dio dio;
   DeviceApiService(this.dio);
 
+  (Uri, Uri) getUriVideoCameras() {
+    final uriCameraOne = ApiBaseURL.pathSegments(['video_feedOne']);
+    final uriCameraTwo = ApiBaseURL.pathSegments(['video_feedTwo']);
+    return (uriCameraOne, uriCameraTwo);
+  }
+
   Future<bool> checkConnection({
     bool isSingle = false,
   }) async {

@@ -73,7 +73,7 @@ class TemperatureWidget extends StatelessWidget {
                   children: [
                     Center(
                       child: Text(
-                        "$temp c°",
+                        "${temp.toStringAsFixed(1)} c°",
                         style: TextStyle(
                             fontSize: 17,
                             color: Colors.white,

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_application_prgrado/domain/entities/user.dart';
-import 'package:flutter_application_prgrado/presentation/bloc/profile/profile_bloc.dart';
+import 'package:flutter_application_prgrado/presentation/pages/user_profile/bloc/profile_bloc.dart';
 import 'package:flutter_application_prgrado/presentation/pages/user_profile/widgets/dialog_field.dart';
 import 'package:flutter_application_prgrado/presentation/pages/user_profile/widgets/dialog_password.dart';
 import 'package:flutter_application_prgrado/presentation/pages/user_profile/widgets/item_profile.dart';

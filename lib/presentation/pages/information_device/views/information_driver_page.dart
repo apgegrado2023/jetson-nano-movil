@@ -2,8 +2,8 @@ import 'package:elegant_notification/elegant_notification.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_application_prgrado/config/utils/my_colors.dart';
 import 'package:flutter_application_prgrado/injection_container.dart';
-import 'package:flutter_application_prgrado/presentation/bloc/session/bloc/session_bloc.dart';
-import 'package:flutter_application_prgrado/presentation/bloc/session/bloc/session_event.dart';
+import 'package:flutter_application_prgrado/presentation/session/bloc/session_bloc.dart';
+import 'package:flutter_application_prgrado/presentation/session/bloc/session_event.dart';
 import 'package:flutter_application_prgrado/presentation/pages/information_device/cubit/information_device_cubit.dart';
 import 'package:flutter_application_prgrado/presentation/pages/information_device/widgets/cpu_widget.dart';
 import 'package:flutter_application_prgrado/presentation/pages/information_device/widgets/memory_swap_widget.dart';
@@ -42,35 +42,6 @@ class InformationDeviceView extends StatelessWidget {
             } else if (state.statusConnection == StatusConnection.connected) {
               sessionBloc.add(ConnectedSessionEvent(true));
             }
-          },
-        ),
-        BlocListener<InformationDeviceCubit, InformationDeviceState>(
-          listenWhen: (previous, current) =>
-              previous.dialog != current.dialog &&
-              current.dialog != DialogState.none,
-          listener: (context, state) {
-            final message = state.messageNotification;
-            final title = state.titleNotification;
-            if (state.dialog == DialogState.success) {
-              ElegantNotification.success(
-                title: Text(title),
-                description: Text(message),
-              ).show(context);
-            } else if (state.dialog == DialogState.error) {
-              ElegantNotification.error(
-                title: Text(title),
-                description: Text(message),
-              ).show(context);
-            } else if (state.dialog == DialogState.info) {
-              ElegantNotification.info(
-                title: Text(title),
-                description: Text(message),
-              ).show(context);
-            }
-
-            context
-                .read<InformationDeviceCubit>()
-                .onChangeDialogState(DialogState.none);
           },
         ),
       ],

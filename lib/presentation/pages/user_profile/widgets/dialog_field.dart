@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_application_prgrado/presentation/bloc/profile/profile_bloc.dart';
+import 'package:flutter_application_prgrado/presentation/pages/user_profile/bloc/profile_bloc.dart';
 import 'package:flutter_application_prgrado/presentation/widgets/inputs/custom_button.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 

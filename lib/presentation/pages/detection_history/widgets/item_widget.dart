@@ -124,7 +124,7 @@ class ItemWidget extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.end,
                     children: [
                       Text(
-                        'Mas detalles',
+                        'Más detalles',
                         style: TextStyle(color: Colors.white),
                       ),
                       Icon(

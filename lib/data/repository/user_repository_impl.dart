@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:io';
 import 'dart:math';
 import 'package:flutter_application_prgrado/core/resources/data_state.dart';
@@ -38,6 +39,8 @@ class UserRepositoryImpl extends UserRepository {
       return DataFailed(NoInternetFailure());
     } on ConflictException {
       return DataFailed(ConflictFailure());
+    } on TimeoutException {
+      return DataFailed(TimeoutFailure());
     }
   }
 
@@ -54,6 +57,8 @@ class UserRepositoryImpl extends UserRepository {
       return DataFailed(ResultFailure(e.message));
     } on NoInternetException {
       return DataFailed(NoInternetFailure());
+    } on TimeoutException {
+      return DataFailed(TimeoutFailure());
     }
   }
 
@@ -76,6 +81,8 @@ class UserRepositoryImpl extends UserRepository {
       return DataFailed(NotFoundFailure(e.message ?? 'Recurso no encontrado'));
     } on NoInternetException {
       return DataFailed(NoInternetFailure());
+    } on TimeoutException {
+      return DataFailed(TimeoutFailure());
     }
   }
 
@@ -99,6 +106,8 @@ class UserRepositoryImpl extends UserRepository {
       return DataFailed(ResultFailure(e.message));
     } on NoInternetException {
       return DataFailed(NoInternetFailure());
+    } on TimeoutException {
+      return DataFailed(TimeoutFailure());
     }
   }
 
@@ -124,6 +133,8 @@ class UserRepositoryImpl extends UserRepository {
       return DataFailed(ResultFailure(e.message));
     } on NoInternetException {
       return DataFailed(NoInternetFailure());
+    } on TimeoutException {
+      return DataFailed(TimeoutFailure());
     }
   }
 }

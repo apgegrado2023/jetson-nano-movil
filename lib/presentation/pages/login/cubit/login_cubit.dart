@@ -8,7 +8,7 @@ import 'package:flutter_application_prgrado/data/models/warning_dialog_data.dart
 import 'package:flutter_application_prgrado/domain/entities/user.dart';
 import 'package:flutter_application_prgrado/domain/usecases/login.dart';
 import 'package:flutter_application_prgrado/domain/usecases/save_session.dart';
-import 'package:flutter_application_prgrado/presentation/bloc/session/bloc/session_bloc.dart';
+import 'package:flutter_application_prgrado/presentation/session/bloc/session_bloc.dart';
 import 'package:flutter_application_prgrado/presentation/widgets/dialogs/dialogs.dart';
 
 part 'login_state.dart';

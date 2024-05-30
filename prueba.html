@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VideoStreaming</title>
+    <style>
+        body {
+            margin: 0;
+            background-color: black;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        .camera-container {
+            display: flex;
+            justify-content: space-around;
+            width: 80%;
+        }
+
+        .camera {
+            border-radius: 20px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .camera img {
+            width: 100%;
+            height: auto;
+        }
+
+        .camera-name {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            color: white;
+            font-size: 18px;
+            font-weight: bold;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="camera-container">
+        <div class="camera">
+            <span class="camera-name">Nombre de la cámara izquierda</span>
+            <img src="{{url_for('video_feed_cmrOne')}}">
+        </div>
+        <div class="camera">
+            <span class="camera-name">Nombre de la cámara derecha</span>
+            <img src="{{url_for('video_feed_cmrTwo')}}">
+        </div>
+    </div>
+
+</body>
+
+</html>

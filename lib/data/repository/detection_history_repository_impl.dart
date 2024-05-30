@@ -3,13 +3,11 @@ import 'dart:io';
 import 'dart:typed_data';
 
 import 'package:flutter_application_prgrado/core/resources/data_state.dart';
-import 'package:flutter_application_prgrado/core/resources/http_state.dart';
 import 'package:flutter_application_prgrado/data/data_sources/exceptions.dart';
 import 'package:flutter_application_prgrado/data/data_sources/failures.dart';
 import 'package:flutter_application_prgrado/data/data_sources/remote/detection/detection_api_service.dart';
 import 'package:flutter_application_prgrado/domain/entities/detection_history.dart';
 import 'package:flutter_application_prgrado/domain/repository/detection_history_repository.dart';
-import 'package:flutter_archive/flutter_archive.dart';
 import 'package:path_provider/path_provider.dart';
 
 import 'package:archive/archive.dart';
@@ -47,10 +45,12 @@ class DetectionHistoryRepositoryImpl implements DetectionHistoryRepository {
       return DataFailed(SocketFailure());
     } on ResultException catch (e) {
       return DataFailed(ResultFailure(e.message));
+    } on NoInternetException catch (e) {
+      return DataFailed(NoInternetFailure());
+    } on TimeoutException {
+      return DataFailed(TimeoutFailure());
     }
   }
-
-  Future<void> getImage() async {}
 
   @override
   Future<DataState<bool>> getImageUrl(List<String> listNameFile) async {
@@ -79,7 +79,6 @@ class DetectionHistoryRepositoryImpl implements DetectionHistoryRepository {
       }
 
       print('Imágenes descomprimidas y guardadas en: $appDocPath');
-      //final listNamesSaveImg = await getListImgSave(extractedImagesPath);
 
       return DataSuccess(true);
     } on RequestException {
@@ -88,6 +87,10 @@ class DetectionHistoryRepositoryImpl implements DetectionHistoryRepository {
       return DataFailed(SocketFailure());
     } on ResultException catch (e) {
       return DataFailed(ResultFailure(e.message));
+    } on NoInternetException catch (e) {
+      return DataFailed(NoInternetFailure());
+    } on TimeoutException {
+      return DataFailed(TimeoutFailure());
     }
   }
 
@@ -125,18 +128,5 @@ class DetectionHistoryRepositoryImpl implements DetectionHistoryRepository {
         .toList();
     print(localFileNames);
     return localFileNames;
-  }
-
-  Future<List<String>> _saveImagesToLocal(List<Uint8List> images) async {
-    final String appDocPath = await getDirectoryPath();
-    List<String> listPath = [];
-    for (int i = 0; i < images.length; i++) {
-      final String fileName = '$i.png';
-      final String filePath = path.join(appDocPath, fileName);
-
-      await File(filePath).writeAsBytes(images[i]);
-      listPath.add(filePath);
-    }
-    return listPath;
   }
 }

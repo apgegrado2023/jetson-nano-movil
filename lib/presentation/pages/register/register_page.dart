@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_application_prgrado/config/routes/routes.dart';
-import 'package:flutter_application_prgrado/presentation/bloc/session/bloc/session_bloc.dart';
-import 'package:flutter_application_prgrado/presentation/bloc/session/bloc/session_event.dart';
+import 'package:flutter_application_prgrado/presentation/session/bloc/session_bloc.dart';
+import 'package:flutter_application_prgrado/presentation/session/bloc/session_event.dart';
 import 'package:flutter_application_prgrado/presentation/pages/register/cubit/register_cubit.dart';
 import 'package:flutter_application_prgrado/presentation/widgets/appBar/appBar_custom.dart';
 import 'package:flutter_application_prgrado/presentation/widgets/dialogs/dialogs.dart';

@@ -1,10 +1,12 @@
 import 'package:bloc/bloc.dart';
 
 import 'package:equatable/equatable.dart';
+import 'package:flutter_application_prgrado/core/app/cubit/notification_app_cubit.dart';
 import 'package:flutter_application_prgrado/core/resources/data_state.dart';
 import 'package:flutter_application_prgrado/data/data_sources/failures.dart';
 import 'package:flutter_application_prgrado/domain/entities/information_system.dart';
 import 'package:flutter_application_prgrado/domain/usecases/get_information_device.dart';
+import 'package:flutter_application_prgrado/presentation/pages/information_device/notification.dart';
 
 part 'information_device_state.dart';
 
@@ -33,6 +35,7 @@ class InformationDeviceCubit extends Cubit<InformationDeviceState> {
     final httpResponse = await _getInformationDeviceUseCase();
     if (httpResponse is DataSuccess) {
       final systemInfoEntity = httpResponse.data!;
+      final status = state.statusConnection;
 
       emit(
         state.copyWith(
@@ -45,15 +48,26 @@ class InformationDeviceCubit extends Cubit<InformationDeviceState> {
           statusConnection: StatusConnection.connected,
         ),
       );
+      /*if (status != StatusConnection.connected) {
+        NotificationInteractor.onChangeNotification(
+          NotificationSyn.okConnection,
+        );
+      }*/
     } else if (httpResponse is DataFailed) {
       if (httpResponse.failure is NoInternetFailure) {
         if (state.statusConnection == StatusConnection.disconnected) return;
+
         emit(state.copyWith(
           statusConnection: StatusConnection.disconnected,
           status: StatusInformationDevice.error,
         ));
+
+        NotificationInteractor.onChangeNotification(
+          NotificationSyn.noConnection,
+        );
       } else {
         emit(state.copyWith(
+          statusConnection: StatusConnection.disconnected,
           status: StatusInformationDevice.error,
         ));
       }

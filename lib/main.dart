@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_application_prgrado/config/routes/app_routes.dart';
-import 'package:flutter_application_prgrado/presentation/bloc/session/bloc/session_bloc.dart';
+import 'package:flutter_application_prgrado/core/app/cubit/notification_app_cubit.dart';
+import 'package:flutter_application_prgrado/presentation/session/bloc/session_bloc.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'config/routes/routes.dart';
@@ -27,16 +28,19 @@ class MyApp extends StatelessWidget {
         BlocProvider(
           create: (context) => sl<SessionBloc>(),
         ),
+        BlocProvider(
+          create: (context) => NotificationInteractor.bloc,
+        ),
       ],
       child: MaterialApp(
-        title: "Sytem security driver",
+        title: "Sentinel Vision",
         theme: ThemeData(
           textTheme: GoogleFonts.ubuntuTextTheme(),
           primarySwatch: CustomColorPrimary().materialColor,
         ),
         supportedLocales: const [
           Locale('en', ''),
-          Locale('ar', ''), // arabic, no country code
+          Locale('ar', ''),
         ],
         debugShowCheckedModeBanner: false,
         onGenerateRoute: AppRoutes.onGenerateRoutes,

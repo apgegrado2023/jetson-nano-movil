@@ -28,6 +28,8 @@ class DeviceRepositoryImpl implements DeviceRepository {
       return DataFailed(ResultFailure(e.message));
     } on NoInternetException {
       return DataFailed(NoInternetFailure());
+    } on TimeoutException {
+      return DataFailed(TimeoutFailure());
     }
   }
 
@@ -45,6 +47,14 @@ class DeviceRepositoryImpl implements DeviceRepository {
       return DataFailed(ResultFailure(e.message));
     } on NoInternetException catch (e) {
       return DataFailed(NoInternetFailure());
+    } on TimeoutException {
+      return DataFailed(TimeoutFailure());
     }
+  }
+
+  @override
+  DataState<(Uri, Uri)> getUriVideoCameras() {
+    final result = _informationApiService.getUriVideoCameras();
+    return DataSuccess(result);
   }
 }

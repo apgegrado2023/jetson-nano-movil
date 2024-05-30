@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_application_prgrado/injection_container.dart';
-import 'package:flutter_application_prgrado/presentation/bloc/splash/splash_bloc.dart';
+import 'package:flutter_application_prgrado/presentation/pages/splash/splash/splash_bloc.dart';
 import 'package:flutter_application_prgrado/presentation/widgets/inputs/custom_button.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:lottie/lottie.dart';

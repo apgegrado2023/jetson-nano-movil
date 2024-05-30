@@ -15,7 +15,9 @@ class ApiMethod<T> {
     try {
       final query = uri.toString();
       log('REQUEST $query ===> Done');
-      final response = await dio.get<String>(query);
+      final response = await dio.get<String>(query).timeout(
+            const Duration(seconds: 10),
+          );
       log('RESULT $query ===> ${response.data}');
 
       if (response.statusCode == 200) {
@@ -36,6 +38,16 @@ class ApiMethod<T> {
         throw NoInternetException();
       } else if (e.response?.statusCode == 401) {
         throw UnauthorizedException();
+      } else if (e.type == DioExceptionType.receiveTimeout) {
+        throw TimeoutException(e.message);
+      } else if (e.type == DioExceptionType.connectionTimeout) {
+        throw TimeoutException(e.message);
+      } else if (e.type == DioExceptionType.sendTimeout) {
+        throw TimeoutException(e.message);
+      } else if (e.response?.statusCode == 404) {
+        throw NotFoundException(e.message);
+      } else if (e.response?.statusCode == 409) {
+        throw ConflictException(e.message);
       }
       throw RequestException();
     } on FormatException {
@@ -77,6 +89,12 @@ class ApiMethod<T> {
         throw NoInternetException();
       } else if (e.response?.statusCode == 401) {
         throw UnauthorizedException();
+      } else if (e.type == DioExceptionType.receiveTimeout) {
+        throw TimeoutException(e.message);
+      } else if (e.type == DioExceptionType.connectionTimeout) {
+        throw TimeoutException(e.message);
+      } else if (e.type == DioExceptionType.sendTimeout) {
+        throw TimeoutException(e.message);
       } else if (e.response?.statusCode == 404) {
         throw NotFoundException(e.message);
       } else if (e.response?.statusCode == 409) {
@@ -126,6 +144,16 @@ class ApiMethod<T> {
         throw NoInternetException();
       } else if (e.response?.statusCode == 401) {
         throw UnauthorizedException();
+      } else if (e.type == DioExceptionType.receiveTimeout) {
+        throw TimeoutException(e.message);
+      } else if (e.type == DioExceptionType.connectionTimeout) {
+        throw TimeoutException(e.message);
+      } else if (e.type == DioExceptionType.sendTimeout) {
+        throw TimeoutException(e.message);
+      } else if (e.response?.statusCode == 404) {
+        throw NotFoundException(e.message);
+      } else if (e.response?.statusCode == 409) {
+        throw ConflictException(e.message);
       }
       throw RequestException();
     } on FormatException {
@@ -166,6 +194,16 @@ class ApiMethod<T> {
         throw NoInternetException();
       } else if (e.response?.statusCode == 401) {
         throw UnauthorizedException();
+      } else if (e.type == DioExceptionType.receiveTimeout) {
+        throw TimeoutException(e.message);
+      } else if (e.type == DioExceptionType.connectionTimeout) {
+        throw TimeoutException(e.message);
+      } else if (e.type == DioExceptionType.sendTimeout) {
+        throw TimeoutException(e.message);
+      } else if (e.response?.statusCode == 404) {
+        throw NotFoundException(e.message);
+      } else if (e.response?.statusCode == 409) {
+        throw ConflictException(e.message);
       }
       throw RequestException();
     } on FormatException {

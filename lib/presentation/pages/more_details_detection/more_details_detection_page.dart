@@ -44,10 +44,15 @@ class MoreDetailsDetectionPage extends StatelessWidget {
     return SafeArea(
       child: Scaffold(
         appBar: AppBar(
-          title: Text('Detalles de la detección'),
+          iconTheme: IconThemeData(color: Colors.white),
+          title: Text(
+            'Detalles de la detección',
+            style: TextStyle(color: Colors.white),
+          ),
           backgroundColor: Colors.transparent,
           shadowColor: Colors.transparent,
         ),
+
         backgroundColor: Color(0xFF151515), //
         body: Padding(
           padding: const EdgeInsets.all(8.0),
@@ -138,12 +143,23 @@ class MoreDetailsDetectionPage extends StatelessWidget {
                           Radius.circular(10.0), // Radio de esquina
                         ),
                       ),
-                      child: Text(
-                        "Fecha: " + formattedDate,
-                        style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 16,
-                            fontWeight: FontWeight.w900),
+                      child: Column(
+                        children: [
+                          Text(
+                            "Fecha: ",
+                            style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 16,
+                                fontWeight: FontWeight.w900),
+                          ),
+                          Text(
+                            formattedDate,
+                            style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 16,
+                                fontWeight: FontWeight.w900),
+                          ),
+                        ],
                       ),
                     ),
                   ),
@@ -165,12 +181,23 @@ class MoreDetailsDetectionPage extends StatelessWidget {
                           Radius.circular(10.0), // Radio de esquina
                         ),
                       ),
-                      child: Text(
-                        "Hora: " + hour,
-                        style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 16,
-                            fontWeight: FontWeight.w900),
+                      child: Column(
+                        children: [
+                          Text(
+                            "Hora:",
+                            style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 16,
+                                fontWeight: FontWeight.w900),
+                          ),
+                          Text(
+                            hour,
+                            style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 16,
+                                fontWeight: FontWeight.w900),
+                          ),
+                        ],
                       ),
                     ),
                   )

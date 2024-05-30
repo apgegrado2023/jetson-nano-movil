@@ -13,6 +13,7 @@ import 'package:flutter_application_prgrado/domain/repository/session_repository
 import 'package:flutter_application_prgrado/domain/repository/user_repository.dart';
 import 'package:flutter_application_prgrado/domain/usecases/change_password.dart';
 import 'package:flutter_application_prgrado/domain/usecases/check_connection.dart';
+import 'package:flutter_application_prgrado/domain/usecases/getUriCameras.dart';
 import 'package:flutter_application_prgrado/domain/usecases/get_detection_history.dart';
 import 'package:flutter_application_prgrado/domain/usecases/get_information_device.dart';
 import 'package:flutter_application_prgrado/domain/usecases/get_session.dart';
@@ -21,15 +22,12 @@ import 'package:flutter_application_prgrado/domain/usecases/remove_session.dart'
 import 'package:flutter_application_prgrado/domain/usecases/save_session.dart';
 import 'package:flutter_application_prgrado/domain/usecases/save_user.dart';
 import 'package:flutter_application_prgrado/domain/usecases/update_filed_user.dart';
-import 'package:flutter_application_prgrado/presentation/bloc/detection_history/cubit/detection_history_cubit.dart';
-import 'package:flutter_application_prgrado/presentation/bloc/detection_history/detection_history_bloc.dart';
-import 'package:flutter_application_prgrado/presentation/bloc/home/home_bloc.dart';
-import 'package:flutter_application_prgrado/presentation/bloc/information_device/information_device_bloc.dart';
-import 'package:flutter_application_prgrado/presentation/bloc/login/login_bloc.dart';
-import 'package:flutter_application_prgrado/presentation/bloc/profile/profile_bloc.dart';
-import 'package:flutter_application_prgrado/presentation/bloc/register/register_bloc.dart';
-import 'package:flutter_application_prgrado/presentation/bloc/session/bloc/session_bloc.dart';
-import 'package:flutter_application_prgrado/presentation/bloc/splash/splash_bloc.dart';
+import 'package:flutter_application_prgrado/presentation/pages/home/BLOC/home_bloc.dart';
+import 'package:flutter_application_prgrado/presentation/pages/user_profile/bloc/profile_bloc.dart';
+import 'package:flutter_application_prgrado/presentation/pages/video_camera/cubit/video_camera_cubit.dart';
+import 'package:flutter_application_prgrado/presentation/session/bloc/session_bloc.dart';
+import 'package:flutter_application_prgrado/presentation/pages/splash/splash/splash_bloc.dart';
+import 'package:flutter_application_prgrado/presentation/pages/detection_history/cubit/detection_history_cubit.dart';
 import 'package:flutter_application_prgrado/presentation/pages/information_device/cubit/information_device_cubit.dart';
 import 'package:flutter_application_prgrado/presentation/pages/login/cubit/login_cubit.dart';
 import 'package:flutter_application_prgrado/presentation/pages/register/cubit/register_cubit.dart';
@@ -52,132 +50,46 @@ Future<void> initializeDependencies() async {
   );
 */
   // Data Sources
-  sl.registerSingleton<DeviceApiService>(
-    DeviceApiService(dio),
-  );
-  sl.registerSingleton<UserApiService>(
-    UserApiService(dio),
-  );
-
-  sl.registerSingleton<DetectionApiService>(
-    DetectionApiService(dio),
-  );
+  sl.registerSingleton<DeviceApiService>(DeviceApiService(dio));
+  sl.registerSingleton<UserApiService>(UserApiService(dio));
+  sl.registerSingleton<DetectionApiService>(DetectionApiService(dio));
   sl.registerSingleton<SessionService>(SessionService());
 
   // Repositories
-  sl.registerSingleton<UserRepository>(
-    UserRepositoryImpl(sl()),
-  );
-  sl.registerSingleton<SessionRepository>(
-    SessionRepositoryImpl(sl()),
-  );
-
-  sl.registerSingleton<DeviceRepository>(
-    DeviceRepositoryImpl(sl()),
-  );
-
+  sl.registerSingleton<UserRepository>(UserRepositoryImpl(sl()));
+  sl.registerSingleton<SessionRepository>(SessionRepositoryImpl(sl()));
+  sl.registerSingleton<DeviceRepository>(DeviceRepositoryImpl(sl()));
   sl.registerSingleton<DetectionHistoryRepository>(
-    DetectionHistoryRepositoryImpl(sl()),
-  );
+      DetectionHistoryRepositoryImpl(sl()));
 
   // UseCases
   sl.registerSingleton<GetInformationDeviceUseCase>(
-    GetInformationDeviceUseCase(sl()),
-  );
-
-  sl.registerSingleton<CheckConnectionUseCase>(
-    CheckConnectionUseCase(
-      sl(),
-    ),
-  );
-
-  sl.registerSingleton<SaveSessionUseCase>(
-    SaveSessionUseCase(
-      sl(),
-    ),
-  );
-
-  sl.registerSingleton<LoginUseCase>(
-    LoginUseCase(
-      sl(),
-    ),
-  );
-  sl.registerSingleton<SaveUserUseCase>(
-    SaveUserUseCase(
-      sl(),
-    ),
-  );
-
-  sl.registerSingleton<GetSessionUseCase>(
-    GetSessionUseCase(
-      sl(),
-    ),
-  );
-
-  sl.registerSingleton<RemoveSessionUseCase>(
-    RemoveSessionUseCase(
-      sl(),
-    ),
-  );
-  sl.registerSingleton<UpdateFileUserUseCase>(
-    UpdateFileUserUseCase(
-      sl(),
-    ),
-  );
-  sl.registerSingleton<ChangePasswordUseCase>(
-    ChangePasswordUseCase(sl()),
-  );
-
+      GetInformationDeviceUseCase(sl()));
+  sl.registerSingleton<CheckConnectionUseCase>(CheckConnectionUseCase(sl()));
+  sl.registerSingleton<SaveSessionUseCase>(SaveSessionUseCase(sl()));
+  sl.registerSingleton<LoginUseCase>(LoginUseCase(sl()));
+  sl.registerSingleton<SaveUserUseCase>(SaveUserUseCase(sl()));
+  sl.registerSingleton<GetSessionUseCase>(GetSessionUseCase(sl()));
+  sl.registerSingleton<RemoveSessionUseCase>(RemoveSessionUseCase(sl()));
+  sl.registerSingleton<UpdateFileUserUseCase>(UpdateFileUserUseCase(sl()));
+  sl.registerSingleton<ChangePasswordUseCase>(ChangePasswordUseCase(sl()));
   sl.registerSingleton<GetDetectionHistoryUseCase>(
-    GetDetectionHistoryUseCase(sl()),
-  );
+      GetDetectionHistoryUseCase(sl()));
+
+  sl.registerSingleton<GetUriUseCase>(GetUriUseCase(sl()));
+
   //Presentation - Bloc
-
   sl.registerSingleton<SessionBloc>(SessionBloc(sl()));
-
-  sl.registerFactory<SplashBloc>(
-    () => SplashBloc(
-      sl(),
-      sl(),
-      sl(),
-      sl(),
-    ),
-  );
-
-  sl.registerFactory<LoginBloc>(
-    () => LoginBloc(sl<SessionBloc>(), sl(), sl()),
-  );
-
-  sl.registerFactory<RegisterBloc>(
-      () => RegisterBloc(sl<SessionBloc>(), sl(), sl()));
-
-  sl.registerFactory<HomeBloc>(() => HomeBloc(
-      sl<SessionBloc>(), sl<UserRepository>(), sl<SessionRepository>(), sl()));
-
-  sl.registerFactory<InformationDeviceBloc>(
-      () => InformationDeviceBloc(sl(), sl()));
+  sl.registerFactory<SplashBloc>(() => SplashBloc(sl(), sl(), sl(), sl()));
+  sl.registerFactory<HomeBloc>(() => HomeBloc(sl(), sl()));
   sl.registerFactory<ProfileBloc>(() => ProfileBloc(sl(), sl(), sl(), sl()));
   sl.registerFactory<DetectionHistoryCubit>(
-      () => DetectionHistoryCubit(sl(), sl(), sl()));
+      () => DetectionHistoryCubit(sl(), sl()));
 
   //CUBITS
   sl.registerFactory<InformationDeviceCubit>(
-    () => InformationDeviceCubit(
-      sl(),
-    ),
-  );
-
-  sl.registerFactory<LoginCubit>(
-    () => LoginCubit(
-      sl(),
-      sl(),
-    ),
-  );
-
-  sl.registerFactory<RegisterCubit>(
-    () => RegisterCubit(
-      sl(),
-      sl(),
-    ),
-  );
+      () => InformationDeviceCubit(sl()));
+  sl.registerFactory<LoginCubit>(() => LoginCubit(sl(), sl()));
+  sl.registerFactory<RegisterCubit>(() => RegisterCubit(sl(), sl()));
+  sl.registerFactory<VideoCameraCubit>(() => VideoCameraCubit(sl(), sl()));
 }

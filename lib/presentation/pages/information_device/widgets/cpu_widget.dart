@@ -49,7 +49,7 @@ class CpuWidget extends StatelessWidget {
             ),
             Center(
               child: Text(
-                "$cpuUsage%",
+                "${cpuUsage.toStringAsFixed(1)}%",
                 style: TextStyle(
                     fontSize: 17,
                     color: Colors.white,

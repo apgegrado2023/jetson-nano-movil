@@ -22,7 +22,7 @@ class MemoryWidget extends StatelessWidget {
             return PieChartSectionData(
               color: Color.fromARGB(255, 255, 255, 255),
               value: double.parse(info.available.toString()),
-              title: "${100 - info.percentUsed!}%",
+              title: "${(100 - info.percentUsed).toStringAsFixed(1)}%",
               radius: radius,
               titleStyle: TextStyle(
                 fontWeight: FontWeight.bold,
@@ -33,7 +33,7 @@ class MemoryWidget extends StatelessWidget {
             return PieChartSectionData(
               color: Color.fromARGB(255, 138, 221, 181),
               value: double.parse((info.total! - info.available!).toString()),
-              title: "${info.percentUsed}%",
+              title: "${info.percentUsed.toStringAsFixed(1)}%",
               radius: radius,
               titleStyle: TextStyle(
                 fontWeight: FontWeight.bold,

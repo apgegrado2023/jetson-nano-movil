@@ -62,7 +62,7 @@ class MemorySwapWidget extends StatelessWidget {
             ),
             Center(
               child: Text(
-                "$swapR %",
+                "${swapR.toStringAsFixed(1)} %",
                 textAlign: TextAlign.center,
                 style: TextStyle(
                   fontSize: 17,

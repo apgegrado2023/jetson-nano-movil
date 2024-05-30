@@ -50,6 +50,8 @@ class ConflictFailure extends Failure {}
 
 class InternalFailure extends Failure {}
 
+class TimeoutFailure extends Failure {}
+
 class ExeptionFailure extends Failure {
   ExeptionFailure(this.message);
 

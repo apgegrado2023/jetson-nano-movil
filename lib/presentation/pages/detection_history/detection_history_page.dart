@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_application_prgrado/injection_container.dart';
-import 'package:flutter_application_prgrado/presentation/bloc/detection_history/detection_history_bloc.dart';
+import 'package:flutter_application_prgrado/presentation/pages/detection_history/cubit/detection_history_cubit.dart';
 import 'package:flutter_application_prgrado/presentation/pages/detection_history/widgets/button_widget.dart';
 import 'package:flutter_application_prgrado/presentation/pages/detection_history/widgets/item_widget.dart';
+import 'package:flutter_application_prgrado/presentation/pages/information_device/cubit/information_device_cubit.dart';
+import 'package:flutter_application_prgrado/presentation/session/bloc/session_bloc.dart';
+import 'package:flutter_application_prgrado/presentation/session/bloc/session_event.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:lottie/lottie.dart';
 
-import '../../bloc/detection_history/cubit/detection_history_cubit.dart';
 import '../../widgets/inputs/custom_input_field.dart';
 
 class DetectionHistoryPage extends StatelessWidget {
@@ -14,30 +16,44 @@ class DetectionHistoryPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final sessionBloc = context.read<SessionBloc>();
     return BlocProvider<DetectionHistoryCubit>(
       create: (context) => sl<DetectionHistoryCubit>()..init(),
-      child: DetectionHistoryView(),
+      child: BlocListener<DetectionHistoryCubit, DetectionHistoryState>(
+        listenWhen: (previous, current) =>
+            previous.statusConnection != current.statusConnection,
+        listener: (context, state) {
+          if (state.statusConnection == StatusConnection.disconnected) {
+            sessionBloc.add(ConnectedSessionEvent(false));
+          } else if (state.statusConnection == StatusConnection.connected) {
+            sessionBloc.add(ConnectedSessionEvent(true));
+          }
+        },
+        child: DetectionHistoryView(),
+      ),
     );
   }
 }
 
 class DetectionHistoryView extends StatelessWidget {
   DetectionHistoryView({super.key});
+
   Future<void> _refreshList(BuildContext context) async {
-    context.read<DetectionHistoryCubit>().loadDataReload();
+    context.read<DetectionHistoryCubit>().loadDataDetections();
     textEditingController.clear();
   }
 
-  TextEditingController textEditingController = TextEditingController();
+  late TextEditingController textEditingController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
     return Container(
       child: BlocBuilder<DetectionHistoryCubit, DetectionHistoryState>(
           builder: (context, state) {
-        if (state is DetectionHistoryDone) {
+        if (state.detectHistoryDevice == DetectHistoryDevice.success) {
           final list = state.listMemberEntity;
           return Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Row(
                 children: [
@@ -75,7 +91,7 @@ class DetectionHistoryView extends StatelessWidget {
                   ),*/
                 ],
               ),
-              BlocSelector<DetectionHistoryCubit, DetectionHistoryState, int?>(
+              /*BlocSelector<DetectionHistoryCubit, DetectionHistoryState, int?>(
                 //bloc: bloc,
                 selector: (state) => state.index,
                 builder: (context, index) {
@@ -125,7 +141,7 @@ class DetectionHistoryView extends StatelessWidget {
                     ],
                   ));
                 },
-              ),
+              ),*/
               SizedBox(
                 height: 10,
               ),
@@ -142,7 +158,7 @@ class DetectionHistoryView extends StatelessWidget {
               ),
             ],
           );
-        } else if (state is DetectionHistoryLoading) {
+        } else if (state.detectHistoryDevice == DetectHistoryDevice.loading) {
           return Center(
             child: Lottie.asset(
               'assets/lottie/animation_lny3vsqg.json',
@@ -151,7 +167,7 @@ class DetectionHistoryView extends StatelessWidget {
             ),
           );
           //return Text('Error al obtener la información');
-        } else if (state is DetectionHistoryDisconnection) {
+        } else if (state.statusConnection == StatusConnection.disconnected) {
           return Center(
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
@@ -171,15 +187,6 @@ class DetectionHistoryView extends StatelessWidget {
                 SizedBox(
                   height: 20,
                 ),
-                /*CustomButton(
-                        textButton: "Volver a conectar",
-                        width: 200,
-                        onPressed: () {
-                          /*context
-                              .read<SplashBloc>()
-                              .add(ReloadConnectionEvent());*/
-                        },
-                      )*/
               ],
             ),
           );

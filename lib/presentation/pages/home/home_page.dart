@@ -1,17 +1,16 @@
+import 'package:elegant_notification/elegant_notification.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_application_prgrado/config/routes/routes.dart';
-import 'package:flutter_application_prgrado/config/utils/my_colors.dart';
+import 'package:flutter_application_prgrado/core/app/cubit/notification_app_cubit.dart';
 import 'package:flutter_application_prgrado/domain/entities/user.dart';
 import 'package:flutter_application_prgrado/injection_container.dart';
-import 'package:flutter_application_prgrado/presentation/bloc/home/home_bloc.dart';
-import 'package:flutter_application_prgrado/presentation/bloc/home/home_event.dart';
-import 'package:flutter_application_prgrado/presentation/bloc/home/home_state.dart';
-import 'package:flutter_application_prgrado/presentation/bloc/session/bloc/session_bloc.dart';
-import 'package:flutter_application_prgrado/presentation/bloc/session/bloc/session_event.dart';
-import 'package:flutter_application_prgrado/presentation/bloc/session/bloc/session_state.dart';
-import 'package:flutter_application_prgrado/presentation/pages/cameras_device/cameras_device_page.dart';
+import 'package:flutter_application_prgrado/presentation/pages/home/BLOC/home_bloc.dart';
+import 'package:flutter_application_prgrado/presentation/pages/home/BLOC/home_event.dart';
+import 'package:flutter_application_prgrado/presentation/pages/home/BLOC/home_state.dart';
+import 'package:flutter_application_prgrado/presentation/pages/video_camera/views/video_camera_page.dart';
+import 'package:flutter_application_prgrado/presentation/session/bloc/session_bloc.dart';
+import 'package:flutter_application_prgrado/presentation/session/bloc/session_event.dart';
+import 'package:flutter_application_prgrado/presentation/session/bloc/session_state.dart';
 import 'package:flutter_application_prgrado/presentation/pages/detection_history/detection_history_page.dart';
-import 'package:flutter_application_prgrado/presentation/pages/gestion/gestion_page.dart';
 import 'package:flutter_application_prgrado/presentation/pages/home/widgets/button_widget.dart';
 import 'package:flutter_application_prgrado/presentation/pages/home/widgets/connection_widget.dart';
 import 'package:flutter_application_prgrado/presentation/pages/information_device/views/information_driver_page.dart';
@@ -29,7 +28,33 @@ class HomePage extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocProvider(
       create: (context) => sl<HomeBloc>()..add(const InitHomeEvent()),
-      child: HomeView(),
+      child: BlocListener<NotificationAppCubit, NotificationAppState>(
+        listener: (context, state) {
+          final message = state.notification.message;
+          final title = state.notification.title;
+          final status = state.notification.notificationType;
+
+          if (NotificationType.success == status) {
+            ElegantNotification.success(
+              title: Text(title),
+              description: Text(message),
+            ).show(context);
+          } else if (NotificationType.error == status) {
+            ElegantNotification.error(
+              title: Text(title),
+              description: Text(message),
+            ).show(context);
+            return;
+          } else if (NotificationType.info == status) {
+            ElegantNotification.info(
+              title: Text(title),
+              description: Text(message),
+            ).show(context);
+            return;
+          }
+        },
+        child: HomeView(),
+      ),
     );
   }
 }
@@ -39,7 +64,7 @@ class HomeView extends StatelessWidget {
   final session = sl<SessionBloc>();
   final list = <Widget>[
     const InformationDevicePage(),
-    const CamerasDevicePage(),
+    const VideoCameraPage(),
     const DetectionHistoryPage()
   ];
 
@@ -163,17 +188,16 @@ class HomeView extends StatelessWidget {
                           ),
                           _buildPopupMenuItem(
                               'Mi perfil', Icons.person, Options.perfil.index),
-                          _buildPopupMenuItem('Configuración', Icons.settings,
-                              Options.settings.index),
+                          /* _buildPopupMenuItem('Configuración', Icons.settings,
+                              Options.settings.index),*/
                           _buildPopupMenuItem('Cerrar sesión', Icons.logout,
                               Options.logout.index),
                         ],
                       ),
-
                       SizedBox(
-                        height: 10,
+                        height: 20,
                       ),
-                      Container(
+                      /* Container(
                         padding: EdgeInsets.all(5),
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(
@@ -185,7 +209,7 @@ class HomeView extends StatelessWidget {
                           Icons.info_outline,
                           color: Colors.white,
                         ),
-                      ), //
+                      ), */
                     ],
                   ),
                 ],
@@ -210,14 +234,6 @@ class HomeView extends StatelessWidget {
                       );
                     }),
                   ),
-
-                  /*Center(
-                    child: Lottie.asset(
-                      'assets/lottie/Animation - 1699345190736.json', // Ruta a tu archivo JSON de animación
-                      width: 100, // Ajusta el ancho según tus preferencias
-                      height: 100, // Ajusta la altura según tus preferencias
-                    ),
-                  )*/
                 ],
               ),
               SizedBox(
@@ -368,46 +384,6 @@ class HomeView extends StatelessWidget {
       ),
     );
   }
-
-  _itemButton(
-    String text,
-    bool isSelected,
-    void Function() ontap,
-  ) {
-    return InkWell(
-      onTap: ontap,
-      child: Container(
-        padding: EdgeInsets.all(20),
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(
-              30), // Ajusta este valor para cambiar el radio de los bordes
-          color: Color.fromARGB(
-            255,
-            51,
-            51,
-            51,
-          ), // Cambia el color del contenedor según lo necesites
-        ),
-        child: Text(
-          text,
-          style: TextStyle(color: Colors.white, fontSize: 15),
-        ),
-      ),
-    );
-  }
-
-  _contaier(Widget child, {Color color = Colors.white}) {
-    return Container(
-      height: 90,
-      padding: EdgeInsets.all(20),
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(
-            15), // Ajusta este valor para cambiar el radio de los bordes
-        color: color, // Cambia el color del contenedor según lo necesites
-      ),
-      child: child,
-    );
-  }
 }
 
 class ServerStatusDialog extends StatelessWidget {
@@ -425,32 +401,37 @@ class ServerStatusDialog extends StatelessWidget {
         bottom: 40,
       ),
       icon: Icon(
-        Icons.task_alt,
+        isConnected ? Icons.task_alt : Icons.warning,
         size: 50,
-        color: Colors.green,
+        color: isConnected ? Colors.green : Colors.red,
       ),
       title: Text(
-        "Conexión establecida",
+        isConnected ? "Conexión establecida" : "Conexión no establecida",
         style: TextStyle(
           fontWeight: FontWeight.bold,
-          color: Colors.green,
+          color: isConnected ? Colors.green : Colors.red,
         ),
         textAlign: TextAlign.center,
       ),
       content: Text(
-        "Verificación de conexión correcta",
+        isConnected
+            ? "Verificación de conexión correcta"
+            : "Verificación de conexión incorrecta",
         textAlign: TextAlign.center,
-        style: TextStyle(color: Colors.black54),
+        style: TextStyle(
+          color: isConnected ? Colors.black54 : Colors.red,
+        ),
       ),
       actions: <Widget>[
         CustomButton(
-            height: 50,
-            textButton: "Cerrar",
-            colorButton: Colors.green,
-            onPressed: () {
-              Navigator.of(context).pop();
-            } // Cerrar el diálogo},
-            )
+          height: 50,
+          textButton: "Cerrar",
+          colorTextButton: Colors.white,
+          colorButton: isConnected ? Colors.green : Colors.red,
+          onPressed: () {
+            Navigator.of(context).pop();
+          },
+        ),
       ],
       actionsAlignment: MainAxisAlignment.center,
     );
