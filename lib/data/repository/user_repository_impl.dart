@@ -41,6 +41,8 @@ class UserRepositoryImpl extends UserRepository {
       return DataFailed(ConflictFailure());
     } on TimeoutException {
       return DataFailed(TimeoutFailure());
+    } on UnauthorizedException {
+      return DataFailed(UnauthorizedFailure());
     }
   }
 
@@ -59,6 +61,8 @@ class UserRepositoryImpl extends UserRepository {
       return DataFailed(NoInternetFailure());
     } on TimeoutException {
       return DataFailed(TimeoutFailure());
+    } on UnauthorizedException {
+      return DataFailed(UnauthorizedFailure());
     }
   }
 
@@ -83,6 +87,8 @@ class UserRepositoryImpl extends UserRepository {
       return DataFailed(NoInternetFailure());
     } on TimeoutException {
       return DataFailed(TimeoutFailure());
+    } on UnauthorizedException {
+      return DataFailed(UnauthorizedFailure());
     }
   }
 
@@ -108,6 +114,8 @@ class UserRepositoryImpl extends UserRepository {
       return DataFailed(NoInternetFailure());
     } on TimeoutException {
       return DataFailed(TimeoutFailure());
+    } on UnauthorizedException {
+      return DataFailed(UnauthorizedFailure());
     }
   }
 
@@ -135,6 +143,8 @@ class UserRepositoryImpl extends UserRepository {
       return DataFailed(NoInternetFailure());
     } on TimeoutException {
       return DataFailed(TimeoutFailure());
+    } on UnauthorizedException {
+      return DataFailed(UnauthorizedFailure());
     }
   }
 }

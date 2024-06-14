@@ -49,9 +49,7 @@ class VideoCameraCubit extends Cubit<VideoCameraState> {
       );
     } else if (httpResponse is DataFailed) {
       if (state.statusConnection == StatusConnection.disconnected) return;
-      NotificationInteractor.onChangeNotification(
-        NotificationSyn.noConnection,
-      );
+
       if (httpResponse.failure is NoInternetFailure) {
         if (state.statusConnection == StatusConnection.disconnected) return;
         emit(state.copyWith(

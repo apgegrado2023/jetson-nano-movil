@@ -6,6 +6,7 @@ import 'package:flutter_application_prgrado/injection_container.dart';
 import 'package:flutter_application_prgrado/presentation/pages/home/BLOC/home_bloc.dart';
 import 'package:flutter_application_prgrado/presentation/pages/home/BLOC/home_event.dart';
 import 'package:flutter_application_prgrado/presentation/pages/home/BLOC/home_state.dart';
+import 'package:flutter_application_prgrado/presentation/pages/information_device/notification.dart';
 import 'package:flutter_application_prgrado/presentation/pages/video_camera/views/video_camera_page.dart';
 import 'package:flutter_application_prgrado/presentation/session/bloc/session_bloc.dart';
 import 'package:flutter_application_prgrado/presentation/session/bloc/session_event.dart';
@@ -251,15 +252,27 @@ class HomeView extends StatelessWidget {
                         builder: ((context, s) {
                           switch (s) {
                             case StatusConnection.connected:
+                              NotificationInteractor.onChangeNotification(
+                                NotificationSyn.okConnection,
+                              );
                               return const ConnectionWidget(isConnection: true);
                             case StatusConnection.failed:
+                              NotificationInteractor.onChangeNotification(
+                                NotificationSyn.noConnection,
+                              );
                               return const ConnectionWidget(
                                   isConnection: false);
 
                             case StatusConnection.disable:
+                              NotificationInteractor.onChangeNotification(
+                                NotificationSyn.noConnection,
+                              );
                               return const ConnectionWidget(
                                   isConnection: false);
                             default:
+                              NotificationInteractor.onChangeNotification(
+                                NotificationSyn.noConnection,
+                              );
                               return const ConnectionWidget(
                                   isConnection: false);
                           }

@@ -20,8 +20,32 @@ class NotificationSyn {
   static NotificationInfo get errorGetData {
     return NotificationInfo(
       NotificationType.error,
-      title: 'Erro',
+      title: 'Error',
       message: 'Error al obtener los datos!',
+    );
+  }
+
+  static NotificationInfo get okChangeData {
+    return NotificationInfo(
+      NotificationType.success,
+      title: 'Actualización',
+      message: 'Actualización exitosa!',
+    );
+  }
+
+  static NotificationInfo get error {
+    return NotificationInfo(
+      NotificationType.error,
+      title: 'Error',
+      message: 'Ocurrio un error!',
+    );
+  }
+
+  static NotificationInfo get errorPasswordNoExist {
+    return NotificationInfo(
+      NotificationType.error,
+      title: 'Error',
+      message: 'Contraseña actual incorrecta!',
     );
   }
 }

@@ -51,6 +51,7 @@ class DialogField extends StatelessWidget {
         ),
         CustomButton(
           textButton: 'Cambiar',
+          colorTextButton: Colors.white,
           width: 100,
           colorButton: Color.fromARGB(255, 83, 83, 83),
           onPressed: () => onPressed(_miController.text),

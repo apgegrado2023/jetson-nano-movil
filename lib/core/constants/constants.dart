@@ -1,5 +1,5 @@
 class ApiBaseURL {
-  static const String _ipServer = '192.168.3.98';
+  static const String _ipServer = '192.168.4.11';
   static const int _portServer = 5000;
 
   static Uri get url {

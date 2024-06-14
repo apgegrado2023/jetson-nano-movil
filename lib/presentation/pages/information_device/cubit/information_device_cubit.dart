@@ -61,10 +61,6 @@ class InformationDeviceCubit extends Cubit<InformationDeviceState> {
           statusConnection: StatusConnection.disconnected,
           status: StatusInformationDevice.error,
         ));
-
-        NotificationInteractor.onChangeNotification(
-          NotificationSyn.noConnection,
-        );
       } else {
         emit(state.copyWith(
           statusConnection: StatusConnection.disconnected,

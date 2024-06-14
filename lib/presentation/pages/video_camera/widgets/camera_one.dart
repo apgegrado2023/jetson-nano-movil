@@ -209,7 +209,7 @@ class _CameraOneState extends State<CameraOne> {
                             await Navigator.push(
                               context,
                               MaterialPageRoute(
-                                builder: (context) => VideoCameraFull(
+                                builder: (_) => VideoCameraFull(
                                   uri: widget.uri,
                                   title: 'Cámara 1',
                                 ),

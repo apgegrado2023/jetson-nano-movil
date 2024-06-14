@@ -29,12 +29,17 @@ class DetectionHistoryCubit extends Cubit<DetectionHistoryState> {
   }
 
   Future<void> loadDataDetections() async {
+    emit(state.copyWith(detectHistoryDevice: DetectHistoryDevice.loading));
     final httpResponse = await _detectionHistoryUseCase();
     if (httpResponse is DataSuccess) {
+      final list = httpResponse.data!;
+      list.sort((a, b) {
+        return b.registerDetection!.compareTo(a.registerDetection!);
+      });
       emit(
         state.copyWith(
-          listMemberEntity: httpResponse.data!,
-          listMemberEntityOriginal: httpResponse.data!,
+          listMemberEntity: list,
+          listMemberEntityOriginal: list,
           statusConnection: StatusConnection.connected,
           detectHistoryDevice: DetectHistoryDevice.success,
           index: 0,
@@ -46,11 +51,9 @@ class DetectionHistoryCubit extends Cubit<DetectionHistoryState> {
           statusConnection: StatusConnection.disconnected,
           detectHistoryDevice: DetectHistoryDevice.error,
         ));
-        NotificationInteractor.onChangeNotification(
-          NotificationSyn.noConnection,
-        );
       } else {
         emit(state.copyWith(
+          statusConnection: StatusConnection.disconnected,
           detectHistoryDevice: DetectHistoryDevice.error,
         ));
         NotificationInteractor.onChangeNotification(
@@ -63,10 +66,13 @@ class DetectionHistoryCubit extends Cubit<DetectionHistoryState> {
   Future<void> verificationConnection() async {
     _timerStarted = true;
     while (_timerStarted) {
+      final statusAfter = state.statusConnection;
       await check_connection();
 
       final status = state.statusConnection;
-      if (status != StatusConnection.connected) {
+      if (status == StatusConnection.disconnected) {
+        loadDataDetections();
+      } else if (status != statusAfter) {
         loadDataDetections();
       }
 
@@ -105,7 +111,9 @@ class DetectionHistoryCubit extends Cubit<DetectionHistoryState> {
               .toLowerCase()
               .contains(character.toLowerCase()))
           .toList();
-
+      filteredMembers.sort((a, b) {
+        return b.registerDetection!.compareTo(a.registerDetection!);
+      });
       emit(state.copyWith(listMemberEntity: filteredMembers));
       return;
     }
@@ -116,7 +124,9 @@ class DetectionHistoryCubit extends Cubit<DetectionHistoryState> {
                 .contains(character.toLowerCase()) &&
             member.typeDetection == state.index)
         .toList();
-
+    filteredMembers.sort((a, b) {
+      return b.registerDetection!.compareTo(a.registerDetection!);
+    });
     emit(state.copyWith(listMemberEntity: filteredMembers));
   }
 

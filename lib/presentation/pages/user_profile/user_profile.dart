@@ -132,7 +132,7 @@ class UserProfile extends StatelessWidget {
                                   title: 'Cambiar Usuario',
                                   value: userEntity.userName,
                                   label: 'Usuario',
-                                  isValidatioNum: true,
+                                  //isValidatioNum: true,
                                   onPressed: (value) {
                                     bloc.add(UserNameChangedProfileEvent(
                                         value, context));

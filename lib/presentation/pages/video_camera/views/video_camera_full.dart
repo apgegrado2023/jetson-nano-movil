@@ -74,155 +74,147 @@ class _VideoCameraFullState extends State<VideoCameraFull> {
     double screenWidth = MediaQuery.of(context).size.width;
     double screenHeight = MediaQuery.of(context).size.height;
 
-    return BlocBuilder<VideoCameraCubit, VideoCameraState>(
-      builder: (context, state) {
-        final status = state.statusConnection;
-        return SafeArea(
-          child: Scaffold(
-            backgroundColor: Color(0xFF151515),
-            body: Row(
-              mainAxisAlignment: MainAxisAlignment.start,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Align(
-                  alignment: Alignment.topLeft,
-                  child: Column(
-                    children: [
-                      Container(
-                        margin: EdgeInsets.only(left: 20, top: 20),
-                        child: Text(
-                          widget.title,
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 17,
-                          ),
-                        ),
-                      ),
-                      Container(
-                        margin: EdgeInsets.only(left: 20, top: 20),
-                        decoration: BoxDecoration(
-                          shape: BoxShape.circle,
-                          color: const Color.fromARGB(
-                            255,
-                            51,
-                            51,
-                            51,
-                          ),
-                        ),
-                        child: IconButton(
-                            alignment: Alignment.center,
-                            color: Colors.white,
-                            onPressed: () {
-                              Navigator.pop(context);
-                            },
-                            icon: Icon(Icons.arrow_back)),
-                      ),
-                      Container(
-                        margin: EdgeInsets.only(left: 20, top: 20),
-                        decoration: BoxDecoration(
-                          shape: BoxShape.circle,
-                          color: const Color.fromARGB(
-                            255,
-                            51,
-                            51,
-                            51,
-                          ),
-                        ),
-                        child: IconButton(
-                            alignment: Alignment.center,
-                            color: Colors.white,
-                            onPressed: () {
-                              setState(() {
-                                controller.reload();
-                                connection = Connection.loading;
-                              });
-                            },
-                            icon: Icon(Icons.replay_outlined)),
-                      ),
-                    ],
-                  ),
-                ),
-                Expanded(
-                  child: Center(
-                    child: SizedBox(
-                      width: screenHeight + 100,
-                      height: screenHeight,
-                      child: Container(
-                        height: 250,
-                        width: screenWidth,
-                        child: Stack(
-                          alignment: Alignment.bottomCenter,
-                          children: [
-                            WebViewWidget(controller: controller),
-                            if (connection == Connection.loading)
-                              Center(
-                                child: Container(
-                                  decoration: BoxDecoration(
-                                    color: Color.fromARGB(255, 8, 8, 8),
-                                  ),
-                                  child: Center(
-                                    child: Column(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.center,
-                                      children: [
-                                        CircularProgressIndicator(
-                                          color: Colors.white,
-                                        ),
-                                        SizedBox(
-                                          height: 10,
-                                        ),
-                                        Text(
-                                          'Conectando...',
-                                          style: TextStyle(
-                                            color: Colors.white,
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            if (connection == Connection.disconected ||
-                                status == StatusConnection.disconnected)
-                              Center(
-                                child: Container(
-                                  decoration: BoxDecoration(
-                                    color: Color.fromARGB(255, 8, 8, 8),
-                                  ),
-                                  child: Center(
-                                    child: Column(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.center,
-                                      children: [
-                                        Icon(
-                                          Icons.portable_wifi_off,
-                                          color: Colors.red,
-                                        ),
-                                        SizedBox(
-                                          height: 10,
-                                        ),
-                                        Text(
-                                          'Sin conexión',
-                                          style: TextStyle(
-                                            color: Colors.white,
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                ),
-                              ),
-                          ],
-                        ),
+    return SafeArea(
+      child: Scaffold(
+        backgroundColor: Color(0xFF151515),
+        body: Row(
+          mainAxisAlignment: MainAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Align(
+              alignment: Alignment.topLeft,
+              child: Column(
+                children: [
+                  Container(
+                    margin: EdgeInsets.only(left: 20, top: 20),
+                    child: Text(
+                      widget.title,
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 17,
                       ),
                     ),
                   ),
-                ),
-              ],
+                  Container(
+                    margin: EdgeInsets.only(left: 20, top: 20),
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      color: const Color.fromARGB(
+                        255,
+                        51,
+                        51,
+                        51,
+                      ),
+                    ),
+                    child: IconButton(
+                        alignment: Alignment.center,
+                        color: Colors.white,
+                        onPressed: () {
+                          Navigator.pop(context);
+                        },
+                        icon: Icon(Icons.arrow_back)),
+                  ),
+                  Container(
+                    margin: EdgeInsets.only(left: 20, top: 20),
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      color: const Color.fromARGB(
+                        255,
+                        51,
+                        51,
+                        51,
+                      ),
+                    ),
+                    child: IconButton(
+                        alignment: Alignment.center,
+                        color: Colors.white,
+                        onPressed: () {
+                          setState(() {
+                            controller.reload();
+                            connection = Connection.loading;
+                          });
+                        },
+                        icon: Icon(Icons.replay_outlined)),
+                  ),
+                ],
+              ),
             ),
-          ),
-        );
-      },
+            Expanded(
+              child: Center(
+                child: SizedBox(
+                  width: screenHeight + 100,
+                  height: screenHeight,
+                  child: Container(
+                    height: 250,
+                    width: screenWidth,
+                    child: Stack(
+                      alignment: Alignment.bottomCenter,
+                      children: [
+                        WebViewWidget(controller: controller),
+                        if (connection == Connection.loading)
+                          Center(
+                            child: Container(
+                              decoration: BoxDecoration(
+                                color: Color.fromARGB(255, 8, 8, 8),
+                              ),
+                              child: Center(
+                                child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    CircularProgressIndicator(
+                                      color: Colors.white,
+                                    ),
+                                    SizedBox(
+                                      height: 10,
+                                    ),
+                                    Text(
+                                      'Conectando...',
+                                      style: TextStyle(
+                                        color: Colors.white,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                          ),
+                        if (connection == Connection.disconected)
+                          Center(
+                            child: Container(
+                              decoration: BoxDecoration(
+                                color: Color.fromARGB(255, 8, 8, 8),
+                              ),
+                              child: Center(
+                                child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Icon(
+                                      Icons.portable_wifi_off,
+                                      color: Colors.red,
+                                    ),
+                                    SizedBox(
+                                      height: 10,
+                                    ),
+                                    Text(
+                                      'Sin conexión',
+                                      style: TextStyle(
+                                        color: Colors.white,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                          ),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
     );
   }
 }

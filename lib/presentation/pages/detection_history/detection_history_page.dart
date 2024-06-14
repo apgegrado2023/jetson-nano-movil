@@ -50,7 +50,53 @@ class DetectionHistoryView extends StatelessWidget {
     return Container(
       child: BlocBuilder<DetectionHistoryCubit, DetectionHistoryState>(
           builder: (context, state) {
-        if (state.detectHistoryDevice == DetectHistoryDevice.success) {
+        if (state.detectHistoryDevice == DetectHistoryDevice.error) {
+          if (state.statusConnection == StatusConnection.disconnected) {
+            return Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Lottie.asset(
+                    'assets/lottie/animation_lny44lqi.json',
+                    width: 150,
+                    height: 150,
+                  ),
+                  SizedBox(
+                    height: 20,
+                  ),
+                  const Text(
+                    "¡Ups al parecer te desconectaste",
+                    style: TextStyle(color: Colors.white),
+                  ),
+                  SizedBox(
+                    height: 20,
+                  ),
+                ],
+              ),
+            );
+          }
+          return Center(
+              child: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              SizedBox(
+                height: 20,
+              ),
+              const Text(
+                "Error al obtener la información!",
+                style: TextStyle(color: Colors.white),
+              ),
+              SizedBox(
+                height: 20,
+              ),
+              Icon(
+                Icons.error,
+                color: Colors.red,
+              )
+            ],
+          ));
+        } else if (state.detectHistoryDevice == DetectHistoryDevice.success) {
           final list = state.listMemberEntity;
           return Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -73,75 +119,8 @@ class DetectionHistoryView extends StatelessWidget {
                       },
                     ),
                   ),
-                  /*SizedBox(
-                    width: 8,
-                  ),
-                  Container(
-                    decoration: BoxDecoration(
-                      color: Colors.green,
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                    child: IconButton(
-                      onPressed: () async {},
-                      icon: const Icon(
-                        Icons.replay_outlined,
-                        color: Colors.white,
-                      ),
-                    ),
-                  ),*/
                 ],
               ),
-              /*BlocSelector<DetectionHistoryCubit, DetectionHistoryState, int?>(
-                //bloc: bloc,
-                selector: (state) => state.index,
-                builder: (context, index) {
-                  return Container(
-                      child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      ButtonOptionWidget(
-                        text: 'Todo',
-                        isSelected: 0 == index,
-                        ontap: () {
-                          context
-                              .read<DetectionHistoryCubit>()
-                              .onIndexChanged(0);
-                          textEditingController.clear();
-                        },
-                        borderRadiusGeometry: BorderRadius.only(
-                          topLeft: Radius.circular(7),
-                          bottomLeft: Radius.circular(7),
-                        ),
-                      ),
-                      ButtonOptionWidget(
-                        text: 'Somnolencia',
-                        isSelected: 1 == index,
-                        ontap: () {
-                          context
-                              .read<DetectionHistoryCubit>()
-                              .onIndexChanged(1);
-                          textEditingController.clear();
-                        },
-                      ),
-                      ButtonOptionWidget(
-                        text: 'Distracción',
-                        isSelected: 2 == index,
-                        ontap: () {
-                          context
-                              .read<DetectionHistoryCubit>()
-                              .onIndexChanged(2);
-                          textEditingController.clear();
-                        },
-                        borderRadiusGeometry: BorderRadius.only(
-                          topRight: Radius.circular(7),
-                          bottomRight: Radius.circular(7),
-                        ),
-                      ),
-                    ],
-                  ));
-                },
-              ),*/
               SizedBox(
                 height: 10,
               ),
@@ -167,29 +146,6 @@ class DetectionHistoryView extends StatelessWidget {
             ),
           );
           //return Text('Error al obtener la información');
-        } else if (state.statusConnection == StatusConnection.disconnected) {
-          return Center(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Lottie.asset(
-                  'assets/lottie/animation_lny44lqi.json',
-                  width: 150,
-                  height: 150,
-                ),
-                SizedBox(
-                  height: 20,
-                ),
-                const Text(
-                  "¡Ups al parecer te desconectaste",
-                  style: TextStyle(color: Colors.white),
-                ),
-                SizedBox(
-                  height: 20,
-                ),
-              ],
-            ),
-          );
         } else {
           return const Center(child: CircularProgressIndicator());
         }

@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:elegant_notification/elegant_notification.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_application_prgrado/config/utils/my_colors.dart';
@@ -64,9 +66,57 @@ class InformationDeviceBody extends StatelessWidget {
               return previous.statusConnection != current.statusConnection;
             }),
             builder: (context, state) {
+              if (state.status == StatusInformationDevice.error) {
+                if (state.statusConnection == StatusConnection.disconnected) {
+                  return Center(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Lottie.asset(
+                          'assets/lottie/animation_lny44lqi.json',
+                          width: 150,
+                          height: 150,
+                        ),
+                        SizedBox(
+                          height: 20,
+                        ),
+                        const Text(
+                          "¡Ups al parecer te desconectaste",
+                          style: TextStyle(color: Colors.white),
+                        ),
+                        SizedBox(
+                          height: 20,
+                        ),
+                      ],
+                    ),
+                  );
+                }
+                return Center(
+                    child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    SizedBox(
+                      height: 20,
+                    ),
+                    const Text(
+                      "Error al obtener la información!",
+                      style: TextStyle(color: Colors.white),
+                    ),
+                    SizedBox(
+                      height: 20,
+                    ),
+                    Icon(
+                      Icons.error,
+                      color: Colors.red,
+                    )
+                  ],
+                ));
+              }
+
               switch (state.statusConnection) {
                 case StatusConnection.initial:
-                  return Center(
+                  /* return Center(
                       child: Column(
                     children: [
                       SizedBox(
@@ -83,7 +133,14 @@ class InformationDeviceBody extends StatelessWidget {
                         color: CustomColorPrimary().c,
                       ),
                     ],
-                  ));
+                  ));*/
+                  return Center(
+                    child: Lottie.asset(
+                      'assets/lottie/animation_lny3vsqg.json',
+                      width: 200,
+                      height: 200,
+                    ),
+                  );
                 case StatusConnection.disconnected:
                   return Center(
                     child: Column(
